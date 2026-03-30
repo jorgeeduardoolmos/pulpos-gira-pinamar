@@ -606,13 +606,22 @@ with inner:
         </div>""", unsafe_allow_html=True)
 
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
-staff = ["Ote", "Ale", "Mati", "Fran", "Marian", "Tucu", "Cris", "Ema"]
+staff = [
+    ("👑", "Ote"),
+    ("🎖️", "Ale"),
+    ("🧠", "Mati"),
+    ("🆕", "Fran"),
+    ("📋", "Marian"),
+    ("🌿", "Tucu"),
+    ("🧑‍💼", "Cris"),
+    ("📋", "Ema"),
+]
 _, inner2, _ = st.columns([1, 10, 1])
 with inner2:
     cols = st.columns(8)
-    for col, name in zip(cols, staff):
+    for col, (icon, name) in zip(cols, staff):
         with col:
-            st.markdown(f'<div class="staff-card"><div class="staff-name">🧑‍💼 {name}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="staff-card"><div class="staff-name">{icon} {name}</div></div>', unsafe_allow_html=True)
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
