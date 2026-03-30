@@ -666,7 +666,7 @@ viernes = [("07:00 am","🏫 Encuentro en el Liceo"),("08:00 hs","🚌 Salida ha
            ("15:00 hs","🏨 Arribo al hotel · Almuerzo"),("Tarde","🌊 Día de playa"),("Noche","🍽️ Cena en el hotel")]
 sabado  = [("Mañana","☕ Desayuno en hotel"),("10:00 hs","🏉 Partido vs Camarones"),
            ("Post-partido","🍻 Tercer tiempo"),("Tarde","🏄 Playa + Sandboard + Inflables"),("Noche","🍽️ Cena en Hotel")]
-domingo = [("Mañana","☕ Desayuno en Hotel"),("Mañana","🌿 Kalo Eco Parque · Cariló"),
+domingo = [("Mañana","☕ Desayuno en Hotel"),("Mañana","🌿 Kalo Eco Parque · Cariló &nbsp;<a href='https://share.google/RXsnm8bbZVZyqlAeI' target='_blank' style='color:#00c8ff;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;border:1px solid rgba(0,200,255,0.3);border-radius:6px;padding:2px 8px;text-decoration:none;'>🗺️ Maps</a>"),
            ("Almuerzo","🍽️ Almuerzo en Hotel"),("15:00 hs","🚌 Salida hacia el Liceo"),
            ("Camino","🥐 Merienda en el Bondi"),("~20:00 hs","🏁 Llegada al Liceo")]
 
