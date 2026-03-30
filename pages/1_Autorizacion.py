@@ -384,6 +384,7 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← Volver al inicio", use_container_width=False):
+    if st.button("\u2190 Volver al inicio", use_container_width=False):
         st.session_state.submitted = False
+        st.query_params.clear()
         st.rerun()
