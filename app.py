@@ -2,6 +2,14 @@ import streamlit as st
 import base64
 from pathlib import Path
 
+# ─── Page routing via query params ──────────────────────────────────────────
+if st.query_params.get("page") == "autorizacion":
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("autorizacion", "pages/1_Autorizacion.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    st.stop()
+
 # ─── Load logo as base64 ─────────────────────────────────────────────────────
 def get_logo_b64():
     # Looks for the logo PNG next to app.py, falls back to the PDF in uploads
@@ -910,8 +918,9 @@ with btn_col:
     }
     div[data-testid="stButton"] button:hover { opacity: 0.88 !important; }
     </style>''', unsafe_allow_html=True)
-    if st.button("✍️  FIRMAR AUTORIZACIÓN  →", use_container_width=True, key="cta_auth"):
-        st.switch_page("pages/1_Autorizacion.py")
+    if st.button("\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True, key="cta_auth"):
+        st.query_params["page"] = "autorizacion"
+        st.rerun()
 
 # Close the box div
 st.markdown('''    </div>
