@@ -874,16 +874,56 @@ with inner9:
 
 # CTA AUTORIZACION
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-st.markdown(
-    '''<div style="padding:60px 5vw;max-width:860px;margin:0 auto;text-align:center;">'''
-    '''<div style="background:linear-gradient(135deg,rgba(26,107,191,0.15),rgba(112,200,240,0.08));border:1px solid rgba(112,200,240,0.3);border-radius:20px;padding:50px 40px;">'''
-    '''<div style="font-size:3.5rem;margin-bottom:16px;">&#x1F4CB;</div>'''
-    '''<div style="font-family:Bebas Neue,sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:0.06em;color:#fff;margin-bottom:12px;">Firm&#225; la Autorizaci&#243;n <span style="color:#70c8f0;">Online</span></div>'''
-    '''<div style="font-size:1rem;color:rgba(168,216,240,0.7);max-width:520px;margin:0 auto 32px;line-height:1.75;">Complet&#225; los datos del jugador y de los padres, revis&#225; el documento y firm&#225; digitalmente en segundos. Sin papeles, sin vueltas.</div>'''
-    '''<a href="/Autorizaci%C3%B3n" target="_self" style="display:inline-block;background:linear-gradient(135deg,#1a6bbf,#70c8f0);color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.5rem;letter-spacing:0.12em;text-decoration:none;border-radius:12px;padding:18px 48px;box-shadow:0 6px 28px rgba(26,107,191,0.45);">&#9997;&#65039; FIRMAR AUTORIZACI&#211;N &#x2192;</a>'''
-    '''</div></div>''',
-    unsafe_allow_html=True
-)
+st.markdown('''
+<div style="padding:60px 5vw;max-width:860px;margin:0 auto;text-align:center;">
+    <div style="background:linear-gradient(135deg,rgba(26,107,191,0.15),rgba(112,200,240,0.08));
+                border:1px solid rgba(112,200,240,0.3);border-radius:20px;padding:50px 40px;">
+        <div style="font-size:3.5rem;margin-bottom:16px;">&#x1F4CB;</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:clamp(2rem,5vw,3.2rem);
+                    letter-spacing:0.06em;color:#fff;margin-bottom:12px;">
+            Firm&#225; la Autorizaci&#243;n <span style="color:#70c8f0;">Online</span>
+        </div>
+        <div style="font-size:1rem;color:rgba(168,216,240,0.7);max-width:520px;
+                    margin:0 auto 0;line-height:1.75;">
+            Complet&#225; los datos del jugador y de los padres, revis&#225; el documento
+            y firm&#225; digitalmente en segundos. Sin papeles, sin vueltas.
+        </div>
+    </div>
+</div>
+''', unsafe_allow_html=True)
+
+# st.page_link is the only reliable way to navigate between pages in Streamlit
+_, cta_col, _ = st.columns([1, 2, 1])
+with cta_col:
+    st.markdown('''
+    <style>
+    /* Style the page_link button to look like our CTA */
+    [data-testid="stPageLink"] a {
+        display: block !important;
+        text-align: center !important;
+        background: linear-gradient(135deg, #1a6bbf, #70c8f0) !important;
+        color: #ffffff !important;
+        font-family: "Bebas Neue", sans-serif !important;
+        font-size: 1.5rem !important;
+        letter-spacing: 0.12em !important;
+        text-decoration: none !important;
+        border-radius: 12px !important;
+        padding: 18px 48px !important;
+        box-shadow: 0 6px 28px rgba(26,107,191,0.45) !important;
+        border: none !important;
+        width: 100% !important;
+        margin-top: 16px;
+    }
+    [data-testid="stPageLink"] a:hover { opacity: 0.88 !important; }
+    [data-testid="stPageLink"] a p {
+        font-family: "Bebas Neue", sans-serif !important;
+        font-size: 1.5rem !important;
+        letter-spacing: 0.12em !important;
+        color: #ffffff !important;
+    }
+    </style>
+    ''', unsafe_allow_html=True)
+    st.page_link("pages/1_Autorizaci\u00f3n.py", label="\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
