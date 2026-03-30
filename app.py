@@ -635,7 +635,7 @@ _, inner4, _ = st.columns([1, 10, 1])
 with inner4:
     c1, c2, c3, c4 = st.columns(4)
     cards_data = [
-        (c1, "🛫", "Partida", "<strong>Viernes 13 de Noviembre</strong><br>Encuentro en el Liceo: <strong>7:00 am</strong><br>Salida: <strong>8:00 hs</strong>"),
+        (c1, "🟢", "Partida", "<strong>Viernes 13 de Noviembre</strong><br>Encuentro en el Liceo: <strong>7:00 am</strong><br>Salida: <strong>8:00 hs</strong>"),
         (c2, "🏠", "Regreso", "<strong>Domingo 15 de Noviembre</strong><br>Salida Pinamar: <strong>15:00 hs</strong><br>Llegada aprox.: <strong>20:00 hs</strong>"),
         (c3, "🚌", "Transporte", "<strong>Serrano Turismo</strong><br><br>Control alcoholemia obligatorio.<br>Estacionamiento en Liceo el viernes y domingo."),
         (c4, "🏥", "Seguro Médico", "<strong>Assist Travel</strong><br><br>Asistencia médica completa durante toda la gira."),
