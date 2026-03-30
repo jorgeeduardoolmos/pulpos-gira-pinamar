@@ -35,11 +35,28 @@ def get_logo_b64():
 
 LOGO_B64 = get_logo_b64()
 
-def logo_html(size="clamp(200px,22vw,320px)"):
+def logo_html(size="clamp(200px,22vw,300px)", footer=False):
+    if footer:
+        if LOGO_B64:
+            return '<img src="data:image/png;base64,' + LOGO_B64 + '" style="width:70px;filter:drop-shadow(0 0 12px rgba(79,200,79,0.5));opacity:0.7;" alt="Pulpos Logo">'
+        return '<div style="font-size:2.5rem;opacity:0.6;">🐙</div>'
     if LOGO_B64:
-        return f'<img src="data:image/png;base64,{LOGO_B64}" style="width:{size};filter:drop-shadow(0 0 40px rgba(79,200,79,0.55));animation:float 4s ease-in-out infinite;margin-bottom:10px;" alt="Pulpos Logo">'
-    # emoji fallback
-    return f'<div style="font-size:clamp(5rem,12vw,9rem);filter:drop-shadow(0 0 40px rgba(79,200,79,0.5));animation:float 4s ease-in-out infinite;margin-bottom:10px;">🐙</div>'
+        frame = (
+            '<div style="'
+            'width:' + size + ';aspect-ratio:1/1;border-radius:50%;'
+            'background:radial-gradient(circle at 40% 35%, #0d2a0d 0%, #050e05 70%);'
+            'box-shadow:0 0 0 3px #4fc84f,0 0 0 6px rgba(0,200,255,0.4),'
+            '0 0 50px rgba(79,200,79,0.55),0 0 100px rgba(0,200,255,0.2),'
+            'inset 0 0 30px rgba(0,0,0,0.6);'
+            'display:flex;align-items:center;justify-content:center;'
+            'animation:float 4s ease-in-out infinite;margin-bottom:24px;overflow:hidden;">'
+            '<img src="data:image/png;base64,' + LOGO_B64 + '"'
+            ' style="width:92%;height:92%;object-fit:contain;" alt="Pulpos Logo">'
+            '</div>'
+        )
+        return frame
+    return '<div style="font-size:clamp(5rem,12vw,9rem);filter:drop-shadow(0 0 40px rgba(79,200,79,0.5));animation:float 4s ease-in-out infinite;margin-bottom:10px;">🐙</div>'
+
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -828,7 +845,7 @@ with inner9:
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown(f"""
 <div class="footer">
-    {logo_html(size="80px")}
+    {logo_html(footer=True)}
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(79,200,79,0.5);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
     <div style="margin-top:8px;">División M10 · <strong>Gira Pinamar 2024</strong> · 13 al 15 de Noviembre</div>
     <div style="margin-top:16px;font-size:0.75rem;opacity:0.5;">Con alegría, compromiso y espíritu de equipo. ¡Vamos Pulpos! 💚</div>
