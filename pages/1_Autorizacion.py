@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from datetime import date
 
 st.set_page_config(
@@ -72,12 +73,17 @@ html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; 
 }
 [data-testid="stTextInput"] input,
 [data-testid="stNumberInput"] input {
-    background: rgba(26,107,191,0.08) !important;
-    border: 1px solid rgba(100,180,255,0.2) !important;
+    background: rgba(26,107,191,0.15) !important;
+    border: 1px solid rgba(100,180,255,0.35) !important;
     border-radius: 8px !important;
-    color: #ffffff !important;
+    color: #e8f4ff !important;
     font-family: 'Barlow', sans-serif !important;
+    caret-color: #70c8f0 !important;
 }
+/* Also target the inner p tag Streamlit uses */
+[data-testid="stTextInput"] input::placeholder { color: rgba(168,216,240,0.4) !important; }
+div[data-baseweb="input"] input { color: #e8f4ff !important; }
+div[data-baseweb="base-input"] input { color: #e8f4ff !important; }
 [data-testid="stTextInput"] input:focus,
 [data-testid="stNumberInput"] input:focus {
     border-color: rgba(112,200,240,0.6) !important;
@@ -286,51 +292,54 @@ if not st.session_state.submitted:
     dni_firmante = f"{padre_dni.strip()} / {madre_dni.strip()}".strip(" /")
     fecha_hoy = date.today().strftime("%d de %B de %Y").replace("January","enero").replace("February","febrero").replace("March","marzo").replace("April","abril").replace("May","mayo").replace("June","junio").replace("July","julio").replace("August","agosto").replace("September","septiembre").replace("October","octubre").replace("November","noviembre").replace("December","diciembre")
 
-    st.markdown(f"""
-    <div class="auth-doc">
-        <div class="auth-doc-title">GIRA "PINAMAR 2026"</div>
-        <div class="auth-doc-subtitle">Autorización para concurrir</div>
+    # Build doc as plain Python string — avoids Streamlit HTML escaping issues
+    firmante_display = nombre_completo_firmante.strip("/ ") if nombre_completo_firmante.strip("/ ") else "Firma y aclaración"
+    dni_display = dni_firmante.strip("/ ") if dni_firmante.strip("/ ") else "\u2014\u2014\u2014\u2014\u2014\u2014"
 
-        <p>Por medio de la presente autorizo a mi hijo/a {field(nombre_completo_jugador, "Nombre y Apellido del jugador", "320px")}</p>
-        <p>DNI N° {field(jugador_dni, "DNI del jugador", "200px")}</p>
-        <p>domiciliado en la calle {field(jugador_domicilio, "Domicilio", "260px")}</p>
-        <p>de la localidad de {field(jugador_localidad, "Localidad", "220px")}</p>
-        <p>Teléfono {field(jugador_tel, "Teléfono", "200px")}</p>
+    doc_html = " ".join([
+        '<div style="background:rgba(255,255,255,0.97);border-radius:12px;padding:44px 52px;',
+        'color:#1a1a2e;font-family:Georgia,serif;font-size:0.95rem;line-height:1.9;',
+        'box-shadow:0 8px 40px rgba(0,0,0,0.5);margin:32px 0;border-top:6px solid #1a6bbf;">',
+        '<div style="text-align:center;font-size:1.15rem;font-weight:700;text-transform:uppercase;margin-bottom:6px;">GIRA PINAMAR 2026</div>',
+        '<div style="text-align:center;font-size:1rem;font-weight:600;margin-bottom:24px;color:#1a3a6e;">Autorizacion para concurrir</div>',
+    ])
+    doc_html += "<p>Por medio de la presente autorizo a mi hijo/a " + field(nombre_completo_jugador, "Nombre y Apellido del jugador", "320px") + "</p>"
+    doc_html += "<p>DNI N. " + field(jugador_dni, "DNI del jugador", "200px") + "</p>"
+    doc_html += "<p>domiciliado en la calle " + field(jugador_domicilio, "Domicilio", "260px") + "</p>"
+    doc_html += "<p>de la localidad de " + field(jugador_localidad, "Localidad", "220px") + "</p>"
+    doc_html += "<p>Telefono " + field(jugador_tel, "Telefono", "200px") + "</p>"
+    doc_html += (
+        "<p style='margin-top:16px;'>que concurre al <strong>Centro De Graduados Del Liceo Naval Militar"
+        " Almirante Guillermo Brown</strong> de la Ciudad Autonoma de Buenos Aires"
+        " a participar de la Salida denominada <strong>Pinamar 2026</strong>"
+        " a realizarse en la localidad de Pinamar, Provincia de Buenos Aires"
+        " desde el <strong>13 de Noviembre de 2026</strong>"
+        " hasta el <strong>15 de noviembre de 2026</strong>.</p>"
+        "<p>Dejo constancia que he sido informado de las caracteristicas particulares de dicha salida,"
+        " las actividades a desarrollar, medios de transporte a utilizar y lugares donde se realizaran dichas actividades.</p>"
+        "<p>Autorizo a los responsables de la salida a disponer cambios con relacion a la planificacion"
+        " de las actividades en aspectos acotados, que resulten necesarios, a su solo criterio y sin aviso previo,"
+        " sobre lo cual me deberan informar y fundamentar al regreso.</p>"
+        "<p>Autorizo, en caso de necesidad y urgencia, a hacer atender a mi hijo por profesionales medicos"
+        " y a que se adopten las prescripciones que ellos indiquen, sobre lo cual requiero inmediato aviso.</p>"
+        "<p>Los entrenadores y personal a cargo del cuidado y vigilancia activa de los menores no seran"
+        " responsables de los objetos u otros elementos de valor que los mismos puedan llevar.</p>"
+    )
+    doc_html += f"<div style='margin-top:28px;display:flex;gap:30px;flex-wrap:wrap;'><p><strong>Lugar:</strong> Ciudad Autonoma de Buenos Aires</p><p><strong>Fecha:</strong> {fecha_hoy}</p></div>"
+    doc_html += (
+        "<div style='display:flex;gap:40px;margin-top:40px;'>"
+        f"<div style='flex:1;border-top:1px solid #999;padding-top:8px;font-size:0.85rem;color:#555;text-align:center;'>"
+        f"<strong>{firmante_display}</strong><br>Padre / Madre / Tutor o Responsable</div>"
+        f"<div style='flex:1;border-top:1px solid #999;padding-top:8px;font-size:0.85rem;color:#555;text-align:center;'>"
+        f"<strong>DNI: {dni_display}</strong><br>Numero de documento</div>"
+        "</div></div>"
+    )
 
-        <p style="margin-top:16px;">que concurre al <strong>Centro De Graduados Del Liceo Naval Militar "Almirante Guillermo Brown"</strong>
-        de la Ciudad Autónoma de Buenos Aires a participar de la Salida denominada <strong>"Pinamar 2026"</strong>
-        a realizarse en la localidad de Pinamar, Provincia de Buenos Aires desde el
-        <strong>13 de Noviembre de 2026</strong> hasta el <strong>15 de noviembre de 2026</strong>.</p>
-
-        <p>Dejo constancia que he sido informado de las características particulares de dicha salida, las actividades a desarrollar, medios de transporte a utilizar y lugares donde se realizarán dichas actividades.</p>
-
-        <p>Autorizo a los responsables de la salida a disponer cambios con relación a la planificación de las actividades en aspectos acotados, que resulten necesarios, a su solo criterio y sin aviso previo, sobre lo cual me deberán informar y fundamentar al regreso.</p>
-
-        <p>Autorizo, en caso de necesidad y urgencia, a hacer atender a mi hijo por profesionales médicos y a que se adopten las prescripciones que ellos indiquen, sobre lo cual requiero inmediato aviso.</p>
-
-        <p>Los entrenadores y personal a cargo del cuidado y vigilancia activa de los menores no serán responsables de los objetos u otros elementos de valor que los mismos puedan llevar.</p>
-
-        <div style="margin-top:28px;display:flex;gap:30px;flex-wrap:wrap;">
-            <p><strong>Lugar:</strong> Ciudad Autónoma de Buenos Aires</p>
-            <p><strong>Fecha:</strong> {fecha_hoy}</p>
-        </div>
-
-        <div class="auth-signature-row">
-            <div class="auth-sig-block">
-                <strong>{nombre_completo_firmante if nombre_completo_firmante.strip("/").strip() else "Firma y aclaración"}</strong><br>
-                Padre / Madre / Tutor o Responsable
-            </div>
-            <div class="auth-sig-block">
-                <strong>DNI N°: {dni_firmante if dni_firmante.strip("/").strip() else "——————————"}</strong><br>
-                Número de documento
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(doc_html, unsafe_allow_html=True)
 
     # ── CHECKBOX AUTORIZO ─────────────────────────────────────────────────────
     st.markdown('<div class="form-section">Confirmación</div>', unsafe_allow_html=True)
-    autorizo = st.checkbox("✅  Leí la autorización, los datos son correctos y **AUTORIZO** la participación de mi hijo/a en la Gira Pinamar 2026.")
+    autorizo = st.checkbox("Leí la autorización, los datos son correctos y **AUTORIZO** la participación de mi hijo/a en la Gira Pinamar 2026.")
 
     # ── VALIDACIÓN ────────────────────────────────────────────────────────────
     campos_obligatorios = [
