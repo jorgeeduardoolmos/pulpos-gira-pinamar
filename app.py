@@ -871,5 +871,6 @@ st.markdown(f"""
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(79,200,79,0.5);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
     <div style="margin-top:8px;">División M10 · <strong>Gira Pinamar 2024</strong> · 13 al 15 de Noviembre</div>
     <div style="margin-top:16px;font-size:0.75rem;opacity:0.5;">Con alegría, compromiso y espíritu de equipo. ¡Vamos Pulpos! 💚</div>
+    <div style="margin-top:28px;font-size:0.7rem;opacity:0.2;letter-spacing:0.15em;font-family:'Barlow Condensed',sans-serif;">Gestión Lopez 2020–2030</div>
 </div>
 """, unsafe_allow_html=True)
