@@ -536,7 +536,7 @@ st.markdown("""
     <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Staff</div></div>
     <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Días</div></div>
     <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Cuotas</div></div>
-    <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">Partido</div></div>
+    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Equipos</div></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -545,7 +545,6 @@ st.markdown("""
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <div class="sec-wrap">
-    <div class="section-label">01</div>
     <div class="section-title">Nuestro <span>Objetivo</span></div>
     <div class="objetivo-box">
         <p>🏉 Fortalecer la amistad, el compañerismo y el espíritu de equipo a través del juego, la convivencia y el respeto.</p>
@@ -559,7 +558,7 @@ st.markdown("""
 # ══════════════════════════════════════════════════════════════════════════════
 # INTEGRANTES  —  st.columns para las 2 cards grandes
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">02</div><div class="section-title"><span>Integrantes</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title"><span>Integrantes</span></div></div>', unsafe_allow_html=True)
 
 _, inner, _ = st.columns([1, 10, 1])
 with inner:
@@ -570,7 +569,7 @@ with inner:
             <div class="card-title">Jugadores</div>
             <div class="card-body">
                 <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#4fc84f;">34</span><br>
-                Guerreros del mar
+                Jugadores del Liceo Naval M10
             </div>
         </div>""", unsafe_allow_html=True)
     with c2:
@@ -579,7 +578,7 @@ with inner:
             <div class="card-title">Staff Técnico</div>
             <div class="card-body">
                 <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#00c8ff;">8</span><br>
-                Profes &amp; acompañantes
+                Entrenadores y Managers
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -597,7 +596,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 # CLUB & ALOJAMIENTO
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">03 — 04</div><div class="section-title">Club &amp; <span>Alojamiento</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title">Club &amp; <span>Alojamiento</span></div></div>', unsafe_allow_html=True)
 
 _, inner3, _ = st.columns([1, 10, 1])
 with inner3:
@@ -630,7 +629,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 # FECHAS & LOGÍSTICA
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">05 — 07</div><div class="section-title">Fechas &amp; <span>Logística</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title">Fechas &amp; <span>Logística</span></div></div>', unsafe_allow_html=True)
 
 _, inner4, _ = st.columns([1, 10, 1])
 with inner4:
@@ -654,7 +653,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 # CRONOGRAMA  —  3 columnas con timeline HTML interno
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">09</div><div class="section-title"><span>Cronograma</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title"><span>Cronograma</span></div></div>', unsafe_allow_html=True)
 
 def make_timeline(day_name, events):
     rows = "".join(
@@ -686,7 +685,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 # COMIDAS  —  <table> real, no CSS grid
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">11</div><div class="section-title"><span>Comidas</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title"><span>Comidas</span></div></div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="padding:0 5vw 50px;max-width:1200px;margin:0 auto;">
 <table class="comidas-table">
@@ -729,7 +728,7 @@ st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 # ══════════════════════════════════════════════════════════════════════════════
 # COSTO & CUOTAS
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">06</div><div class="section-title">Costo &amp; <span>Cuotas</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title">Costo &amp; <span>Cuotas</span></div></div>', unsafe_allow_html=True)
 
 _, inner6, _ = st.columns([1, 10, 1])
 with inner6:
@@ -772,7 +771,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 # QUÉ LLEVAR
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">14</div><div class="section-title">¿Qué <span>Llevar</span>?</div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title">¿Qué <span>Llevar</span>?</div></div>', unsafe_allow_html=True)
 
 llevar = ["Peluche","Pijama","Artículos de aseo personal","Gorra","Traje de baño",
           "Campera","Ojotas / Crocs","Ropa interior x2","Bolsa para ropa mojada",
@@ -806,7 +805,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 # DOCUMENTACIÓN
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">16</div><div class="section-title"><span>Documentación</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title"><span>Documentación</span></div></div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="padding:0 5vw 50px;max-width:1200px;margin:0 auto;">
     <div class="doc-row"><span class="doc-icon">📝</span> Autorización firmada por Padre / Madre (físico o impresión digital)</div>
@@ -821,7 +820,7 @@ st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 # ══════════════════════════════════════════════════════════════════════════════
 # REGLAS & DETALLES
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-label">Extra</div><div class="section-title">Reglas &amp; <span>Detalles</span></div></div>', unsafe_allow_html=True)
+st.markdown('<div class="sec-wrap"><div class="section-title">Reglas &amp; <span>Detalles</span></div></div>', unsafe_allow_html=True)
 
 _, inner9, _ = st.columns([1, 10, 1])
 with inner9:
