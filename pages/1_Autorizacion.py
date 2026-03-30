@@ -11,7 +11,7 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&family=Dancing+Script:wght@600&display=swap');
 
 html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; }
 
@@ -330,12 +330,23 @@ if not st.session_state.submitted:
         " responsables de los objetos u otros elementos de valor que los mismos puedan llevar.</p>"
     )
     doc_html += f"<div style='margin-top:28px;display:flex;gap:30px;flex-wrap:wrap;'><p><strong>Lugar:</strong> Ciudad Autonoma de Buenos Aires</p><p><strong>Fecha:</strong> {fecha_hoy}</p></div>"
+    madre_display = f"{madre_nombre.strip()} {madre_apellido.strip()}".strip() or "Madre / Tutora"
+    padre_display = f"{padre_nombre.strip()} {padre_apellido.strip()}".strip() or "Padre / Tutor"
+    madre_dni_display = madre_dni.strip() or "——————"
+    padre_dni_display = padre_dni.strip() or "——————"
+
     doc_html += (
-        "<div style='display:flex;gap:40px;margin-top:40px;'>"
-        f"<div style='flex:1;border-top:1px solid #999;padding-top:8px;font-size:0.85rem;color:#555;text-align:center;'>"
-        f"<strong>{firmante_display}</strong><br>Padre / Madre / Tutor o Responsable</div>"
-        f"<div style='flex:1;border-top:1px solid #999;padding-top:8px;font-size:0.85rem;color:#555;text-align:center;'>"
-        f"<strong>DNI: {dni_display}</strong><br>Numero de documento</div>"
+        "<div style='display:flex;gap:48px;margin-top:48px;'>"
+        f"<div style='flex:1;text-align:center;'>"
+        f"<div style='font-family:Dancing Script,cursive;font-size:1.6rem;color:#1a3a6e;margin-bottom:4px;min-height:2.2rem;'>{madre_display}</div>"
+        f"<div style='border-top:1px solid #aaa;padding-top:8px;font-size:0.82rem;color:#555;'>"
+        f"<strong>{madre_display}</strong> &nbsp;·&nbsp; DNI: {madre_dni_display}<br>"
+        "Firma de la Madre / Tutora</div></div>"
+        f"<div style='flex:1;text-align:center;'>"
+        f"<div style='font-family:Dancing Script,cursive;font-size:1.6rem;color:#1a3a6e;margin-bottom:4px;min-height:2.2rem;'>{padre_display}</div>"
+        f"<div style='border-top:1px solid #aaa;padding-top:8px;font-size:0.82rem;color:#555;'>"
+        f"<strong>{padre_display}</strong> &nbsp;·&nbsp; DNI: {padre_dni_display}<br>"
+        "Firma del Padre / Tutor</div></div>"
         "</div></div>"
     )
 
