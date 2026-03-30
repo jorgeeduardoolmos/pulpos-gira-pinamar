@@ -610,10 +610,10 @@ staff = [
     ("👑", "Ote"),
     ("🎖️", "Ale"),
     ("🧠", "Mati"),
-    ("🏉", "Fran"),
-    ("📋", "Marian"),
     ("🏉", "Tucu"),
+    ("🏉", "Fran"),
     ("🆕", "Cris"),
+    ("📋", "Marian"),
     ("📋", "Ema"),
 ]
 _, inner2, _ = st.columns([1, 10, 1])
