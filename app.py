@@ -495,7 +495,7 @@ html, body, [class*="css"] {
 # ══════════════════════════════════════════════════════════════════════════════
 # HERO
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
+st.markdown(f"""
 <div class="hero">
     {logo_html()}
     <div class="hero-eyebrow">División M10 · Liceo Naval</div>
@@ -826,7 +826,7 @@ with inner9:
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
+st.markdown(f"""
 <div class="footer">
     {logo_html(size="80px")}
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(79,200,79,0.5);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
