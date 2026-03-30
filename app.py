@@ -247,6 +247,9 @@ html, body, [class*="css"] {
     border-radius: 16px;
     padding: 28px;
     height: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
     transition: border-color 0.3s;
 }
 .card:hover { border-color: rgba(79,200,79,0.35); }
@@ -506,6 +509,26 @@ html, body, [class*="css"] {
 
 /* Remove extra streamlit column padding */
 [data-testid="column"] { padding: 4px 6px !important; }
+
+/* Equal height columns — makes all cards in the same row stretch equally */
+[data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="column"] {
+    display: flex !important;
+    flex-direction: column !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="column"] > div {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="column"] > div > div {
+    flex: 1 !important;
+}
+[data-testid="stHorizontalBlock"] .card {
+    flex: 1 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
