@@ -1,4 +1,45 @@
 import streamlit as st
+import base64
+from pathlib import Path
+
+# ─── Load logo as base64 ─────────────────────────────────────────────────────
+def get_logo_b64():
+    # Looks for the logo PNG next to app.py, falls back to the PDF in uploads
+    for candidate in [
+        Path(__file__).parent / "utils" / "pulpos_logo.png",
+        Path(__file__).parent / "pulpos_logo.png",
+        Path("/mnt/user-data/uploads/pulpos.pdf").parent / "pulpos_logo.png",
+    ]:
+        if candidate.exists():
+            return base64.b64encode(candidate.read_bytes()).decode()
+    # Last resort: convert the PDF on the fly if pdf2image is available
+    try:
+        from pdf2image import convert_from_path
+        import numpy as np
+        import io
+        pdf_path = Path(__file__).parent / "utils" / "pulpos.ai"
+        if not pdf_path.exists():
+            pdf_path = Path(__file__).parent / "pulpos.pdf"
+        pages = convert_from_path(str(pdf_path), dpi=300)
+        img = pages[0]
+        arr = np.array(img)
+        mask = ~((arr[:,:,0] > 240) & (arr[:,:,1] > 240) & (arr[:,:,2] > 240))
+        rows = np.any(mask, axis=1); cols = np.any(mask, axis=0)
+        rmin, rmax = np.where(rows)[0][[0,-1]]; cmin, cmax = np.where(cols)[0][[0,-1]]
+        pad = 20
+        img = img.crop((max(0,cmin-pad), max(0,rmin-pad), min(img.width,cmax+pad), min(img.height,rmax+pad)))
+        buf = io.BytesIO(); img.save(buf, "PNG"); buf.seek(0)
+        return base64.b64encode(buf.read()).decode()
+    except Exception:
+        return None
+
+LOGO_B64 = get_logo_b64()
+
+def logo_html(size="clamp(200px,22vw,320px)"):
+    if LOGO_B64:
+        return f'<img src="data:image/png;base64,{LOGO_B64}" style="width:{size};filter:drop-shadow(0 0 40px rgba(79,200,79,0.55));animation:float 4s ease-in-out infinite;margin-bottom:10px;" alt="Pulpos Logo">'
+    # emoji fallback
+    return f'<div style="font-size:clamp(5rem,12vw,9rem);filter:drop-shadow(0 0 40px rgba(79,200,79,0.5));animation:float 4s ease-in-out infinite;margin-bottom:10px;">🐙</div>'
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -456,7 +497,7 @@ html, body, [class*="css"] {
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <div class="hero">
-    <div style="font-size:clamp(5rem,12vw,9rem);filter:drop-shadow(0 0 40px rgba(79,200,79,0.5));animation:float 4s ease-in-out infinite;margin-bottom:10px;">🐙</div>
+    {logo_html()}
     <div class="hero-eyebrow">División M10 · Liceo Naval</div>
     <h1 class="hero-title">PULPOS</h1>
     <div class="hero-subtitle">Gira Pinamar 2024</div>
@@ -787,7 +828,7 @@ with inner9:
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <div class="footer">
-    <div style="font-size:3rem;margin-bottom:8px;">🐙</div>
+    {logo_html(size="80px")}
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(79,200,79,0.5);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
     <div style="margin-top:8px;">División M10 · <strong>Gira Pinamar 2024</strong> · 13 al 15 de Noviembre</div>
     <div style="margin-top:16px;font-size:0.75rem;opacity:0.5;">Con alegría, compromiso y espíritu de equipo. ¡Vamos Pulpos! 💚</div>
