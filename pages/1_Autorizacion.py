@@ -73,17 +73,21 @@ html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; 
 }
 [data-testid="stTextInput"] input,
 [data-testid="stNumberInput"] input {
-    background: rgba(26,107,191,0.15) !important;
-    border: 1px solid rgba(100,180,255,0.35) !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(100,180,255,0.4) !important;
     border-radius: 8px !important;
-    color: #e8f4ff !important;
+    color: #ffffff !important;
     font-family: 'Barlow', sans-serif !important;
     caret-color: #70c8f0 !important;
+    font-size: 1rem !important;
 }
-/* Also target the inner p tag Streamlit uses */
-[data-testid="stTextInput"] input::placeholder { color: rgba(168,216,240,0.4) !important; }
-div[data-baseweb="input"] input { color: #e8f4ff !important; }
-div[data-baseweb="base-input"] input { color: #e8f4ff !important; }
+[data-testid="stTextInput"] input::placeholder,
+[data-testid="stNumberInput"] input::placeholder { color: rgba(168,216,240,0.3) !important; }
+/* Streamlit wraps inputs in baseweb — target all layers */
+div[data-baseweb="input"] { background: rgba(255,255,255,0.06) !important; }
+div[data-baseweb="base-input"] { background: transparent !important; }
+div[data-baseweb="input"] input,
+div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1rem !important; }
 [data-testid="stTextInput"] input:focus,
 [data-testid="stNumberInput"] input:focus {
     border-color: rgba(112,200,240,0.6) !important;
