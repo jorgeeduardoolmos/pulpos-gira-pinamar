@@ -874,36 +874,48 @@ with inner9:
 
 # CTA AUTORIZACION
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+# Box content
 st.markdown('''
-<div style="padding:60px 5vw;max-width:860px;margin:0 auto;text-align:center;">
+<div style="padding:60px 5vw 24px;max-width:860px;margin:0 auto;text-align:center;">
     <div style="background:linear-gradient(135deg,rgba(26,107,191,0.15),rgba(112,200,240,0.08));
-                border:1px solid rgba(112,200,240,0.3);border-radius:20px;padding:50px 40px;">
+                border:1px solid rgba(112,200,240,0.3);border-radius:20px;padding:50px 40px 36px;">
         <div style="font-size:3.5rem;margin-bottom:16px;">&#x1F4CB;</div>
         <div style="font-family:Bebas Neue,sans-serif;font-size:clamp(2rem,5vw,3.2rem);
                     letter-spacing:0.06em;color:#fff;margin-bottom:12px;">
             Firm&#225; la Autorizaci&#243;n <span style="color:#70c8f0;">Online</span>
         </div>
         <div style="font-size:1rem;color:rgba(168,216,240,0.7);max-width:520px;
-                    margin:0 auto 0;line-height:1.75;">
+                    margin:0 auto 32px;line-height:1.75;">
             Complet&#225; los datos del jugador y de los padres, revis&#225; el documento
             y firm&#225; digitalmente en segundos. Sin papeles, sin vueltas.
         </div>
-    </div>
-</div>
 ''', unsafe_allow_html=True)
 
-# st.page_link is the only reliable way to navigate between pages in Streamlit
-st.markdown('''
-<div style="text-align:center;margin-top:16px;">
-    <a href="/1_Autorizacion" target="_self"
-       style="display:inline-block;background:linear-gradient(135deg,#1a6bbf,#70c8f0);
-              color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.5rem;
-              letter-spacing:0.12em;text-decoration:none;border-radius:12px;
-              padding:18px 48px;box-shadow:0 6px 28px rgba(26,107,191,0.45);">
-        &#9997;&#65039;&nbsp; FIRMAR AUTORIZACI&#211;N &nbsp;&#x2192;
-    </a>
-</div>
-''', unsafe_allow_html=True)
+# Button — st.button + st.switch_page is the only reliable navigation in Streamlit Cloud
+_, btn_col, _ = st.columns([2, 3, 2])
+with btn_col:
+    st.markdown('''<style>
+    div[data-testid="stButton"] button {
+        background: linear-gradient(135deg, #1a6bbf, #70c8f0) !important;
+        color: #fff !important;
+        font-family: "Bebas Neue", sans-serif !important;
+        font-size: 1.4rem !important;
+        letter-spacing: 0.12em !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 18px 48px !important;
+        box-shadow: 0 6px 28px rgba(26,107,191,0.45) !important;
+        width: 100% !important;
+    }
+    div[data-testid="stButton"] button:hover { opacity: 0.88 !important; }
+    </style>''', unsafe_allow_html=True)
+    if st.button("✍️  FIRMAR AUTORIZACIÓN  →", use_container_width=True, key="cta_auth"):
+        st.switch_page("pages/1_Autorizacion.py")
+
+# Close the box div
+st.markdown('''    </div>
+</div>''', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
