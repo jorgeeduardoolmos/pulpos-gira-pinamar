@@ -893,37 +893,17 @@ st.markdown('''
 ''', unsafe_allow_html=True)
 
 # st.page_link is the only reliable way to navigate between pages in Streamlit
-_, cta_col, _ = st.columns([1, 2, 1])
-with cta_col:
-    st.markdown('''
-    <style>
-    /* Style the page_link button to look like our CTA */
-    [data-testid="stPageLink"] a {
-        display: block !important;
-        text-align: center !important;
-        background: linear-gradient(135deg, #1a6bbf, #70c8f0) !important;
-        color: #ffffff !important;
-        font-family: "Bebas Neue", sans-serif !important;
-        font-size: 1.5rem !important;
-        letter-spacing: 0.12em !important;
-        text-decoration: none !important;
-        border-radius: 12px !important;
-        padding: 18px 48px !important;
-        box-shadow: 0 6px 28px rgba(26,107,191,0.45) !important;
-        border: none !important;
-        width: 100% !important;
-        margin-top: 16px;
-    }
-    [data-testid="stPageLink"] a:hover { opacity: 0.88 !important; }
-    [data-testid="stPageLink"] a p {
-        font-family: "Bebas Neue", sans-serif !important;
-        font-size: 1.5rem !important;
-        letter-spacing: 0.12em !important;
-        color: #ffffff !important;
-    }
-    </style>
-    ''', unsafe_allow_html=True)
-    st.page_link("pages/1_Autorizacion.py", label="\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True)
+st.markdown('''
+<div style="text-align:center;margin-top:16px;">
+    <a href="/1_Autorizacion" target="_self"
+       style="display:inline-block;background:linear-gradient(135deg,#1a6bbf,#70c8f0);
+              color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.5rem;
+              letter-spacing:0.12em;text-decoration:none;border-radius:12px;
+              padding:18px 48px;box-shadow:0 6px 28px rgba(26,107,191,0.45);">
+        &#9997;&#65039;&nbsp; FIRMAR AUTORIZACI&#211;N &nbsp;&#x2192;
+    </a>
+</div>
+''', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
