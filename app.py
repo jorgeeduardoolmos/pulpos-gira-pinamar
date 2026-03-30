@@ -923,7 +923,7 @@ with cta_col:
     }
     </style>
     ''', unsafe_allow_html=True)
-    st.page_link("pages/1_Autorizaci\u00f3n.py", label="\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True)
+    st.page_link("pages/1_Autorizacion.py", label="\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
