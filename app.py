@@ -44,9 +44,9 @@ def logo_html(size="clamp(200px,22vw,300px)", footer=False):
         frame = (
             '<div style="'
             'width:' + size + ';aspect-ratio:1/1;border-radius:50%;'
-            'background:radial-gradient(circle at 40% 35%, #0d2a0d 0%, #050e05 70%);'
-            'box-shadow:0 0 0 3px #4fc84f,0 0 0 6px rgba(0,200,255,0.4),'
-            '0 0 50px rgba(79,200,79,0.55),0 0 100px rgba(0,200,255,0.2),'
+            'background:radial-gradient(circle at 40% 35%, #051830 0%, #020810 70%);'
+            'box-shadow:0 0 0 3px #1a6bbf,0 0 0 6px rgba(112,200,240,0.4),'
+            '0 0 50px rgba(26,107,191,0.6),0 0 100px rgba(112,200,240,0.2),'
             'inset 0 0 30px rgba(0,0,0,0.6);'
             'display:flex;align-items:center;justify-content:center;'
             'animation:float 4s ease-in-out infinite;margin-bottom:24px;overflow:hidden;">'
@@ -76,10 +76,10 @@ html, body, [class*="css"] {
     color: #e8f4e8;
 }
 .stApp {
-    background: #060d06;
+    background: #040810;
     background-image:
-        radial-gradient(ellipse at 10% 0%, rgba(30,185,80,0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 100%, rgba(0,140,220,0.08) 0%, transparent 50%);
+        radial-gradient(ellipse at 10% 0%, rgba(0,100,200,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, rgba(100,180,255,0.07) 0%, transparent 50%);
 }
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
@@ -100,8 +100,8 @@ html, body, [class*="css"] {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,200,79,0.15) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 80% at 50% 100%, rgba(0,160,255,0.12) 0%, transparent 70%);
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(100,180,255,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 50% 100%, rgba(255,255,255,0.06) 0%, transparent 70%);
     pointer-events: none;
 }
 .hero-eyebrow {
@@ -110,14 +110,14 @@ html, body, [class*="css"] {
     font-weight: 600;
     letter-spacing: 0.35em;
     text-transform: uppercase;
-    color: #7bdd7b;
+    color: #70c8f0;
     margin-bottom: 12px;
 }
 .hero-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(5rem, 15vw, 14rem);
     line-height: 0.9;
-    background: linear-gradient(160deg, #a8f07a 0%, #4fc84f 40%, #00c8ff 100%);
+    background: linear-gradient(160deg, #ffffff 0%, #70c8f0 40%, #1a6bbf 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -128,7 +128,7 @@ html, body, [class*="css"] {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(1.8rem, 5vw, 4rem);
     letter-spacing: 0.08em;
-    color: #00c8ff;
+    color: #a8d8f0;
     margin: 8px 0 30px;
 }
 .hero-dates {
@@ -139,15 +139,15 @@ html, body, [class*="css"] {
     margin-top: 20px;
 }
 .date-pill {
-    background: rgba(79,200,79,0.12);
-    border: 1px solid rgba(79,200,79,0.4);
+    background: rgba(100,180,255,0.12);
+    border: 1px solid rgba(100,180,255,0.4);
     border-radius: 100px;
     padding: 10px 28px;
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: 0.1em;
-    color: #a8f07a;
+    color: #a8d8f0;
 }
 .scroll-arrow {
     position: absolute;
@@ -170,7 +170,7 @@ html, body, [class*="css"] {
 /* ── DIVIDER ── */
 .divider {
     height: 2px;
-    background: linear-gradient(90deg, transparent, #4fc84f, #00c8ff, #4fc84f, transparent);
+    background: linear-gradient(90deg, transparent, #1a6bbf, #70c8f0, #ffffff, #70c8f0, #1a6bbf, transparent);
     margin: 0;
     opacity: 0.35;
 }
@@ -183,7 +183,7 @@ html, body, [class*="css"] {
     font-weight: 700;
     letter-spacing: 0.4em;
     text-transform: uppercase;
-    color: #4fc84f;
+    color: #70c8f0;
     margin-bottom: 4px;
 }
 .section-title {
@@ -194,27 +194,27 @@ html, body, [class*="css"] {
     color: #fff;
     margin-bottom: 24px;
 }
-.section-title span { color: #4fc84f; }
+.section-title span { color: #70c8f0; }
 
 /* ── STAT STRIP ── */
 .stat-strip {
     display: flex;
-    border-top: 1px solid rgba(79,200,79,0.15);
-    border-bottom: 1px solid rgba(79,200,79,0.15);
-    background: rgba(79,200,79,0.04);
+    border-top: 1px solid rgba(100,180,255,0.15);
+    border-bottom: 1px solid rgba(100,180,255,0.15);
+    background: rgba(100,180,255,0.04);
 }
 .stat-item {
     flex: 1;
     padding: 24px 10px;
     text-align: center;
-    border-right: 1px solid rgba(79,200,79,0.1);
+    border-right: 1px solid rgba(100,180,255,0.1);
 }
 .stat-item:last-child { border-right: none; }
 .stat-num {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 3rem;
     line-height: 1;
-    color: #4fc84f;
+    color: #70c8f0;
 }
 .stat-label {
     font-family: 'Barlow Condensed', sans-serif;
@@ -228,9 +228,9 @@ html, body, [class*="css"] {
 
 /* ── OBJETIVO ── */
 .objetivo-box {
-    background: linear-gradient(135deg, rgba(79,200,79,0.07) 0%, rgba(0,200,255,0.05) 100%);
-    border: 1px solid rgba(79,200,79,0.2);
-    border-left: 4px solid #4fc84f;
+    background: linear-gradient(135deg, rgba(26,107,191,0.1) 0%, rgba(112,200,240,0.05) 100%);
+    border: 1px solid rgba(100,180,255,0.2);
+    border-left: 4px solid #70c8f0;
     border-radius: 12px;
     padding: 32px 36px;
     font-size: 1.1rem;
@@ -260,7 +260,7 @@ html, body, [class*="css"] {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #a8f07a;
+    color: #a8d8f0;
     margin-bottom: 10px;
 }
 .card-body { font-size: 0.95rem; line-height: 1.7; color: #9eb89e; }
@@ -269,8 +269,8 @@ html, body, [class*="css"] {
 /* ── CHIP ── */
 .chip {
     display: inline-block;
-    background: rgba(79,200,79,0.12);
-    border: 1px solid rgba(79,200,79,0.3);
+    background: rgba(100,180,255,0.12);
+    border: 1px solid rgba(100,180,255,0.3);
     border-radius: 100px;
     padding: 3px 12px;
     font-family: 'Barlow Condensed', sans-serif;
@@ -278,22 +278,22 @@ html, body, [class*="css"] {
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #7bdd7b;
+    color: #a8d8f0;
     margin: 2px;
 }
 .link-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(0,200,255,0.08);
-    border: 1px solid rgba(0,200,255,0.3);
+    background: rgba(100,180,255,0.08);
+    border: 1px solid rgba(100,180,255,0.3);
     border-radius: 8px;
     padding: 8px 16px;
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 0.06em;
-    color: #00c8ff;
+    color: #70c8f0;
     text-decoration: none;
     margin-top: 10px;
 }
@@ -305,14 +305,14 @@ html, body, [class*="css"] {
     position: absolute;
     left: 7px; top: 0; bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, #4fc84f, #00c8ff, #4fc84f);
+    background: linear-gradient(180deg, #1a6bbf, #70c8f0, #ffffff);
     opacity: 0.35;
 }
 .day-header {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
     letter-spacing: 0.08em;
-    color: #4fc84f;
+    color: #70c8f0;
     margin: 0 0 14px;
     position: relative;
 }
@@ -320,7 +320,7 @@ html, body, [class*="css"] {
     content: 'o';
     position: absolute;
     left: -28px;
-    color: #4fc84f;
+    color: #70c8f0;
     font-size: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
@@ -339,7 +339,7 @@ html, body, [class*="css"] {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
     font-size: 0.82rem;
-    color: #00c8ff;
+    color: #a8d8f0;
     letter-spacing: 0.04em;
     white-space: nowrap;
     min-width: 78px;
@@ -349,8 +349,8 @@ html, body, [class*="css"] {
 
 /* ── STAFF CARD ── */
 .staff-card {
-    background: rgba(0,200,255,0.06);
-    border: 1px solid rgba(0,200,255,0.2);
+    background: rgba(26,107,191,0.12);
+    border: 1px solid rgba(100,180,255,0.25);
     border-radius: 12px;
     padding: 16px;
     text-align: center;
@@ -360,7 +360,7 @@ html, body, [class*="css"] {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #00c8ff;
+    color: #a8d8f0;
     letter-spacing: 0.06em;
 }
 
@@ -370,10 +370,10 @@ html, body, [class*="css"] {
     border-collapse: collapse;
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid rgba(79,200,79,0.2);
+    border: 1px solid rgba(100,180,255,0.2);
 }
 .comidas-table th {
-    background: rgba(79,200,79,0.18);
+    background: rgba(26,107,191,0.3);
     padding: 14px 16px;
     text-align: center;
     font-family: 'Barlow Condensed', sans-serif;
@@ -381,8 +381,8 @@ html, body, [class*="css"] {
     font-size: 0.9rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #a8f07a;
-    border: 1px solid rgba(79,200,79,0.15);
+    color: #ffffff;
+    border: 1px solid rgba(100,180,255,0.2);
 }
 .comidas-table td {
     padding: 13px 16px;
@@ -397,25 +397,25 @@ html, body, [class*="css"] {
     font-size: 0.88rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #00c8ff;
-    background: rgba(0,200,255,0.05);
+    color: #a8d8f0;
+    background: rgba(26,107,191,0.08);
     text-align: left;
 }
-.comidas-table td.ok { color: #4fc84f; }
+.comidas-table td.ok { color: #70c8f0; }
 .comidas-table td.na { color: rgba(255,255,255,0.25); }
 .comidas-table tr:nth-child(even) td:not(.row-label) { background: rgba(255,255,255,0.015); }
 
 /* ── CUOTAS ── */
 .cuota-wrap {
-    background: rgba(79,200,79,0.07);
-    border: 1px solid rgba(79,200,79,0.2);
+    background: rgba(26,107,191,0.1);
+    border: 1px solid rgba(100,180,255,0.2);
     border-radius: 12px;
     padding: 16px 10px;
     text-align: center;
 }
 .cuota-wrap.last {
-    border-color: rgba(0,200,255,0.3);
-    background: rgba(0,200,255,0.07);
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.06);
 }
 .cuota-mes {
     font-family: 'Barlow Condensed', sans-serif;
@@ -423,10 +423,10 @@ html, body, [class*="css"] {
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #4fc84f;
+    color: #70c8f0;
     margin-bottom: 6px;
 }
-.cuota-wrap.last .cuota-mes { color: #00c8ff; }
+.cuota-wrap.last .cuota-mes { color: #ffffff; }
 .cuota-monto {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.5rem;
@@ -452,7 +452,7 @@ html, body, [class*="css"] {
     text-transform: uppercase;
     margin-bottom: 14px;
 }
-.llevar-title.si { color: #4fc84f; }
+.llevar-title.si { color: #70c8f0; }
 .llevar-title.no { color: #ff6060; }
 .llevar-item {
     padding: 8px 0;
@@ -497,7 +497,7 @@ html, body, [class*="css"] {
 /* ── FOOTER ── */
 .footer {
     background: rgba(0,0,0,0.5);
-    border-top: 1px solid rgba(79,200,79,0.15);
+    border-top: 1px solid rgba(100,180,255,0.15);
     padding: 40px 5vw;
     text-align: center;
     color: rgba(200,232,200,0.35);
@@ -505,7 +505,7 @@ html, body, [class*="css"] {
     letter-spacing: 0.05em;
     margin-top: 60px;
 }
-.footer strong { color: rgba(79,200,79,0.6); }
+.footer strong { color: rgba(100,180,255,0.6); }
 
 /* Remove extra streamlit column padding */
 [data-testid="column"] { padding: 4px 6px !important; }
@@ -877,7 +877,7 @@ with inner9:
 st.markdown(f"""
 <div class="footer">
     {logo_html(footer=True)}
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(79,200,79,0.5);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(100,180,255,0.6);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
     <div style="margin-top:8px;">División M10 · <strong>Gira Pinamar 2024</strong> · 13 al 15 de Noviembre</div>
     <div style="margin-top:16px;font-size:0.75rem;opacity:0.5;">Con alegría, compromiso y espíritu de equipo. ¡Vamos Pulpos! 💚</div>
     <div style="margin-top:28px;font-size:0.7rem;opacity:0.2;letter-spacing:0.15em;font-family:'Barlow Condensed',sans-serif;">Gestión Lopez 2020–2030</div>
