@@ -649,6 +649,8 @@ with inner3:
             <div class="card-body">
                 <strong>Camarones · Pinamar</strong><br><br>
                 El rival que nos espera con el campo listo y el tercer tiempo preparado.
+                <br><br>
+                <a class="link-btn" href="https://www.google.com/maps/search/?api=1&query=Club+Camarones+Pinamar" target="_blank">🗺️ Ver Club en Maps</a>
             </div>
         </div>""", unsafe_allow_html=True)
     with c2:
