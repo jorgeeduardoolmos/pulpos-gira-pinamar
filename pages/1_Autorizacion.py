@@ -1,6 +1,10 @@
 import streamlit as st
 import streamlit.components.v1 as components
-from datetime import date
+from datetime import date, datetime
+
+import gspread
+
+TARGET_SPREADSHEET_ID = "1X6XmgGcOZNMJRjoQvgQk9tLRSx7uVZ2w4gAxZcwt18w"
 
 st.set_page_config(
     page_title="Autorización Gira Pinamar · Pulpos",
@@ -8,6 +12,30 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+
+def append_authorization_to_sheet(payload: dict) -> None:
+    """Append one authorization row to Google Sheets using Streamlit secrets."""
+    service_account_info = st.secrets["gcp_service_account"]
+
+    gc = gspread.service_account_from_dict(dict(service_account_info))
+    sh = gc.open_by_key(TARGET_SPREADSHEET_ID)
+    ws = sh.get_worksheet(0)
+    ws.append_row([
+        payload["fecha_envio"],
+        payload["jugador_nombre"],
+        payload["jugador_apellido"],
+        payload["jugador_dni"],
+        payload["jugador_domicilio"],
+        payload["jugador_localidad"],
+        payload["jugador_tel"],
+        payload["padre_nombre"],
+        payload["padre_apellido"],
+        payload["padre_dni"],
+        payload["madre_nombre"],
+        payload["madre_apellido"],
+        payload["madre_dni"],
+    ])
 
 st.markdown("""
 <style>
@@ -388,11 +416,28 @@ if not st.session_state.submitted:
     )
 
     if enviar and todo_completo:
-        # ── Acá va la integración con base de datos ──
-        # Por ahora guardamos en session_state
-        st.session_state.submitted = True
-        st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
-        st.rerun()
+        payload = {
+            "fecha_envio": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "jugador_nombre": jugador_nombre.strip(),
+            "jugador_apellido": jugador_apellido.strip(),
+            "jugador_dni": jugador_dni.strip(),
+            "jugador_domicilio": jugador_domicilio.strip(),
+            "jugador_localidad": jugador_localidad.strip(),
+            "jugador_tel": jugador_tel.strip(),
+            "padre_nombre": padre_nombre.strip(),
+            "padre_apellido": padre_apellido.strip(),
+            "padre_dni": padre_dni.strip(),
+            "madre_nombre": madre_nombre.strip(),
+            "madre_apellido": madre_apellido.strip(),
+            "madre_dni": madre_dni.strip(),
+        }
+        try:
+            append_authorization_to_sheet(payload)
+            st.session_state.submitted = True
+            st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
+            st.rerun()
+        except Exception:
+            st.error("No se pudo guardar la autorización en Google Sheets. Verificá las credenciales y la planilla.")
 
 # ── PANTALLA DE ÉXITO ─────────────────────────────────────────────────────────
 else:
