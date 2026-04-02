@@ -453,12 +453,13 @@ html, body, [class*="css"] {
     background: rgba(255,80,80,0.03);
 }
 .llevar-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    line-height: 1;
+    margin-bottom: 18px;
 }
 .llevar-title.si { color: #70c8f0; }
 .llevar-title.no { color: #ff6060; }
