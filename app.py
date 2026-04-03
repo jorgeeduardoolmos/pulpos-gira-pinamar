@@ -54,14 +54,24 @@ def staff_photo_data_uri(filename: str) -> str | None:
     return f"data:{mime};base64,{b64}"
 
 
-def staff_card_html(icon: str, name: str, photo_file: str | None, object_position: str) -> str:
+def staff_card_html(
+    icon: str,
+    name: str,
+    photo_file: str | None,
+    object_position: str,
+    photo_translate_y: str = "0%",
+    transform_origin: str = "50% 28%",
+) -> str:
     """Circular avatar + icon beside name (emoji only in name row, not inside circle)."""
     data_uri = staff_photo_data_uri(photo_file) if photo_file else None
     if data_uri:
         avatar = (
             f'<div class="staff-avatar-wrap staff-avatar-wrap--photo">'
             f'<img src="{data_uri}" alt="" class="staff-photo-img" '
-            f'style="object-position:{object_position};" />'
+            f'style="object-position:{object_position};'
+            f"transform:translateY({photo_translate_y}) scale(1.52);"
+            f"transform-origin:{transform_origin};"
+            f'" />'
             f"</div>"
         )
     else:
@@ -419,10 +429,6 @@ html, body, [class*="css"] {
     object-position: center 20%;
     display: block;
 }
-.staff-avatar-wrap--photo .staff-photo-img {
-    transform: translateY(-15%) scale(1.52);
-    transform-origin: 41% 30%;
-}
 .staff-avatar-fallback {
     opacity: 0.85;
 }
@@ -691,26 +697,24 @@ with inner:
         </div>""", unsafe_allow_html=True)
 
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
-# photo_file: PNG/JPG en utils/staff/ (mismo nombre). object_position acerca el encuadre a la cara en fotos anchas.
+# Cada fila: icono, nombre, foto en utils/staff/ o None, object-position, translateY, transform-origin
 staff = [
-    ("👑", "Ote", "ote.png", "41% 28%"),
-    ("🎖️", "Ale", None, "center 20%"),
-    ("🧠", "Mati", None, "center 20%"),
-    ("🏉", "Tucu", None, "center 20%"),
-    ("🏉", "Fran", None, "center 20%"),
-    ("🆕", "Cris", None, "center 20%"),
-    ("📋", "Marian", None, "center 20%"),
-    ("📋", "Ema", None, "center 20%"),
+    ("👑", "Ote", "ote.png", "41% 28%", "-15%", "41% 30%"),
+    ("🎖️", "Ale", "ale.png", "50% 20%", "-6%", "50% 26%"),
+    ("🧠", "Mati", None, "center 20%", "0%", "50% 28%"),
+    ("🏉", "Tucu", None, "center 20%", "0%", "50% 28%"),
+    ("🏉", "Fran", None, "center 20%", "0%", "50% 28%"),
+    ("🆕", "Cris", None, "center 20%", "0%", "50% 28%"),
+    ("📋", "Marian", None, "center 20%", "0%", "50% 28%"),
+    ("📋", "Ema", None, "center 20%", "0%", "50% 28%"),
 ]
 _, inner2, _ = st.columns([1, 10, 1])
 with inner2:
     cols = st.columns(8)
     for col, row in zip(cols, staff):
-        icon, name = row[0], row[1]
-        photo_file = row[2]
-        pos = row[3]
+        icon, name, photo_file, pos, ty, origin = row
         with col:
-            st.markdown(staff_card_html(icon, name, photo_file, pos), unsafe_allow_html=True)
+            st.markdown(staff_card_html(icon, name, photo_file, pos, ty, origin), unsafe_allow_html=True)
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
