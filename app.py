@@ -54,6 +54,17 @@ def staff_photo_data_uri(filename: str) -> str | None:
     return f"data:{mime};base64,{b64}"
 
 
+def utils_data_uri(relative_to_utils: str) -> str | None:
+    """PNG/JPG bajo utils/ (ej. jugadores_equipo.png)."""
+    p = Path(__file__).parent / "utils" / relative_to_utils
+    if not p.exists():
+        return None
+    suf = p.suffix.lower()
+    mime = "image/jpeg" if suf in (".jpg", ".jpeg") else "image/png"
+    b64 = base64.b64encode(p.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
+
+
 def staff_card_html(
     icon: str,
     name: str,
@@ -315,6 +326,31 @@ html, body, [class*="css"] {
 }
 .card-body { font-size: 0.95rem; line-height: 1.7; color: #9eb89e; }
 .card-body strong { color: #c8e8c8; }
+
+/* Foto panorámica del equipo — entra completa sin recortar lados */
+.card--jugadores .jugadores-photo-wrap {
+    width: 100%;
+    margin: 0 0 14px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0, 8, 16, 0.5);
+    border: 1px solid rgba(100, 180, 255, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    box-sizing: border-box;
+    min-height: 0;
+    flex-shrink: 0;
+}
+.card--jugadores .jugadores-photo-wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: clamp(72px, 18vw, 118px);
+    object-fit: contain;
+    object-position: center center;
+}
 
 /* ── CHIP ── */
 .chip {
@@ -674,18 +710,31 @@ st.markdown("""
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown('<div class="sec-wrap"><div class="section-title"><span>Integrantes</span></div></div>', unsafe_allow_html=True)
 
+_jugadores_equipo_uri = utils_data_uri("jugadores_equipo.png")
+_jugadores_foto_html = ""
+if _jugadores_equipo_uri:
+    _jugadores_foto_html = (
+        '<div class="jugadores-photo-wrap">'
+        '<img src="' + _jugadores_equipo_uri + '" alt="Los Pulpos, equipo M10" loading="lazy" decoding="async"/>'
+        "</div>"
+    )
+
 _, inner, _ = st.columns([1, 10, 1])
 with inner:
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown("""<div class="card">
+        st.markdown(
+            f"""<div class="card card--jugadores">
             <div class="card-icon">🐙</div>
             <div class="card-title">Jugadores</div>
+            {_jugadores_foto_html}
             <div class="card-body">
                 <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#4fc84f;">34</span><br>
                 Jugadores del Liceo Naval M10
             </div>
-        </div>""", unsafe_allow_html=True)
+        </div>""",
+            unsafe_allow_html=True,
+        )
     with c2:
         st.markdown("""<div class="card">
             <div class="card-icon">🎽</div>
@@ -702,7 +751,7 @@ staff = [
     ("👑", "Ote", "ote.png", "41% 28%", "-15%", "41% 30%"),
     ("🎖️", "Ale", "ale.png", "50% 20%", "-6%", "50% 26%"),
     ("🧠", "Mati", "mati.png", "50% 18%", "-5%", "50% 26%"),
-    ("🏉", "Tucu", None, "center 20%", "0%", "50% 28%"),
+    ("🏉", "Tucu", "tucu.png", "48% 22%", "-10%", "50% 28%"),
     ("🏉", "Fran", None, "center 20%", "0%", "50% 28%"),
     ("🆕", "Cris", None, "center 20%", "0%", "50% 28%"),
     ("📋", "Marian", None, "center 20%", "0%", "50% 28%"),
