@@ -749,7 +749,7 @@ st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</
 # Cada fila: icono, nombre, foto en utils/staff/ o None, object-position, translateY, transform-origin
 staff = [
     ("👑", "Ote", "ote.png", "41% 28%", "-15%", "41% 30%"),
-    ("🎖️", "Ale", "ale.png", "50% 6%", "-24%", "50% 42%"),
+    ("🎖️", "Ale", "ale.png", "50% 0%", "-38%", "50% 52%"),
     ("🧠", "Mati", "mati.png", "50% 18%", "-5%", "50% 26%"),
     ("🏉", "Tucu", "tucu.png", "center 24%", "-4%", "50% 30%"),
     ("🏉", "Fran", None, "center 20%", "0%", "50% 28%"),
