@@ -701,7 +701,7 @@ st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</
 staff = [
     ("👑", "Ote", "ote.png", "41% 28%", "-15%", "41% 30%"),
     ("🎖️", "Ale", "ale.png", "50% 20%", "-6%", "50% 26%"),
-    ("🧠", "Mati", None, "center 20%", "0%", "50% 28%"),
+    ("🧠", "Mati", "mati.png", "50% 18%", "-5%", "50% 26%"),
     ("🏉", "Tucu", None, "center 20%", "0%", "50% 28%"),
     ("🏉", "Fran", None, "center 20%", "0%", "50% 28%"),
     ("🆕", "Cris", None, "center 20%", "0%", "50% 28%"),
