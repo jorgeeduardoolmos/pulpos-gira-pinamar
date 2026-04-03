@@ -420,8 +420,8 @@ html, body, [class*="css"] {
     display: block;
 }
 .staff-avatar-wrap--photo .staff-photo-img {
-    transform: scale(1.72);
-    transform-origin: 44% 19%;
+    transform: scale(1.52);
+    transform-origin: 41% 30%;
 }
 .staff-avatar-fallback {
     opacity: 0.85;
@@ -693,7 +693,7 @@ with inner:
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
 # photo_file: PNG/JPG en utils/staff/ (mismo nombre). object_position acerca el encuadre a la cara en fotos anchas.
 staff = [
-    ("👑", "Ote", "ote.png", "44% 9%"),
+    ("👑", "Ote", "ote.png", "41% 28%"),
     ("🎖️", "Ale", None, "center 20%"),
     ("🧠", "Mati", None, "center 20%"),
     ("🏉", "Tucu", None, "center 20%"),
