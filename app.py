@@ -43,6 +43,35 @@ def get_logo_b64():
 
 LOGO_B64 = get_logo_b64()
 
+
+def staff_photo_data_uri(filename: str) -> str | None:
+    p = Path(__file__).parent / "utils" / "staff" / filename
+    if not p.exists():
+        return None
+    suf = p.suffix.lower()
+    mime = "image/jpeg" if suf in (".jpg", ".jpeg") else "image/png"
+    b64 = base64.b64encode(p.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
+
+
+def staff_card_html(icon: str, name: str, photo_file: str | None, object_position: str) -> str:
+    """Circular avatar: real photo with face-focused crop, or emoji fallback."""
+    data_uri = staff_photo_data_uri(photo_file) if photo_file else None
+    if data_uri:
+        avatar = (
+            f'<div class="staff-avatar-wrap">'
+            f'<img src="{data_uri}" alt="{name}" '
+            f'style="object-position:{object_position};" />'
+            f"</div>"
+        )
+    else:
+        avatar = (
+            f'<div class="staff-avatar-wrap staff-avatar-fallback" aria-hidden="true">'
+            f'<span class="staff-emoji">{icon}</span></div>'
+        )
+    return f'<div class="staff-card">{avatar}<div class="staff-name">{name}</div></div>'
+
+
 def logo_html(size="clamp(200px,22vw,300px)", footer=False):
     if footer:
         if LOGO_B64:
@@ -360,13 +389,40 @@ html, body, [class*="css"] {
     background: rgba(26,107,191,0.12);
     border: 1px solid rgba(100,180,255,0.25);
     border-radius: 12px;
-    padding: 16px;
+    padding: 16px 12px 14px;
     text-align: center;
     margin-bottom: 4px;
 }
+.staff-avatar-wrap {
+    width: clamp(68px, 9vw, 86px);
+    height: clamp(68px, 9vw, 86px);
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(112,200,240,0.45);
+    box-shadow: 0 4px 22px rgba(26,107,191,0.35);
+    background: radial-gradient(circle at 40% 30%, #1a3a5c 0%, #071018 100%);
+}
+.staff-avatar-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+}
+.staff-avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.staff-emoji {
+    font-size: clamp(1.9rem, 4.5vw, 2.35rem);
+    line-height: 1;
+    opacity: 0.92;
+}
 .staff-name {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #a8d8f0;
     letter-spacing: 0.06em;
@@ -615,22 +671,26 @@ with inner:
         </div>""", unsafe_allow_html=True)
 
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
+# photo_file: PNG/JPG en utils/staff/ (mismo nombre). object_position acerca el encuadre a la cara en fotos anchas.
 staff = [
-    ("👑", "Ote"),
-    ("🎖️", "Ale"),
-    ("🧠", "Mati"),
-    ("🏉", "Tucu"),
-    ("🏉", "Fran"),
-    ("🆕", "Cris"),
-    ("📋", "Marian"),
-    ("📋", "Ema"),
+    ("👑", "Ote", "ote.png", "28% 14%"),
+    ("🎖️", "Ale", None, "center 20%"),
+    ("🧠", "Mati", None, "center 20%"),
+    ("🏉", "Tucu", None, "center 20%"),
+    ("🏉", "Fran", None, "center 20%"),
+    ("🆕", "Cris", None, "center 20%"),
+    ("📋", "Marian", None, "center 20%"),
+    ("📋", "Ema", None, "center 20%"),
 ]
 _, inner2, _ = st.columns([1, 10, 1])
 with inner2:
     cols = st.columns(8)
-    for col, (icon, name) in zip(cols, staff):
+    for col, row in zip(cols, staff):
+        icon, name = row[0], row[1]
+        photo_file = row[2]
+        pos = row[3]
         with col:
-            st.markdown(f'<div class="staff-card"><div class="staff-name">{icon} {name}</div></div>', unsafe_allow_html=True)
+            st.markdown(staff_card_html(icon, name, photo_file, pos), unsafe_allow_html=True)
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
