@@ -72,6 +72,7 @@ def staff_card_html(
     object_position: str,
     photo_translate_y: str = "0%",
     transform_origin: str = "50% 28%",
+    photo_scale: float = 1.52,
 ) -> str:
     """Circular avatar + icon beside name (emoji only in name row, not inside circle)."""
     data_uri = staff_photo_data_uri(photo_file) if photo_file else None
@@ -80,7 +81,7 @@ def staff_card_html(
             f'<div class="staff-avatar-wrap staff-avatar-wrap--photo">'
             f'<img src="{data_uri}" alt="" class="staff-photo-img" '
             f'style="object-position:{object_position};'
-            f"transform:translateY({photo_translate_y}) scale(1.52);"
+            f"transform:translateY({photo_translate_y}) scale({photo_scale});"
             f"transform-origin:{transform_origin};"
             f'" />'
             f"</div>"
@@ -746,24 +747,27 @@ with inner:
         </div>""", unsafe_allow_html=True)
 
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
-# Cada fila: icono, nombre, foto en utils/staff/ o None, object-position, translateY, transform-origin
+# Cada fila: …, transform-origin, scale (1.52 default; menor = más alejado)
 staff = [
-    ("👑", "Ote", "ote.png", "41% 28%", "-15%", "41% 30%"),
-    ("🎖️", "Ale", "ale.png", "50% 0%", "-38%", "50% 52%"),
-    ("🧠", "Mati", "mati.png", "50% 18%", "-5%", "50% 26%"),
-    ("🏉", "Tucu", "tucu.png", "50% 55%", "38%", "50% 45%"),
-    ("🏉", "Fran", "fran.png", "50% 26%", "-4%", "50% 32%"),
-    ("🆕", "Cris", None, "center 20%", "0%", "50% 28%"),
-    ("📋", "Marian", None, "center 20%", "0%", "50% 28%"),
-    ("📋", "Ema", None, "center 20%", "0%", "50% 28%"),
+    ("👑", "Ote", "ote.png", "41% 28%", "-15%", "41% 30%", 1.52),
+    ("🎖️", "Ale", "ale.png", "50% 0%", "-38%", "50% 52%", 1.52),
+    ("🧠", "Mati", "mati.png", "50% 18%", "-5%", "50% 26%", 1.52),
+    ("🏉", "Tucu", "tucu.png", "50% 55%", "38%", "50% 45%", 1.52),
+    ("🏉", "Fran", "fran.png", "50% 26%", "-4%", "50% 32%", 1.12),
+    ("🆕", "Cris", None, "center 20%", "0%", "50% 28%", 1.52),
+    ("📋", "Marian", None, "center 20%", "0%", "50% 28%", 1.52),
+    ("📋", "Ema", None, "center 20%", "0%", "50% 28%", 1.52),
 ]
 _, inner2, _ = st.columns([1, 10, 1])
 with inner2:
     cols = st.columns(8)
     for col, row in zip(cols, staff):
-        icon, name, photo_file, pos, ty, origin = row
+        icon, name, photo_file, pos, ty, origin, scale = row
         with col:
-            st.markdown(staff_card_html(icon, name, photo_file, pos, ty, origin), unsafe_allow_html=True)
+            st.markdown(
+                staff_card_html(icon, name, photo_file, pos, ty, origin, scale),
+                unsafe_allow_html=True,
+            )
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
