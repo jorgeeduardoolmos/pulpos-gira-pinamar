@@ -398,18 +398,39 @@ html, body, [class*="css"] {
 }
 .event-desc { font-size: 0.92rem; color: #b0c8b0; line-height: 1.5; }
 
+/* ── STAFF GRID (evita solapamiento: columnas Streamlit quedan más angostas que el avatar) ── */
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+@media (min-width: 720px) {
+    .staff-grid {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+}
+
 /* ── STAFF CARD ── */
 .staff-card {
     background: rgba(26,107,191,0.12);
     border: 1px solid rgba(100,180,255,0.25);
     border-radius: 12px;
-    padding: 16px 12px 14px;
+    padding: 16px 8px 14px;
     text-align: center;
-    margin-bottom: 4px;
+    margin-bottom: 0;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 .staff-avatar-wrap {
-    width: clamp(72px, 9vw, 88px);
-    height: clamp(72px, 9vw, 88px);
+    width: min(100%, 88px);
+    aspect-ratio: 1;
+    height: auto;
+    max-width: 100%;
     margin: 0 auto 12px;
     border-radius: 50%;
     overflow: hidden;
@@ -418,8 +439,10 @@ html, body, [class*="css"] {
     background: radial-gradient(circle at 40% 30%, #1a3a5c 0%, #071018 100%);
 }
 .staff-avatar-wrap--photo {
-    width: clamp(100px, 13vw, 132px);
-    height: clamp(100px, 13vw, 132px);
+    width: min(100%, 118px);
+    aspect-ratio: 1;
+    height: auto;
+    max-width: 100%;
     margin-bottom: 10px;
 }
 .staff-avatar-wrap img,
@@ -453,6 +476,9 @@ html, body, [class*="css"] {
 }
 .staff-name-text {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 /* ── COMIDAS TABLE ── */
@@ -711,14 +737,14 @@ staff = [
 ]
 _, inner2, _ = st.columns([1, 10, 1])
 with inner2:
-    cols = st.columns(8)
-    for col, row in zip(cols, staff):
-        icon, name, photo_file, pos, ty, origin, scale = row
-        with col:
-            st.markdown(
-                staff_card_html(icon, name, photo_file, pos, ty, origin, scale),
-                unsafe_allow_html=True,
-            )
+    _staff_cells = "".join(
+        staff_card_html(icon, name, photo_file, pos, ty, origin, scale)
+        for (icon, name, photo_file, pos, ty, origin, scale) in staff
+    )
+    st.markdown(
+        f'<div class="staff-grid">{_staff_cells}</div>',
+        unsafe_allow_html=True,
+    )
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
