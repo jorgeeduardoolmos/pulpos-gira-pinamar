@@ -407,8 +407,8 @@ html, body, [class*="css"] {
     background: radial-gradient(circle at 40% 30%, #1a3a5c 0%, #071018 100%);
 }
 .staff-avatar-wrap--photo {
-    width: clamp(114px, 15vw, 150px);
-    height: clamp(114px, 15vw, 150px);
+    width: clamp(100px, 13vw, 132px);
+    height: clamp(100px, 13vw, 132px);
     margin-bottom: 10px;
 }
 .staff-avatar-wrap img,
@@ -420,8 +420,8 @@ html, body, [class*="css"] {
     display: block;
 }
 .staff-avatar-wrap--photo .staff-photo-img {
-    transform: scale(1.66);
-    transform-origin: 46% 28%;
+    transform: scale(1.52);
+    transform-origin: 41% 30%;
 }
 .staff-avatar-fallback {
     opacity: 0.85;
@@ -693,7 +693,7 @@ with inner:
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
 # photo_file: PNG/JPG en utils/staff/ (mismo nombre). object_position acerca el encuadre a la cara en fotos anchas.
 staff = [
-    ("👑", "Ote", "ote.png", "46% 26%"),
+    ("👑", "Ote", "ote.png", "41% 28%"),
     ("🎖️", "Ale", None, "center 20%"),
     ("🧠", "Mati", None, "center 20%"),
     ("🏉", "Tucu", None, "center 20%"),
