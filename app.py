@@ -55,21 +55,24 @@ def staff_photo_data_uri(filename: str) -> str | None:
 
 
 def staff_card_html(icon: str, name: str, photo_file: str | None, object_position: str) -> str:
-    """Circular avatar: real photo with face-focused crop, or emoji fallback."""
+    """Circular avatar + icon beside name (emoji only in name row, not inside circle)."""
     data_uri = staff_photo_data_uri(photo_file) if photo_file else None
     if data_uri:
         avatar = (
-            f'<div class="staff-avatar-wrap">'
-            f'<img src="{data_uri}" alt="{name}" '
+            f'<div class="staff-avatar-wrap staff-avatar-wrap--photo">'
+            f'<img src="{data_uri}" alt="" class="staff-photo-img" '
             f'style="object-position:{object_position};" />'
             f"</div>"
         )
     else:
-        avatar = (
-            f'<div class="staff-avatar-wrap staff-avatar-fallback" aria-hidden="true">'
-            f'<span class="staff-emoji">{icon}</span></div>'
-        )
-    return f'<div class="staff-card">{avatar}<div class="staff-name">{name}</div></div>'
+        avatar = '<div class="staff-avatar-wrap staff-avatar-fallback" aria-hidden="true"></div>'
+    name_row = (
+        f'<div class="staff-name">'
+        f'<span class="staff-emoji-inline">{icon}</span>'
+        f'<span class="staff-name-text">{name}</span>'
+        f"</div>"
+    )
+    return f'<div class="staff-card">{avatar}{name_row}</div>'
 
 
 def logo_html(size="clamp(200px,22vw,300px)", footer=False):
@@ -394,8 +397,8 @@ html, body, [class*="css"] {
     margin-bottom: 4px;
 }
 .staff-avatar-wrap {
-    width: clamp(68px, 9vw, 86px);
-    height: clamp(68px, 9vw, 86px);
+    width: clamp(72px, 9vw, 88px);
+    height: clamp(72px, 9vw, 88px);
     margin: 0 auto 12px;
     border-radius: 50%;
     overflow: hidden;
@@ -403,22 +406,25 @@ html, body, [class*="css"] {
     box-shadow: 0 4px 22px rgba(26,107,191,0.35);
     background: radial-gradient(circle at 40% 30%, #1a3a5c 0%, #071018 100%);
 }
-.staff-avatar-wrap img {
+.staff-avatar-wrap--photo {
+    width: clamp(100px, 13vw, 132px);
+    height: clamp(100px, 13vw, 132px);
+    margin-bottom: 10px;
+}
+.staff-avatar-wrap img,
+.staff-photo-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
     display: block;
 }
-.staff-avatar-fallback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.staff-avatar-wrap--photo .staff-photo-img {
+    transform: scale(1.18);
+    transform-origin: 30% 22%;
 }
-.staff-emoji {
-    font-size: clamp(1.9rem, 4.5vw, 2.35rem);
-    line-height: 1;
-    opacity: 0.92;
+.staff-avatar-fallback {
+    opacity: 0.85;
 }
 .staff-name {
     font-family: 'Barlow Condensed', sans-serif;
@@ -426,6 +432,20 @@ html, body, [class*="css"] {
     font-weight: 700;
     color: #a8d8f0;
     letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    line-height: 1.2;
+}
+.staff-emoji-inline {
+    font-size: 1.15rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.staff-name-text {
+    white-space: nowrap;
 }
 
 /* ── COMIDAS TABLE ── */
@@ -673,7 +693,7 @@ with inner:
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
 # photo_file: PNG/JPG en utils/staff/ (mismo nombre). object_position acerca el encuadre a la cara en fotos anchas.
 staff = [
-    ("👑", "Ote", "ote.png", "28% 14%"),
+    ("👑", "Ote", "ote.png", "26% 10%"),
     ("🎖️", "Ale", None, "center 20%"),
     ("🧠", "Mati", None, "center 20%"),
     ("🏉", "Tucu", None, "center 20%"),
