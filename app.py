@@ -420,7 +420,7 @@ html, body, [class*="css"] {
     display: block;
 }
 .staff-avatar-wrap--photo .staff-photo-img {
-    transform: translateY(-8%) scale(1.52);
+    transform: translateY(-15%) scale(1.52);
     transform-origin: 41% 30%;
 }
 .staff-avatar-fallback {
