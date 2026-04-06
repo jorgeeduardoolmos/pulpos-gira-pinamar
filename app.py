@@ -726,12 +726,12 @@ with inner:
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
 # Cada fila: …, transform-origin, scale (1.52 default; menor = más alejado)
 staff = [
-    ("👑", "Ote", "ote.png", "41% 28%", "-22%", "41% 30%", 1.95),
+    ("👑", "Ote", "ote.png", "41% 28%", "-30%", "41% 30%", 1.95),
     ("🎖️", "Ale", "ale.png", "50% 0%", "-38%", "50% 52%", 1.52),
     ("🧠", "Mati", "mati.png", "50% 18%", "-5%", "50% 26%", 1.52),
     ("🏉", "Tucu", "tucu.png", "12% 25%", "-10%", "12% 30%", 2.2),
     ("🏉", "Fran", "fran.png", "50% 26%", "-4%", "50% 32%", 1.12),
-    ("🆕", "Cris", "cris.png", "50% 41%", "-8%", "50% 41%", 1.88),
+    ("🆕", "Cris", "cris.png", "50% 41%", "-8%", "50% 41%", 2.08),
     ("📋", "Marian", "marian.png", "50% 24%", "-4%", "50% 30%", 1.52),
     ("📋", "Ema", "ema.png", "50% 22%", "-4%", "50% 30%", 1.52),
 ]
