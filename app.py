@@ -690,6 +690,8 @@ st.markdown("""
     <div class="objetivo-box">
         <p>🏉 Fortalecer la amistad, el compañerismo y el espíritu de equipo a través del juego, la convivencia y el respeto.</p>
         <p>🌊 Vivir juntos una experiencia inolvidable dentro y fuera de la cancha, aprendiendo a compartir, cuidar al otro y disfrutar en grupo, con alegría y compromiso.</p>
+        <p>🤝 Acompañar a los chicos en una experiencia que les permita ganar confianza, autonomía y seguridad, fortaleciendo el vínculo con sus compañeros, con el staff y con la vida de equipo.</p>
+        <p>✨ Porque la gira no es solo un viaje: es una oportunidad para crecer, compartir y seguir construyendo recuerdos juntos.</p>        
     </div>
 </div>
 <div style="height:50px;"></div>
