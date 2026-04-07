@@ -3,7 +3,6 @@ import base64
 from pathlib import Path
 
 # ─── Authorization page embedded ────────────────────────────────────────────
-import streamlit.components.v1 as _components
 from datetime import date as _date, datetime as _datetime
 
 def render_autorizacion():
@@ -216,17 +215,7 @@ def render_autorizacion():
             return False
     
     # ── Header ─────────────────────────────────────────────────────────────────────
-    _components.html("""
-    <div style="font-family:'Barlow Condensed',sans-serif;padding:8px 0 4px;">
-        <a onclick="window.top.location.href='https://pulpos-gira-pinamar.streamlit.app/'"
-           style="cursor:pointer;color:rgba(168,216,240,0.6);font-size:0.9rem;font-weight:600;
-                  letter-spacing:0.12em;text-decoration:none;text-transform:uppercase;
-                  border:1px solid rgba(100,180,255,0.25);border-radius:8px;padding:6px 18px;
-                  display:inline-block;">
-            ← Volver a la Gira
-        </a>
-    </div>
-    """, height=50)
+    st.markdown('<a href="https://pulpos-gira-pinamar.streamlit.app" target="_top" style="color:rgba(168,216,240,0.5);font-family:Barlow Condensed,sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.12em;text-decoration:none;text-transform:uppercase;border:1px solid rgba(100,180,255,0.2);border-radius:8px;padding:6px 16px;display:inline-block;margin-bottom:16px;">← Volver a la Gira</a>', unsafe_allow_html=True)
     
     st.markdown("""
     <div class="page-header">
