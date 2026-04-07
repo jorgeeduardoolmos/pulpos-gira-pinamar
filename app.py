@@ -200,7 +200,16 @@ def render_autorizacion():
                 datos["madre_apellido"],
                 datos["madre_dni"],
             ]
+            # Debug info
+            sheet_id_usado = st.secrets["SHEET_ID"]
+            todas_las_filas = ws.get_all_values()
+            st.info(f"🔍 Debug: Sheet ID={sheet_id_usado} | Filas actuales={len(todas_las_filas)} | Solapa={ws.title}")
+            
             ws.append_row(fila, value_input_option="USER_ENTERED")
+            
+            # Verify it was written
+            todas_despues = ws.get_all_values()
+            st.info(f"✅ Debug: Filas después={len(todas_despues)}")
             return True
         except Exception as e:
             st.error(f"❌ Error al guardar: {e}")
