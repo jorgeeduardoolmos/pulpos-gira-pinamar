@@ -216,7 +216,7 @@ def render_autorizacion():
             return False
     
     # ── Header ─────────────────────────────────────────────────────────────────────
-    components.html("""
+    _components.html("""
     <div style="font-family:'Barlow Condensed',sans-serif;padding:8px 0 4px;">
         <a onclick="window.top.location.href='https://pulpos-gira-pinamar.streamlit.app/'"
            style="cursor:pointer;color:rgba(168,216,240,0.6);font-size:0.9rem;font-weight:600;
@@ -1237,7 +1237,7 @@ with inner6:
             <div class="card-icon">💰</div>
             <div class="card-title">Costo total por jugador</div>
             <div class="card-body">
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#a8f07a;">$650.000</span><br>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#a8f07a;">$635.000</span><br>
                 <em style="font-size:0.85rem;color:#7a9a7a;">Si viajan menos de 30 jugadores, la diferencia se distribuye entre todos los pasajeros.</em>
             </div>
         </div>""", unsafe_allow_html=True)
@@ -1247,7 +1247,7 @@ with inner6:
             <div class="card-title">Modalidad de Pago</div>
             <div class="card-body">
                 <strong>7 cuotas</strong><br>
-                6 cuotas de $100.000 + 1 cuota final de $50.000
+                6 cuotas de $100.000 + 1 cuota final de $35.000
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -1255,7 +1255,7 @@ st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
 
 cuotas = [("Mayo","$100K",False),("Junio","$100K",False),("Julio","$100K",False),
           ("Agosto","$100K",False),("Septiembre","$100K",False),("Octubre","$100K",False),
-          ("Noviembre","$50K",True)]
+          ("Noviembre","$35K",True)]
 
 _, inner7, _ = st.columns([1, 10, 1])
 with inner7:
