@@ -219,6 +219,15 @@ def guardar_en_sheets(datos: dict) -> bool:
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="page-header">
+    <div style="margin-bottom:16px;">
+        <a href="https://pulpos-gira-pinamar.streamlit.app" 
+           style="color:rgba(168,216,240,0.5);font-family:'Barlow Condensed',sans-serif;
+                  font-size:0.9rem;font-weight:600;letter-spacing:0.12em;text-decoration:none;
+                  border:1px solid rgba(100,180,255,0.2);border-radius:8px;padding:6px 16px;
+                  text-transform:uppercase;transition:color 0.2s;">
+            ← Volver a la Gira
+        </a>
+    </div>
     <h1>🐙 Autorización <span>Gira Pinamar</span></h1>
     <p>División M10 · Liceo Naval · Noviembre 2026</p>
 </div>
@@ -251,10 +260,6 @@ if "submitted" not in st.session_state:
 # ══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.submitted:
 
-    # Back button — top of form
-    if st.button("← Volver a la Gira", key="back_top"):
-        st.switch_page("app.py")
-    st.markdown("---")
     st.markdown('<div class="req-note">* Todos los campos son obligatorios</div>', unsafe_allow_html=True)
 
     # ── JUGADOR ───────────────────────────────────────────────────────────────
@@ -444,6 +449,14 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← VOLVER A LA GIRA", key="back_success", use_container_width=False):
-        st.session_state.submitted = False
-        st.switch_page("app.py")
+    st.markdown("""
+    <div style="text-align:center;margin-top:24px;">
+        <a href="https://pulpos-gira-pinamar.streamlit.app"
+           style="display:inline-block;background:linear-gradient(135deg,#1a6bbf,#70c8f0);
+                  color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;
+                  letter-spacing:0.12em;text-decoration:none;border-radius:12px;
+                  padding:14px 36px;box-shadow:0 4px 20px rgba(26,107,191,0.4);">
+            ← VOLVER A LA GIRA
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
