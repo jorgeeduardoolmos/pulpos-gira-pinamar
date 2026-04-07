@@ -224,25 +224,22 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown('''<style>
-div[data-testid="stButton"].back-btn button {
+st.markdown('''
+<style>
+div[data-testid="stButton"]:has(button[kind="secondary"]) button {
     background: transparent !important;
-    border: 1px solid rgba(100,180,255,0.25) !important;
+    border: 1px solid rgba(100,180,255,0.3) !important;
     color: rgba(168,216,240,0.6) !important;
     font-family: "Barlow Condensed", sans-serif !important;
-    font-size: 0.88rem !important;
-    letter-spacing: 0.12em !important;
-    padding: 6px 16px !important;
-    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.1em !important;
     width: auto !important;
-    margin-bottom: 16px;
+    padding: 6px 20px !important;
+    margin-bottom: 8px;
 }
-div[data-testid="stButton"].back-btn button:hover {
-    border-color: #70c8f0 !important;
-    color: #70c8f0 !important;
-}
-</style>''', unsafe_allow_html=True)
-if st.button("← VOLVER A LA GIRA", key="back_top"):
+</style>
+''', unsafe_allow_html=True)
+if st.button("← VOLVER A LA GIRA", key="back_top", type="secondary"):
     st.switch_page("app.py")
 
 # ── Session state ──────────────────────────────────────────────────────────────
@@ -254,6 +251,10 @@ if "submitted" not in st.session_state:
 # ══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.submitted:
 
+    # Back button — top of form
+    if st.button("← Volver a la Gira", key="back_top"):
+        st.switch_page("app.py")
+    st.markdown("---")
     st.markdown('<div class="req-note">* Todos los campos son obligatorios</div>', unsafe_allow_html=True)
 
     # ── JUGADOR ───────────────────────────────────────────────────────────────
