@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 from pathlib import Path
- 
+
 # ─── Authorization page embedded ────────────────────────────────────────────
 from datetime import date as _date, datetime as _datetime
 
