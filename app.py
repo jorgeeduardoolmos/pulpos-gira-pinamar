@@ -209,7 +209,6 @@ def render_autorizacion():
             return False
     
     # ── Header ─────────────────────────────────────────────────────────────────────
-    st.markdown('<a href="https://pulpos-gira-pinamar.streamlit.app" target="_top" style="color:rgba(168,216,240,0.5);font-family:Barlow Condensed,sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.12em;text-decoration:none;text-transform:uppercase;border:1px solid rgba(100,180,255,0.2);border-radius:8px;padding:6px 16px;display:inline-block;margin-bottom:16px;">← Volver a la Gira</a>', unsafe_allow_html=True)
     
     st.markdown("""
     <div class="page-header">
@@ -397,6 +396,7 @@ def render_autorizacion():
         )
     
         if enviar and todo_completo:
+            st.session_state.submitted = False  # reset before trying
             with st.spinner("Guardando autorización..."):
                 ok = guardar_en_sheets({
                     "jugador_nombre":   jugador_nombre.strip(),
@@ -412,10 +412,9 @@ def render_autorizacion():
                     "madre_apellido":   madre_apellido.strip(),
                     "madre_dni":        madre_dni.strip(),
                 })
-                if ok:
-                    st.session_state.submitted = True
-                    st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
-            if st.session_state.submitted:
+            if ok:
+                st.session_state.submitted = True
+                st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
                 st.rerun()
     
     # ══════════════════════════════════════════════════════════════════════════════
