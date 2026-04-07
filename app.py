@@ -170,10 +170,9 @@ def render_autorizacion():
     
     # ── Google Sheets helper ───────────────────────────────────────────────────────
     def guardar_en_sheets(datos: dict) -> bool:
+        import gspread
+        from google.oauth2.service_account import Credentials
         try:
-            import gspread
-            from google.oauth2.service_account import Credentials
-    
             creds = Credentials.from_service_account_info(
                 st.secrets["gcp_service_account"],
                 scopes=[
@@ -183,18 +182,10 @@ def render_autorizacion():
             )
             client = gspread.authorize(creds)
             sheet = client.open_by_key(st.secrets["SHEET_ID"])
-            ws = sheet.sheet1  # usa siempre la primera solapa
-    
-            # Si la hoja está vacía agregamos los headers
-            if ws.row_count == 0 or ws.cell(1, 1).value is None:
-                ws.append_row([
-                    "Timestamp", "Jugador Nombre", "Jugador Apellido", "Jugador DNI",
-                    "Domicilio", "Localidad", "Teléfono",
-                    "Padre Nombre", "Padre Apellido", "Padre DNI",
-                    "Madre Nombre", "Madre Apellido", "Madre DNI",
-                ])
-    
-            ws.append_row([
+            ws = sheet.sheet1
+
+            # Append data row directly — headers should already be in row 1
+            fila = [
                 _datetime.now().strftime("%d/%m/%Y %H:%M"),
                 datos["jugador_nombre"],
                 datos["jugador_apellido"],
@@ -208,10 +199,13 @@ def render_autorizacion():
                 datos["madre_nombre"],
                 datos["madre_apellido"],
                 datos["madre_dni"],
-            ])
+            ]
+            ws.append_row(fila, value_input_option="USER_ENTERED")
             return True
         except Exception as e:
-            st.error(f"❌ Error al guardar en Google Sheets: {e}")
+            st.error(f"❌ Error al guardar: {e}")
+            import traceback
+            st.error(traceback.format_exc())
             return False
     
     # ── Header ─────────────────────────────────────────────────────────────────────
@@ -418,9 +412,10 @@ def render_autorizacion():
                     "madre_apellido":   madre_apellido.strip(),
                     "madre_dni":        madre_dni.strip(),
                 })
-            if ok:
-                st.session_state.submitted = True
-                st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
+                if ok:
+                    st.session_state.submitted = True
+                    st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
+            if st.session_state.submitted:
                 st.rerun()
     
     # ══════════════════════════════════════════════════════════════════════════════
