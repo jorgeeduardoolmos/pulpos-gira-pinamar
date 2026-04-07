@@ -224,7 +224,26 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown('''<div class="back-link-wrap"><a href="/" target="_self">← Volver a la gira</a></div>''', unsafe_allow_html=True)
+st.markdown('''<style>
+div[data-testid="stButton"].back-btn button {
+    background: transparent !important;
+    border: 1px solid rgba(100,180,255,0.25) !important;
+    color: rgba(168,216,240,0.6) !important;
+    font-family: "Barlow Condensed", sans-serif !important;
+    font-size: 0.88rem !important;
+    letter-spacing: 0.12em !important;
+    padding: 6px 16px !important;
+    border-radius: 8px !important;
+    width: auto !important;
+    margin-bottom: 16px;
+}
+div[data-testid="stButton"].back-btn button:hover {
+    border-color: #70c8f0 !important;
+    color: #70c8f0 !important;
+}
+</style>''', unsafe_allow_html=True)
+if st.button("← VOLVER A LA GIRA", key="back_top"):
+    st.switch_page("app.py")
 
 # ── Session state ──────────────────────────────────────────────────────────────
 if "submitted" not in st.session_state:
@@ -424,15 +443,6 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('''
-    <div style="text-align:center;margin-top:28px;">
-        <a href="/" target="_self" style="
-            display:inline-flex;align-items:center;gap:10px;
-            background:linear-gradient(135deg,#1a6bbf,#70c8f0);
-            color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.3rem;
-            letter-spacing:0.12em;text-decoration:none;border-radius:12px;
-            padding:14px 36px;box-shadow:0 4px 20px rgba(26,107,191,0.4);">
-            ← VOLVER A LA GIRA
-        </a>
-    </div>
-    ''', unsafe_allow_html=True)
+    if st.button("← VOLVER A LA GIRA", key="back_success", use_container_width=False):
+        st.session_state.submitted = False
+        st.switch_page("app.py")
