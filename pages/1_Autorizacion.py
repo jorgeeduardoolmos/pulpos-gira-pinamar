@@ -1,11 +1,5 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from datetime import date, datetime
-
-import gspread
-from gspread.exceptions import SpreadsheetNotFound, WorksheetNotFound, APIError
-
-TARGET_SPREADSHEET_ID = "1X6XmgGcOZNMJRjoQvgQk9tLRSx7uVZ2w4gAxZcwt18w"
 
 st.set_page_config(
     page_title="Autorización Gira Pinamar · Pulpos",
@@ -13,46 +7,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
-
-def append_authorization_to_sheet(payload: dict) -> None:
-    """Append one authorization row to Google Sheets using Streamlit secrets."""
-    try:
-        service_account_info = st.secrets["gcp_service_account"]
-    except Exception as exc:
-        raise RuntimeError(
-            "Falta configurar `gcp_service_account` en Streamlit secrets."
-        ) from exc
-
-    try:
-        gc = gspread.service_account_from_dict(dict(service_account_info))
-        sh = gc.open_by_key(TARGET_SPREADSHEET_ID)
-        ws = sh.get_worksheet(0)
-        if ws is None:
-            raise RuntimeError("No se encontró la primera hoja (gid=0) en la planilla.")
-        ws.append_row([
-            payload["fecha_envio"],
-            payload["jugador_nombre"],
-            payload["jugador_apellido"],
-            payload["jugador_dni"],
-            payload["jugador_domicilio"],
-            payload["jugador_localidad"],
-            payload["jugador_tel"],
-            payload["padre_nombre"],
-            payload["padre_apellido"],
-            payload["padre_dni"],
-            payload["madre_nombre"],
-            payload["madre_apellido"],
-            payload["madre_dni"],
-        ])
-    except SpreadsheetNotFound as exc:
-        raise RuntimeError(
-            "La planilla no existe o la cuenta de servicio no tiene acceso."
-        ) from exc
-    except WorksheetNotFound as exc:
-        raise RuntimeError("No se encontró la hoja destino dentro de la planilla.") from exc
-    except APIError as exc:
-        raise RuntimeError(f"Google Sheets API devolvió un error: {exc}") from exc
 
 st.markdown("""
 <style>
@@ -69,7 +23,6 @@ html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; 
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { max-width: 860px !important; padding: 40px 20px 60px !important; margin: 0 auto; }
 
-/* ── PAGE HEADER ── */
 .page-header {
     text-align: center;
     padding: 40px 0 30px;
@@ -93,7 +46,6 @@ html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; 
     margin-top: 6px;
 }
 
-/* ── SECTION TITLES ── */
 .form-section {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.75rem;
@@ -106,7 +58,6 @@ html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; 
     border-bottom: 1px solid rgba(100,180,255,0.15);
 }
 
-/* ── INPUTS ── */
 [data-testid="stTextInput"] label,
 [data-testid="stNumberInput"] label {
     font-family: 'Barlow Condensed', sans-serif !important;
@@ -128,7 +79,6 @@ html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; 
 }
 [data-testid="stTextInput"] input::placeholder,
 [data-testid="stNumberInput"] input::placeholder { color: rgba(168,216,240,0.3) !important; }
-/* Streamlit wraps inputs in baseweb — target all layers */
 div[data-baseweb="input"] { background: rgba(255,255,255,0.06) !important; }
 div[data-baseweb="base-input"] { background: transparent !important; }
 div[data-baseweb="input"] input,
@@ -139,43 +89,6 @@ div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1re
     box-shadow: 0 0 0 2px rgba(112,200,240,0.15) !important;
 }
 
-/* ── AUTHORIZATION PREVIEW ── */
-.auth-doc {
-    background: rgba(255,255,255,0.97);
-    border-radius: 12px;
-    padding: 44px 52px;
-    color: #1a1a2e;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 0.95rem;
-    line-height: 1.9;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    margin: 32px 0;
-    position: relative;
-}
-.auth-doc::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #1a6bbf, #70c8f0, #ffffff, #70c8f0, #1a6bbf);
-    border-radius: 12px 12px 0 0;
-}
-.auth-doc-title {
-    text-align: center;
-    font-size: 1.15rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    color: #1a1a2e;
-}
-.auth-doc-subtitle {
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 24px;
-    color: #1a3a6e;
-}
 .auth-field {
     border-bottom: 1px solid #999;
     display: inline-block;
@@ -188,22 +101,7 @@ div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1re
     font-weight: 400;
     font-style: italic;
 }
-.auth-signature-row {
-    display: flex;
-    gap: 40px;
-    margin-top: 40px;
-    padding-top: 16px;
-}
-.auth-sig-block {
-    flex: 1;
-    border-top: 1px solid #999;
-    padding-top: 8px;
-    font-size: 0.85rem;
-    color: #555;
-    text-align: center;
-}
 
-/* ── CHECKBOX ── */
 [data-testid="stCheckbox"] label {
     font-family: 'Barlow Condensed', sans-serif !important;
     font-size: 1rem !important;
@@ -212,7 +110,6 @@ div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1re
     color: #e8f0f8 !important;
 }
 
-/* ── SUBMIT BUTTON ── */
 .stButton > button {
     width: 100%;
     background: linear-gradient(135deg, #1a6bbf 0%, #70c8f0 100%) !important;
@@ -223,18 +120,14 @@ div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1re
     border: none !important;
     border-radius: 10px !important;
     padding: 16px !important;
-    cursor: pointer !important;
-    transition: opacity 0.2s !important;
     margin-top: 12px;
 }
 .stButton > button:hover { opacity: 0.88 !important; }
 .stButton > button:disabled {
     background: rgba(100,180,255,0.15) !important;
     color: rgba(255,255,255,0.3) !important;
-    cursor: not-allowed !important;
 }
 
-/* ── SUCCESS ── */
 .success-box {
     background: linear-gradient(135deg, rgba(26,107,191,0.2), rgba(112,200,240,0.1));
     border: 1px solid rgba(112,200,240,0.4);
@@ -252,18 +145,6 @@ div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1re
 }
 .success-box p { color: #a8d8f0; font-size: 1rem; line-height: 1.7; }
 
-/* ── BACK LINK ── */
-.back-link {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    color: rgba(168,216,240,0.5);
-    text-decoration: none;
-    margin-bottom: 20px;
-    display: inline-block;
-}
-
-/* ── REQUIRED NOTE ── */
 .req-note {
     font-size: 0.8rem;
     color: rgba(168,216,240,0.4);
@@ -271,10 +152,71 @@ div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1re
     letter-spacing: 0.05em;
     margin-bottom: 8px;
 }
+.back-link-wrap a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(168,216,240,0.45);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 8px 0;
+    transition: color 0.2s;
+}
+.back-link-wrap a:hover { color: #70c8f0; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ────────────────────────────────────────────────────────────────────
+# ── Google Sheets helper ───────────────────────────────────────────────────────
+def guardar_en_sheets(datos: dict) -> bool:
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        creds = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=[
+                "https://spreadsheets.google.com/feeds",
+                "https://www.googleapis.com/auth/drive",
+            ],
+        )
+        client = gspread.authorize(creds)
+        sheet = client.open_by_key(st.secrets["SHEET_ID"])
+        ws = sheet.sheet1  # usa siempre la primera solapa
+
+        # Si la hoja está vacía agregamos los headers
+        if ws.row_count == 0 or ws.cell(1, 1).value is None:
+            ws.append_row([
+                "Timestamp", "Jugador Nombre", "Jugador Apellido", "Jugador DNI",
+                "Domicilio", "Localidad", "Teléfono",
+                "Padre Nombre", "Padre Apellido", "Padre DNI",
+                "Madre Nombre", "Madre Apellido", "Madre DNI",
+            ])
+
+        ws.append_row([
+            datetime.now().strftime("%d/%m/%Y %H:%M"),
+            datos["jugador_nombre"],
+            datos["jugador_apellido"],
+            datos["jugador_dni"],
+            datos["jugador_domicilio"],
+            datos["jugador_localidad"],
+            datos["jugador_tel"],
+            datos["padre_nombre"],
+            datos["padre_apellido"],
+            datos["padre_dni"],
+            datos["madre_nombre"],
+            datos["madre_apellido"],
+            datos["madre_dni"],
+        ])
+        return True
+    except Exception as e:
+        st.error(f"❌ Error al guardar en Google Sheets: {e}")
+        return False
+
+# ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="page-header">
     <h1>🐙 Autorización <span>Gira Pinamar</span></h1>
@@ -282,10 +224,15 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Init session state ─────────────────────────────────────────────────────────
+st.markdown('''<div class="back-link-wrap"><a href="/" target="_self">← Volver a la gira</a></div>''', unsafe_allow_html=True)
+
+# ── Session state ──────────────────────────────────────────────────────────────
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
 
+# ══════════════════════════════════════════════════════════════════════════════
+# FORMULARIO
+# ══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.submitted:
 
     st.markdown('<div class="req-note">* Todos los campos son obligatorios</div>', unsafe_allow_html=True)
@@ -337,56 +284,64 @@ if not st.session_state.submitted:
         return f'<span class="auth-field empty" style="min-width:{width};">{placeholder}</span>'
 
     nombre_completo_jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}".strip()
-    nombre_completo_firmante = f"{padre_nombre.strip()} {padre_apellido.strip()} / {madre_nombre.strip()} {madre_apellido.strip()}".strip(" /")
-    dni_firmante = f"{padre_dni.strip()} / {madre_dni.strip()}".strip(" /")
-    fecha_hoy = date.today().strftime("%d de %B de %Y").replace("January","enero").replace("February","febrero").replace("March","marzo").replace("April","abril").replace("May","mayo").replace("June","junio").replace("July","julio").replace("August","agosto").replace("September","septiembre").replace("October","octubre").replace("November","noviembre").replace("December","diciembre")
+    fecha_hoy = (
+        date.today().strftime("%d de %B de %Y")
+        .replace("January","enero").replace("February","febrero")
+        .replace("March","marzo").replace("April","abril")
+        .replace("May","mayo").replace("June","junio")
+        .replace("July","julio").replace("August","agosto")
+        .replace("September","septiembre").replace("October","octubre")
+        .replace("November","noviembre").replace("December","diciembre")
+    )
 
-    # Build doc as plain Python string — avoids Streamlit HTML escaping issues
-    firmante_display = nombre_completo_firmante.strip("/ ") if nombre_completo_firmante.strip("/ ") else "Firma y aclaración"
-    dni_display = dni_firmante.strip("/ ") if dni_firmante.strip("/ ") else "\u2014\u2014\u2014\u2014\u2014\u2014"
+    madre_display = f"{madre_nombre.strip()} {madre_apellido.strip()}".strip() or "Madre / Tutora"
+    padre_display = f"{padre_nombre.strip()} {padre_apellido.strip()}".strip() or "Padre / Tutor"
+    madre_dni_display = madre_dni.strip() or "\u2014\u2014\u2014\u2014\u2014\u2014"
+    padre_dni_display = padre_dni.strip() or "\u2014\u2014\u2014\u2014\u2014\u2014"
 
     doc_html = " ".join([
         '<div style="background:rgba(255,255,255,0.97);border-radius:12px;padding:44px 52px;',
         'color:#1a1a2e;font-family:Georgia,serif;font-size:0.95rem;line-height:1.9;',
         'box-shadow:0 8px 40px rgba(0,0,0,0.5);margin:32px 0;border-top:6px solid #1a6bbf;">',
         '<div style="text-align:center;font-size:1.15rem;font-weight:700;text-transform:uppercase;margin-bottom:6px;">GIRA PINAMAR 2026</div>',
-        '<div style="text-align:center;font-size:1rem;font-weight:600;margin-bottom:24px;color:#1a3a6e;">Autorizacion para concurrir</div>',
+        '<div style="text-align:center;font-size:1rem;font-weight:600;margin-bottom:24px;color:#1a3a6e;">Autorización para concurrir</div>',
     ])
     doc_html += "<p>Por medio de la presente autorizo a mi hijo/a " + field(nombre_completo_jugador, "Nombre y Apellido del jugador", "320px") + "</p>"
-    doc_html += "<p>DNI N. " + field(jugador_dni, "DNI del jugador", "200px") + "</p>"
+    doc_html += "<p>DNI N° " + field(jugador_dni, "DNI del jugador", "200px") + "</p>"
     doc_html += "<p>domiciliado en la calle " + field(jugador_domicilio, "Domicilio", "260px") + "</p>"
     doc_html += "<p>de la localidad de " + field(jugador_localidad, "Localidad", "220px") + "</p>"
-    doc_html += "<p>Telefono " + field(jugador_tel, "Telefono", "200px") + "</p>"
+    doc_html += "<p>Teléfono " + field(jugador_tel, "Teléfono", "200px") + "</p>"
     doc_html += (
         "<p style='margin-top:16px;'>que concurre al <strong>Centro De Graduados Del Liceo Naval Militar"
-        " Almirante Guillermo Brown</strong> de la Ciudad Autonoma de Buenos Aires"
+        " Almirante Guillermo Brown</strong> de la Ciudad Autónoma de Buenos Aires"
         " a participar de la Salida denominada <strong>Pinamar 2026</strong>"
         " a realizarse en la localidad de Pinamar, Provincia de Buenos Aires"
         " desde el <strong>13 de Noviembre de 2026</strong>"
         " hasta el <strong>15 de noviembre de 2026</strong>.</p>"
-        "<p>Dejo constancia que he sido informado de las caracteristicas particulares de dicha salida,"
-        " las actividades a desarrollar, medios de transporte a utilizar y lugares donde se realizaran dichas actividades.</p>"
-        "<p>Autorizo a los responsables de la salida a disponer cambios con relacion a la planificacion"
+        "<p>Dejo constancia que he sido informado de las características particulares de dicha salida,"
+        " las actividades a desarrollar, medios de transporte a utilizar y lugares donde se realizarán dichas actividades.</p>"
+        "<p>Autorizo a los responsables de la salida a disponer cambios con relación a la planificación"
         " de las actividades en aspectos acotados, que resulten necesarios, a su solo criterio y sin aviso previo,"
-        " sobre lo cual me deberan informar y fundamentar al regreso.</p>"
-        "<p>Autorizo, en caso de necesidad y urgencia, a hacer atender a mi hijo por profesionales medicos"
+        " sobre lo cual me deberán informar y fundamentar al regreso.</p>"
+        "<p>Autorizo, en caso de necesidad y urgencia, a hacer atender a mi hijo por profesionales médicos"
         " y a que se adopten las prescripciones que ellos indiquen, sobre lo cual requiero inmediato aviso.</p>"
-        "<p>Los entrenadores y personal a cargo del cuidado y vigilancia activa de los menores no seran"
+        "<p>Los entrenadores y personal a cargo del cuidado y vigilancia activa de los menores no serán"
         " responsables de los objetos u otros elementos de valor que los mismos puedan llevar.</p>"
     )
-    doc_html += f"<div style='margin-top:28px;display:flex;gap:30px;flex-wrap:wrap;'><p><strong>Lugar:</strong> Ciudad Autonoma de Buenos Aires</p><p><strong>Fecha:</strong> {fecha_hoy}</p></div>"
-    madre_display = f"{madre_nombre.strip()} {madre_apellido.strip()}".strip() or "Madre / Tutora"
-    padre_display = f"{padre_nombre.strip()} {padre_apellido.strip()}".strip() or "Padre / Tutor"
-    madre_dni_display = madre_dni.strip() or "——————"
-    padre_dni_display = padre_dni.strip() or "——————"
-
+    doc_html += (
+        f"<div style='margin-top:28px;display:flex;gap:30px;flex-wrap:wrap;'>"
+        f"<p><strong>Lugar:</strong> Ciudad Autónoma de Buenos Aires</p>"
+        f"<p><strong>Fecha:</strong> {fecha_hoy}</p></div>"
+    )
     doc_html += (
         "<div style='display:flex;gap:48px;margin-top:48px;'>"
+        # Madre — izquierda
         f"<div style='flex:1;text-align:center;'>"
         f"<div style='font-family:Dancing Script,cursive;font-size:1.6rem;color:#1a3a6e;margin-bottom:4px;min-height:2.2rem;'>{madre_display}</div>"
         f"<div style='border-top:1px solid #aaa;padding-top:8px;font-size:0.82rem;color:#555;'>"
         f"<strong>{madre_display}</strong> &nbsp;·&nbsp; DNI: {madre_dni_display}<br>"
         "Firma de la Madre / Tutora</div></div>"
+        # Padre — derecha
         f"<div style='flex:1;text-align:center;'>"
         f"<div style='font-family:Dancing Script,cursive;font-size:1.6rem;color:#1a3a6e;margin-bottom:4px;min-height:2.2rem;'>{padre_display}</div>"
         f"<div style='border-top:1px solid #aaa;padding-top:8px;font-size:0.82rem;color:#555;'>"
@@ -394,10 +349,9 @@ if not st.session_state.submitted:
         "Firma del Padre / Tutor</div></div>"
         "</div></div>"
     )
-
     st.markdown(doc_html, unsafe_allow_html=True)
 
-    # ── CHECKBOX AUTORIZO ─────────────────────────────────────────────────────
+    # ── CHECKBOX ──────────────────────────────────────────────────────────────
     st.markdown('<div class="form-section">Confirmación</div>', unsafe_allow_html=True)
     autorizo = st.checkbox("Leí la autorización, los datos son correctos y **AUTORIZO** la participación de mi hijo/a en la Gira Pinamar 2026.")
 
@@ -433,30 +387,29 @@ if not st.session_state.submitted:
     )
 
     if enviar and todo_completo:
-        payload = {
-            "fecha_envio": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "jugador_nombre": jugador_nombre.strip(),
-            "jugador_apellido": jugador_apellido.strip(),
-            "jugador_dni": jugador_dni.strip(),
-            "jugador_domicilio": jugador_domicilio.strip(),
-            "jugador_localidad": jugador_localidad.strip(),
-            "jugador_tel": jugador_tel.strip(),
-            "padre_nombre": padre_nombre.strip(),
-            "padre_apellido": padre_apellido.strip(),
-            "padre_dni": padre_dni.strip(),
-            "madre_nombre": madre_nombre.strip(),
-            "madre_apellido": madre_apellido.strip(),
-            "madre_dni": madre_dni.strip(),
-        }
-        try:
-            append_authorization_to_sheet(payload)
+        with st.spinner("Guardando autorización..."):
+            ok = guardar_en_sheets({
+                "jugador_nombre":   jugador_nombre.strip(),
+                "jugador_apellido": jugador_apellido.strip(),
+                "jugador_dni":      jugador_dni.strip(),
+                "jugador_domicilio":jugador_domicilio.strip(),
+                "jugador_localidad":jugador_localidad.strip(),
+                "jugador_tel":      jugador_tel.strip(),
+                "padre_nombre":     padre_nombre.strip(),
+                "padre_apellido":   padre_apellido.strip(),
+                "padre_dni":        padre_dni.strip(),
+                "madre_nombre":     madre_nombre.strip(),
+                "madre_apellido":   madre_apellido.strip(),
+                "madre_dni":        madre_dni.strip(),
+            })
+        if ok:
             st.session_state.submitted = True
             st.session_state.jugador = f"{jugador_nombre.strip()} {jugador_apellido.strip()}"
             st.rerun()
-        except Exception as exc:
-            st.error(f"No se pudo guardar la autorización en Google Sheets. Detalle: {exc}")
 
-# ── PANTALLA DE ÉXITO ─────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# PANTALLA DE ÉXITO
+# ══════════════════════════════════════════════════════════════════════════════
 else:
     jugador = st.session_state.get("jugador", "el jugador")
     st.markdown(f"""
@@ -464,13 +417,22 @@ else:
         <div style="font-size:3.5rem;margin-bottom:12px;">✅</div>
         <h2>¡Autorización enviada!</h2>
         <p>
-            La autorización de <strong style="color:#ffffff;">{jugador}</strong> fue registrada correctamente.<br>
+            La autorización de <strong style="color:#ffffff;">{jugador}</strong> fue registrada correctamente
+            en la planilla del equipo.<br><br>
             El staff de los Pulpos ya puede verla. ¡Nos vemos en Pinamar! 🐙🏉
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("\u2190 Volver al inicio", use_container_width=False):
-        st.session_state.submitted = False
-        st.query_params.clear()
-        st.rerun()
+    st.markdown('''
+    <div style="text-align:center;margin-top:28px;">
+        <a href="/" target="_self" style="
+            display:inline-flex;align-items:center;gap:10px;
+            background:linear-gradient(135deg,#1a6bbf,#70c8f0);
+            color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.3rem;
+            letter-spacing:0.12em;text-decoration:none;border-radius:12px;
+            padding:14px 36px;box-shadow:0 4px 20px rgba(26,107,191,0.4);">
+            ← VOLVER A LA GIRA
+        </a>
+    </div>
+    ''', unsafe_allow_html=True)
