@@ -217,17 +217,21 @@ def guardar_en_sheets(datos: dict) -> bool:
         return False
 
 # ── Header ─────────────────────────────────────────────────────────────────────
+import streamlit.components.v1 as components
+components.html("""
+<div style="font-family:'Barlow Condensed',sans-serif;padding:8px 0 4px;">
+    <a onclick="window.top.location.href='https://pulpos-gira-pinamar.streamlit.app/'"
+       style="cursor:pointer;color:rgba(168,216,240,0.6);font-size:0.9rem;font-weight:600;
+              letter-spacing:0.12em;text-decoration:none;text-transform:uppercase;
+              border:1px solid rgba(100,180,255,0.25);border-radius:8px;padding:6px 18px;
+              display:inline-block;">
+        ← Volver a la Gira
+    </a>
+</div>
+""", height=50)
+
 st.markdown("""
 <div class="page-header">
-    <div style="margin-bottom:16px;">
-        <a href="https://pulpos-gira-pinamar.streamlit.app" 
-           style="color:rgba(168,216,240,0.5);font-family:'Barlow Condensed',sans-serif;
-                  font-size:0.9rem;font-weight:600;letter-spacing:0.12em;text-decoration:none;
-                  border:1px solid rgba(100,180,255,0.2);border-radius:8px;padding:6px 16px;
-                  text-transform:uppercase;transition:color 0.2s;">
-            ← Volver a la Gira
-        </a>
-    </div>
     <h1>🐙 Autorización <span>Gira Pinamar</span></h1>
     <p>División M10 · Liceo Naval · Noviembre 2026</p>
 </div>
