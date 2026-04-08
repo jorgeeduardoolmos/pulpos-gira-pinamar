@@ -1095,6 +1095,35 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# ── Discrete CTA button below hero ───────────────────────────────────────────
+st.markdown("""
+<style>
+.hero-cta button {
+    background: transparent !important;
+    border: 1px solid rgba(112,200,240,0.35) !important;
+    color: rgba(168,216,240,0.75) !important;
+    font-family: 'Barlow Condensed', sans-serif !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.15em !important;
+    border-radius: 100px !important;
+    padding: 10px 32px !important;
+    transition: all 0.2s !important;
+}
+.hero-cta button:hover {
+    border-color: #70c8f0 !important;
+    color: #70c8f0 !important;
+    background: rgba(112,200,240,0.06) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+_, _hcol, _ = st.columns([2, 3, 2])
+with _hcol:
+    st.markdown('<div class="hero-cta">', unsafe_allow_html=True)
+    if st.button("✍️  FIRMAR AUTORIZACIÓN  →", key="hero_cta", use_container_width=True):
+        st.query_params["page"] = "autorizacion"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
 # ══════════════════════════════════════════════════════════════════════════════
 # STAT STRIP
 # ══════════════════════════════════════════════════════════════════════════════
