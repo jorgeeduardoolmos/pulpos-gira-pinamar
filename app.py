@@ -6,6 +6,8 @@ from pathlib import Path
 from datetime import date as _date, datetime as _datetime
 
 def render_autorizacion():
+    # Scroll to top when page loads
+    st.markdown("<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>", unsafe_allow_html=True)
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&family=Dancing+Script:wght@600&display=swap');
