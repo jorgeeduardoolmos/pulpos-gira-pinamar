@@ -532,6 +532,34 @@ def logo_html(size="clamp(200px,22vw,300px)", footer=False):
     return '<div style="font-size:clamp(5rem,12vw,9rem);filter:drop-shadow(0 0 40px rgba(79,200,79,0.5));animation:float 4s ease-in-out infinite;margin-bottom:10px;">🐙</div>'
 
 
+def staff_photo_data_uri(filename: str):
+    p = Path(__file__).parent / "utils" / "staff" / filename
+    if not p.exists():
+        return None
+    suf = p.suffix.lower()
+    mime = "image/jpeg" if suf in (".jpg", ".jpeg") else "image/png"
+    b64 = base64.b64encode(p.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
+
+def staff_card_html(icon, name, photo_file, object_position="center 20%", translate_y="0%", transform_origin="50% 28%", scale=1.52):
+    data_uri = staff_photo_data_uri(photo_file) if photo_file else None
+    if data_uri:
+        avatar = (
+            f'<div class="staff-avatar-wrap staff-avatar-wrap--photo">'
+            f'<img src="{data_uri}" class="staff-photo-img" '
+            f'style="object-position:{object_position};transform:translateY({translate_y}) scale({scale});transform-origin:{transform_origin};" />'
+            f'</div>'
+        )
+    else:
+        avatar = '<div class="staff-avatar-wrap" aria-hidden="true"></div>'
+    return (
+        f'<div class="staff-card">{avatar}'
+        f'<div class="staff-name">'
+        f'<span class="staff-emoji-inline">{icon}</span>'
+        f'<span class="staff-name-text">{name}</span>'
+        f'</div></div>'
+    )
+
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Gira Pinamar 2024 · Pulpos Liceo Naval",
@@ -821,22 +849,64 @@ html, body, [class*="css"] {
 }
 .event-desc { font-size: 0.92rem; color: #b0c8b0; line-height: 1.5; }
 
+/* ── STAFF GRID ── */
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+@media (min-width: 720px) {
+    .staff-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+
 /* ── STAFF CARD ── */
 .staff-card {
     background: rgba(26,107,191,0.12);
     border: 1px solid rgba(100,180,255,0.25);
     border-radius: 12px;
-    padding: 16px;
+    padding: 16px 8px 14px;
     text-align: center;
-    margin-bottom: 4px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.staff-avatar-wrap {
+    width: min(100%, 88px);
+    aspect-ratio: 1;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(112,200,240,0.45);
+    box-shadow: 0 4px 22px rgba(26,107,191,0.35);
+    background: radial-gradient(circle at 40% 30%, #1a3a5c 0%, #071018 100%);
+}
+.staff-avatar-wrap--photo {
+    width: min(100%, 118px);
+}
+.staff-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 .staff-name {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #a8d8f0;
     letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    line-height: 1.2;
 }
+.staff-emoji-inline { font-size: 1.15rem; line-height: 1; flex-shrink: 0; }
+.staff-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
 /* ── COMIDAS TABLE ── */
 .comidas-table {
@@ -1081,21 +1151,22 @@ with inner:
 
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
 staff = [
-    ("👑", "Ote"),
-    ("🎖️", "Ale"),
-    ("🧠", "Mati"),
-    ("🏉", "Tucu"),
-    ("🏉", "Fran"),
-    ("🆕", "Cris"),
-    ("📋", "Marian"),
-    ("📋", "Ema"),
+    ("👑", "Ote",    "ote.png",    "41% 28%", "-30%", "41% 30%", 1.95),
+    ("🎖️", "Ale",   "ale.png",    "50% 0%",  "-38%", "50% 52%", 1.52),
+    ("🧠", "Mati",  "mati.png",   "50% 18%", "-5%",  "50% 26%", 1.52),
+    ("🏉", "Tucu",  "tucu.png",   "12% 25%", "-10%", "12% 30%", 2.2),
+    ("🏉", "Fran",  "fran.png",   "50% 26%", "-4%",  "50% 32%", 1.12),
+    ("🆕", "Cris",  "cris.png",   "50% 41%", "-8%",  "50% 41%", 2.08),
+    ("📋", "Marian","marian.png", "50% 24%", "-4%",  "50% 30%", 1.52),
+    ("📋", "Ema",   "ema.png",    "50% 22%", "-4%",  "50% 30%", 1.52),
 ]
 _, inner2, _ = st.columns([1, 10, 1])
 with inner2:
-    cols = st.columns(8)
-    for col, (icon, name) in zip(cols, staff):
-        with col:
-            st.markdown(f'<div class="staff-card"><div class="staff-name">{icon} {name}</div></div>', unsafe_allow_html=True)
+    cells = "".join(
+        staff_card_html(icon, name, photo, pos, ty, origin, scale)
+        for icon, name, photo, pos, ty, origin, scale in staff
+    )
+    st.markdown(f'<div class="staff-grid">{cells}</div>', unsafe_allow_html=True)
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
