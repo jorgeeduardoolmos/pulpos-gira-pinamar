@@ -182,7 +182,7 @@ def render_autorizacion():
             )
             client = gspread.authorize(creds)
             sheet = client.open_by_key(st.secrets["SHEET_ID"])
-            ws = sheet.sheet1
+            ws = sheet.worksheet("Autorizaciones")
 
             # Append data row directly — headers should already be in row 1
             fila = [
