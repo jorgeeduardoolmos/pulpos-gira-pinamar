@@ -562,7 +562,7 @@ def staff_card_html(icon, name, photo_file, object_position="center 20%", transl
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Gira Pinamar 2024 · Pulpos Liceo Naval",
+    page_title="Gira Pinamar 2026 · Pulpos Liceo Naval",
     page_icon="🐙",
     layout="wide",
     initial_sidebar_state="collapsed",
