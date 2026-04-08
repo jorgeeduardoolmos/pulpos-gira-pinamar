@@ -1152,7 +1152,7 @@ with inner:
 st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
 staff = [
     ("👑", "Ote",    "ote.png",    "41% 28%", "-30%", "41% 30%", 1.95),
-    ("🎖️", "Ale",   "ale.png",    "50% 0%",  "-38%", "50% 52%", 1.52),
+    ("🎖️", "Ale",   "ale.png",    "50% 15%", "0%",   "50% 15%", 1.2),
     ("🧠", "Mati",  "mati.png",   "50% 18%", "-5%",  "50% 26%", 1.52),
     ("🏉", "Tucu",  "tucu.png",   "12% 25%", "-10%", "12% 30%", 2.2),
     ("🏉", "Fran",  "fran.png",   "50% 26%", "-4%",  "50% 32%", 1.12),
