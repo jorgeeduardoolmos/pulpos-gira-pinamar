@@ -200,16 +200,7 @@ def render_autorizacion():
                 datos["madre_apellido"],
                 datos["madre_dni"],
             ]
-            # Debug info
-            sheet_id_usado = st.secrets["SHEET_ID"]
-            todas_las_filas = ws.get_all_values()
-            st.info(f"🔍 Debug: Sheet ID={sheet_id_usado} | Filas actuales={len(todas_las_filas)} | Solapa={ws.title}")
-            
             ws.append_row(fila, value_input_option="USER_ENTERED")
-            
-            # Verify it was written
-            todas_despues = ws.get_all_values()
-            st.info(f"✅ Debug: Filas después={len(todas_despues)}")
             return True
         except Exception as e:
             st.error(f"❌ Error al guardar: {e}")
@@ -398,10 +389,34 @@ def render_autorizacion():
                 st.warning(f"⚠️ Falta completar: {', '.join(faltantes)}.")
     
         # ── BOTÓN ENVIAR ──────────────────────────────────────────────────────────
+        st.markdown('''<style>
+        div[data-testid="stButton"]:has(button[data-testid="baseButton-primary"]) button {
+            background: linear-gradient(135deg, #1a6bbf, #70c8f0) !important;
+            color: #ffffff !important;
+            font-family: "Bebas Neue", sans-serif !important;
+            font-size: 1.4rem !important;
+            letter-spacing: 0.14em !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 18px !important;
+            box-shadow: 0 6px 28px rgba(26,107,191,0.45) !important;
+            width: 100% !important;
+            transition: opacity 0.2s !important;
+        }
+        div[data-testid="stButton"]:has(button[data-testid="baseButton-primary"]) button:hover {
+            opacity: 0.88 !important;
+        }
+        div[data-testid="stButton"]:has(button[data-testid="baseButton-primary"]) button:disabled {
+            background: rgba(100,180,255,0.12) !important;
+            color: rgba(255,255,255,0.25) !important;
+            box-shadow: none !important;
+        }
+        </style>''', unsafe_allow_html=True)
         enviar = st.button(
-            "ENVIAR AUTORIZACIÓN →",
+            "✍️  ENVIAR AUTORIZACIÓN  →",
             disabled=not todo_completo,
             use_container_width=True,
+            type="primary",
         )
     
         if enviar and todo_completo:
