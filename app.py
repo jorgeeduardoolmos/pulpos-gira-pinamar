@@ -563,7 +563,7 @@ def staff_card_html(icon, name, photo_file, object_position="center 20%", transl
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Gira Pinamar 2024 · Pulpos Liceo Naval",
+    page_title="Gira Pinamar 2026 · Pulpos Liceo Naval",
     page_icon="🐙",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -1085,7 +1085,7 @@ st.markdown(f"""
     {logo_html()}
     <div class="hero-eyebrow">División M10 · Liceo Naval</div>
     <h1 class="hero-title">PULPOS</h1>
-    <div class="hero-subtitle">Gira Pinamar 2024</div>
+    <div class="hero-subtitle">Gira Pinamar 2026</div>
     <div class="hero-dates">
         <div class="date-pill">📅 13 · 14 · 15 Noviembre</div>
         <div class="date-pill">📍 Pinamar · Buenos Aires</div>
@@ -1501,7 +1501,7 @@ st.markdown(f"""
 <div class="footer">
     {logo_html(footer=True)}
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(100,180,255,0.6);letter-spacing:0.12em;">PULPOS · LICEO NAVAL</div>
-    <div style="margin-top:8px;">División M10 · <strong>Gira Pinamar 2024</strong> · 13 al 15 de Noviembre</div>
+    <div style="margin-top:8px;">División M10 · <strong>Gira Pinamar 2026</strong> · 13 al 15 de Noviembre</div>
     <div style="margin-top:16px;font-size:0.75rem;opacity:0.5;">Con alegría, compromiso y espíritu de equipo. ¡Vamos Pulpos! 💚</div>
     <div style="margin-top:28px;font-size:0.7rem;opacity:0.2;letter-spacing:0.15em;font-family:'Barlow Condensed',sans-serif;">Gestión Lopez 2020–2030</div>
 </div>
