@@ -736,8 +736,29 @@ def render_login():
 
 def render_eval_individual():
     _require_login()
-    import pandas as pd
     _internal_css()
+    # Extra CSS: compact radio rows
+    st.markdown("""
+<style>
+/* Tight radio rows for eval grid */
+.ei-wrap [data-testid="stRadio"] { padding: 0 !important; min-height: 0 !important; }
+.ei-wrap [data-testid="stRadio"] > div { gap: 6px !important; flex-wrap: nowrap !important; }
+.ei-wrap [data-testid="stRadio"] label {
+    padding: 4px 8px !important; min-height: 0 !important;
+    border-radius: 8px; border: 1px solid rgba(100,180,255,0.15);
+    cursor: pointer; transition: background 0.15s;
+}
+.ei-wrap [data-testid="stRadio"] label:hover { background: rgba(100,180,255,0.1); }
+.ei-wrap [data-testid="stRadio"] label p { font-size: 1.25rem !important; line-height: 1 !important; margin: 0 !important; }
+/* Hide the actual radio circle — the emoji IS the indicator */
+.ei-wrap [data-testid="stRadio"] [data-testid="stMarkdownContainer"] + div { display: none !important; }
+.ei-pname { font-size: 0.84rem; color: #c8e0f0; padding: 7px 0 5px; }
+.ei-legend { display:flex; gap:16px; align-items:center; font-family:'Barlow Condensed',sans-serif;
+             font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+             color:rgba(168,216,240,0.45); margin-bottom:12px; }
+.ei-legend span { display:flex; align-items:center; gap:4px; }
+</style>
+""", unsafe_allow_html=True)
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
 
     user = st.session_state.get("staff_user", "")
@@ -774,65 +795,63 @@ def render_eval_individual():
 
     st.markdown('<div class="fsec">Grillas por habilidad</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div style="font-size:0.82rem;color:rgba(168,216,240,0.45);margin-bottom:16px;">'
-        'Doble clic en la celda de Evaluación para elegir el nivel. — significa sin evaluar.</div>',
+        '<div class="ei-legend">'
+        '<span>🔴 Rojo</span><span>🟡 Amarillo</span><span>🟢 Verde</span>'
+        '<span style="opacity:0.5">· Sin tocar = no evaluado</span>'
+        '</div>',
         unsafe_allow_html=True,
     )
 
-    edited_data = {}
-    for h_key, h_label in HABILIDADES:
-        st.markdown(f'<div class="hab-hdr">🏉 {h_label}</div>', unsafe_allow_html=True)
-        df_hab = pd.DataFrame({
-            "Jugador": JUGADORES,
-            "Evaluación": ["—"] * len(JUGADORES),
-        })
-        edited = st.data_editor(
-            df_hab,
-            column_config={
-                "Evaluación": st.column_config.SelectboxColumn(
-                    label="RAG",
-                    options=["—", "Rojo", "Amarillo", "Verde"],
-                    required=True,
-                )
-            },
-            disabled=["Jugador"],
-            hide_index=True,
-            use_container_width=True,
-            key="de_" + h_key,
-            height=600,
-        )
-        edited_data[h_key] = edited["Evaluación"].tolist()
+    # Mapping emoji → value to store
+    _E2R = {"🔴": "Rojo", "🟡": "Amarillo", "🟢": "Verde"}
 
-    st.markdown('<div style="height:24px;"></div>', unsafe_allow_html=True)
-    if st.button("💾  GUARDAR EVALUACIÓN", key="ei_save", use_container_width=True):
-        if not evaluador.strip():
-            st.warning("⚠️ Completá el campo Evaluador antes de guardar.")
-        else:
-            ok = False
-            with st.spinner("Guardando en Google Sheets..."):
-                try:
-                    sp = _sheets_open()
-                    headers = ["Trimestre", "Fecha", "Evaluador", "Jugador",
-                               "Pase", "Tacle", "Percepción", "Frustración", "Foco"]
-                    ws = _get_or_create_ws(sp, "Eval_Individual", headers)
-                    fecha = _datetime.now().strftime("%d/%m/%Y %H:%M")
-                    filas = []
-                    for p_idx, jugador in enumerate(JUGADORES):
-                        fila = [trimestre, fecha, evaluador.strip(), jugador]
-                        for h_key, _ in HABILIDADES:
-                            raw = edited_data.get(h_key, ["—"] * len(JUGADORES))[p_idx]
-                            fila.append("" if raw == "—" else raw)
-                        filas.append(fila)
-                    ws.append_rows(filas, value_input_option="USER_ENTERED")
-                    ok = True
-                except Exception as e:
-                    import traceback
-                    st.error(f"❌ Error al guardar: {e}")
-                    st.error(traceback.format_exc())
-            if ok:
-                st.session_state.ei_saved = True
-                _load_sheet_data.clear()
-                st.rerun()
+    radios = {}
+    st.markdown('<div class="ei-wrap">', unsafe_allow_html=True)
+    with st.form("eval_individual_form"):
+        for h_key, h_label in HABILIDADES:
+            st.markdown(f'<div class="hab-hdr">🏉 {h_label}</div>', unsafe_allow_html=True)
+            for p_idx, jugador in enumerate(JUGADORES):
+                cn, cr = st.columns([5, 2])
+                with cn:
+                    st.markdown(f'<div class="ei-pname">{jugador}</div>', unsafe_allow_html=True)
+                with cr:
+                    radios[(h_key, p_idx)] = st.radio(
+                        jugador,
+                        ["🔴", "🟡", "🟢"],
+                        index=None,
+                        horizontal=True,
+                        label_visibility="collapsed",
+                        key="r_" + h_key + "_" + str(p_idx),
+                    )
+        submitted = st.form_submit_button("💾  GUARDAR EVALUACIÓN", use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if submitted:
+        ok = False
+        with st.spinner("Guardando en Google Sheets..."):
+            try:
+                sp = _sheets_open()
+                headers = ["Trimestre", "Fecha", "Evaluador", "Jugador",
+                           "Pase", "Tacle", "Percepción", "Frustración", "Foco"]
+                ws = _get_or_create_ws(sp, "Eval_Individual", headers)
+                fecha = _datetime.now().strftime("%d/%m/%Y %H:%M")
+                filas = []
+                for p_idx, jugador in enumerate(JUGADORES):
+                    fila = [trimestre, fecha, evaluador, jugador]
+                    for h_key, _ in HABILIDADES:
+                        emoji = radios.get((h_key, p_idx))
+                        fila.append(_E2R.get(emoji, "") if emoji else "")
+                    filas.append(fila)
+                ws.append_rows(filas, value_input_option="USER_ENTERED")
+                ok = True
+            except Exception as e:
+                import traceback
+                st.error(f"❌ Error al guardar: {e}")
+                st.error(traceback.format_exc())
+        if ok:
+            st.session_state.ei_saved = True
+            _load_sheet_data.clear()
+            st.rerun()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
