@@ -679,6 +679,12 @@ def render_login():
     transition: border-color 0.2s;
 }
 .hub-card:hover { border-color: rgba(100,180,255,0.55); }
+.hub-card.disabled {
+    opacity: 0.35;
+    filter: grayscale(1);
+    pointer-events: none;
+    border-color: rgba(255,255,255,0.08) !important;
+}
 .hub-icon { font-size: 2.4rem; margin-bottom: 10px; }
 .hub-title {
     font-family: 'Barlow Condensed', sans-serif;
@@ -687,6 +693,12 @@ def render_login():
     color: #a8d8f0; margin-bottom: 8px;
 }
 .hub-desc { font-size: 0.83rem; color: rgba(168,216,240,0.5); line-height: 1.55; }
+.hub-soon {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(168,216,240,0.4);
+    margin-top: 6px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -703,27 +715,33 @@ def render_login():
         )
 
         hub_items = [
-            ("hub_ei",  "eval_individual",  "📋", "Evaluación Individual",
-             "Completá la grilla RAG de los 35 jugadores por habilidad."),
-            ("hub_es",  "encuesta_staff",   "📊", "Encuesta Staff",
-             "Respondé la evaluación trimestral del equipo y el staff."),
-            ("hub_an",  "analisis",         "📈", "Análisis & IA",
-             "Revisá los datos del equipo y consultá a la IA."),
+            ("hub_ei", "eval_individual", "📋", "Evaluación Individual",
+             "Completá la grilla RAG de los 35 jugadores por habilidad.", True),
+            ("hub_es", "encuesta_staff",  "📊", "Encuesta Staff",
+             "Respondé la evaluación trimestral del equipo y el staff.", True),
+            ("hub_an", "analisis",        "📈", "Análisis & IA",
+             "Revisá los datos del equipo y consultá a la IA.", False),
         ]
         c1, c2, c3 = st.columns(3)
-        for col, (btn_key, page, icon, title, desc) in zip([c1, c2, c3], hub_items):
+        for col, (btn_key, page, icon, title, desc, enabled) in zip([c1, c2, c3], hub_items):
             with col:
+                card_class = "hub-card" if enabled else "hub-card disabled"
+                extra = "" if enabled else '<div class="hub-soon">Disponible en T1</div>'
                 st.markdown(
-                    '<div class="hub-card">'
+                    '<div class="' + card_class + '">'
                     '<div class="hub-icon">' + icon + '</div>'
                     '<div class="hub-title">' + title + '</div>'
                     '<div class="hub-desc">' + desc + '</div>'
+                    + extra +
                     '</div>',
                     unsafe_allow_html=True,
                 )
-                if st.button("ABRIR →", key=btn_key, use_container_width=True):
-                    st.query_params["page"] = page
-                    st.rerun()
+                if enabled:
+                    if st.button("ABRIR →", key=btn_key, use_container_width=True):
+                        st.query_params["page"] = page
+                        st.rerun()
+                else:
+                    st.markdown('<div style="height:46px;"></div>', unsafe_allow_html=True)
 
         st.markdown('<div style="height:32px;"></div>', unsafe_allow_html=True)
         if st.button("← Cerrar sesión", key="hub_logout", type="secondary"):
