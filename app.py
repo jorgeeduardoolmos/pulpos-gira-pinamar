@@ -611,10 +611,18 @@ div[data-testid="stButton"]:has(button[kind="secondary"]) button {
     background:rgba(255,255,255,0.06) !important; border:1px solid rgba(100,180,255,0.4) !important;
     border-radius:8px !important; color:#ffffff !important; font-family:'Barlow',sans-serif !important;
 }
+[data-testid="stTextInput"] input::placeholder { color:rgba(168,216,240,0.3) !important; }
 [data-testid="stTextArea"] textarea {
     background:rgba(255,255,255,0.06) !important; border:1px solid rgba(100,180,255,0.4) !important;
     border-radius:8px !important; color:#ffffff !important; font-family:'Barlow',sans-serif !important;
 }
+/* BaseWeb wrapper overrides — without these el fondo tapa el texto */
+div[data-baseweb="input"] { background:rgba(255,255,255,0.06) !important; border-radius:8px !important; }
+div[data-baseweb="base-input"] { background:transparent !important; }
+div[data-baseweb="input"] input,
+div[data-baseweb="base-input"] input { color:#ffffff !important; caret-color:#70c8f0 !important; }
+div[data-baseweb="input"] input::placeholder,
+div[data-baseweb="base-input"] input::placeholder { color:rgba(168,216,240,0.3) !important; }
 </style>
 """, unsafe_allow_html=True)
 
