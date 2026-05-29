@@ -737,21 +737,40 @@ def render_login():
 def render_eval_individual():
     _require_login()
     _internal_css()
-    # Extra CSS: compact radio rows
+    # Extra CSS: compact radio rows + dividers + indicator styling
     st.markdown("""
 <style>
-/* Tight radio rows for eval grid */
+/* Tight radio layout */
 .ei-wrap [data-testid="stRadio"] { padding: 0 !important; min-height: 0 !important; }
 .ei-wrap [data-testid="stRadio"] > div { gap: 6px !important; flex-wrap: nowrap !important; }
 .ei-wrap [data-testid="stRadio"] label {
     padding: 4px 8px !important; min-height: 0 !important;
-    border-radius: 8px; border: 1px solid rgba(100,180,255,0.15);
+    border-radius: 8px; border: 1px solid rgba(100,180,255,0.12);
     cursor: pointer; transition: background 0.15s;
 }
-.ei-wrap [data-testid="stRadio"] label:hover { background: rgba(100,180,255,0.1); }
+.ei-wrap [data-testid="stRadio"] label:hover { background: rgba(100,180,255,0.08); }
 .ei-wrap [data-testid="stRadio"] label p { font-size: 1.25rem !important; line-height: 1 !important; margin: 0 !important; }
-/* Hide the actual radio circle — the emoji IS the indicator */
-.ei-wrap [data-testid="stRadio"] [data-testid="stMarkdownContainer"] + div { display: none !important; }
+
+/* Gradient fade divider between each player row */
+.ei-wrap [data-testid="stHorizontalBlock"] {
+    padding-bottom: 4px;
+    background-image: linear-gradient(to right, transparent, rgba(100,180,255,0.15), transparent);
+    background-size: 100% 1px;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+}
+
+/* Radio indicator: neutral light-blue, slightly larger when selected */
+.ei-wrap [role="radio"][aria-checked="true"] > div {
+    border-color: rgba(168,216,240,0.8) !important;
+    transform: scale(1.3);
+    transition: transform 0.12s;
+}
+.ei-wrap [role="radio"][aria-checked="true"] > div > div {
+    background-color: rgba(168,216,240,0.8) !important;
+}
+.ei-wrap input[type="radio"] { accent-color: #a8d8f0; }
+
 .ei-pname { font-size: 0.84rem; color: #c8e0f0; padding: 7px 0 5px; }
 .ei-legend { display:flex; gap:16px; align-items:center; font-family:'Barlow Condensed',sans-serif;
              font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
