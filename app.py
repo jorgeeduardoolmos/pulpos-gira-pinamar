@@ -623,6 +623,23 @@ div[data-baseweb="input"] input,
 div[data-baseweb="base-input"] input { color:#ffffff !important; caret-color:#70c8f0 !important; }
 div[data-baseweb="input"] input::placeholder,
 div[data-baseweb="base-input"] input::placeholder { color:rgba(168,216,240,0.3) !important; }
+/* Disabled inputs (campo Evaluador) — -webkit-text-fill-color es necesario */
+[data-testid="stTextInput"] input:disabled,
+div[data-baseweb="input"] input:disabled {
+    color:rgba(168,216,240,0.7) !important;
+    -webkit-text-fill-color:rgba(168,216,240,0.7) !important;
+    opacity:1 !important;
+}
+/* Textarea BaseWeb — para P18/P19/P20 */
+div[data-baseweb="textarea"] { background:rgba(255,255,255,0.06) !important; border-radius:8px !important; }
+div[data-baseweb="textarea"] textarea,
+div[data-baseweb="base-input"] textarea {
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    caret-color:#70c8f0 !important;
+    background:transparent !important;
+}
+div[data-baseweb="textarea"] textarea::placeholder { color:rgba(168,216,240,0.3) !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -942,8 +959,8 @@ def render_encuesta_staff():
             )
             val = st.select_slider(
                 label,
-                options=[1, 2, 3, 4, 5],
-                value=3,
+                options=[1, 2, 3, 4],
+                value=2,
                 key="es_" + p_key,
                 label_visibility="collapsed",
             )
