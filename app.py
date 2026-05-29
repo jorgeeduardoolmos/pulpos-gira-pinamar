@@ -906,6 +906,53 @@ def render_encuesta_staff():
     _require_login()
     _internal_css()
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
+    st.html("""<script>
+(function() {
+    var C = {'1':'#ef4444','2':'#eab308','3':'#22c55e','4':'#3b82f6'};
+    var doc = window.parent.document;
+
+    function paint(slider) {
+        var thumb = slider.querySelector('[role="slider"]');
+        if (!thumb) return;
+        var color = C[thumb.getAttribute('aria-valuenow')] || '#a8d8f0';
+        var wrap = slider.children[0];
+        if (!wrap) return;
+        /* filled track */
+        if (wrap.children[1])
+            wrap.children[1].style.setProperty('background-color', color, 'important');
+        /* thumb circle */
+        if (wrap.children[2]) {
+            var inner = wrap.children[2].querySelector('div') || wrap.children[2];
+            inner.style.setProperty('background-color', color, 'important');
+            inner.style.setProperty('box-shadow', '0 0 0 4px ' + color + '44', 'important');
+        }
+    }
+
+    function paintAll() {
+        doc.querySelectorAll('[data-baseweb="slider"]').forEach(paint);
+    }
+
+    /* initial paint with retries while DOM loads */
+    setTimeout(paintAll, 300);
+    setTimeout(paintAll, 800);
+    setTimeout(paintAll, 1800);
+
+    /* live updates — fires on every slider move */
+    new MutationObserver(function(ms) {
+        ms.forEach(function(m) {
+            if (m.attributeName === 'aria-valuenow') {
+                var sl = m.target.closest
+                    ? m.target.closest('[data-baseweb="slider"]')
+                    : null;
+                if (sl) paint(sl);
+            }
+        });
+    }).observe(doc.documentElement, {
+        subtree: true, attributes: true,
+        attributeFilter: ['aria-valuenow']
+    });
+})();
+</script>""")
 
     user = st.session_state.get("staff_user", "")
     st.markdown("""
