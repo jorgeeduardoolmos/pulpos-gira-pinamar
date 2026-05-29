@@ -908,23 +908,33 @@ def render_encuesta_staff():
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
     st.html("""<script>
 (function() {
-    var C = {'1':'#ef4444','2':'#eab308','3':'#22c55e','4':'#3b82f6'};
     var doc = window.parent.document;
+    /* aria-valuenow puede ser el valor real (1-4) o el índice (0-3) según versión */
+    var BY_VAL = {'1':'#ef4444','2':'#eab308','3':'#22c55e','4':'#3b82f6'};
+    var BY_IDX = ['#ef4444','#eab308','#22c55e','#3b82f6'];
 
     function paint(slider) {
         var thumb = slider.querySelector('[role="slider"]');
         if (!thumb) return;
-        var color = C[thumb.getAttribute('aria-valuenow')] || '#a8d8f0';
-        var wrap = slider.children[0];
-        if (!wrap) return;
-        /* filled track */
-        if (wrap.children[1])
-            wrap.children[1].style.setProperty('background-color', color, 'important');
-        /* thumb circle */
-        if (wrap.children[2]) {
-            var inner = wrap.children[2].querySelector('div') || wrap.children[2];
-            inner.style.setProperty('background-color', color, 'important');
-            inner.style.setProperty('box-shadow', '0 0 0 4px ' + color + '44', 'important');
+        var vNow = thumb.getAttribute('aria-valuenow');
+        var vTxt = thumb.getAttribute('aria-valuetext');
+        /* intentar por valor real primero, luego por índice */
+        var color = BY_VAL[vTxt] || BY_VAL[vNow] || BY_IDX[parseInt(vNow)] || '#a8d8f0';
+
+        /* fill track: único div con width en % dentro del slider */
+        slider.querySelectorAll('div').forEach(function(d) {
+            if (d.style.width && d.style.width.indexOf('%') !== -1) {
+                d.style.setProperty('background', color, 'important');
+                d.style.setProperty('background-color', color, 'important');
+            }
+        });
+
+        /* thumb circle: padre directo del [role="slider"] */
+        var tp = thumb.parentElement;
+        if (tp) {
+            tp.style.setProperty('background-color', color, 'important');
+            tp.style.setProperty('border-color', color, 'important');
+            tp.style.setProperty('box-shadow', '0 0 0 4px ' + color + '44', 'important');
         }
     }
 
@@ -932,19 +942,16 @@ def render_encuesta_staff():
         doc.querySelectorAll('[data-baseweb="slider"]').forEach(paint);
     }
 
-    /* initial paint with retries while DOM loads */
     setTimeout(paintAll, 300);
-    setTimeout(paintAll, 800);
-    setTimeout(paintAll, 1800);
+    setTimeout(paintAll, 900);
+    setTimeout(paintAll, 2200);
 
-    /* live updates — fires on every slider move */
     new MutationObserver(function(ms) {
         ms.forEach(function(m) {
             if (m.attributeName === 'aria-valuenow') {
                 var sl = m.target.closest
-                    ? m.target.closest('[data-baseweb="slider"]')
-                    : null;
-                if (sl) paint(sl);
+                    ? m.target.closest('[data-baseweb="slider"]') : null;
+                if (sl) paint(sl); else paintAll();
             }
         });
     }).observe(doc.documentElement, {
