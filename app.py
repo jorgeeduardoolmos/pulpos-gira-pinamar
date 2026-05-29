@@ -472,9 +472,563 @@ def render_autorizacion():
         """, unsafe_allow_html=True)
     
 
+# ═════════════════════════════════════════════════════════════════════════════
+# SHARED CONSTANTS
+# ═════════════════════════════════════════════════════════════════════════════
+
+JUGADORES = [
+    "ANSALDO, VALENTIN NAPOLEON", "BISSONE, RAMON", "BOPP, FLORIAN",
+    "BUTTINI, MANUEL", "CALZADA, FACUNDO OSCAR", "CROSTA, BELTRÁN",
+    "DAWNEY, MIGUEL", "DEVOTO, BRUNO", "FERNANDEZ BIGA, BENJAMÍN",
+    "FONTANA, GREGORIO", "GAVIN, SANTIAGO", "GUTIERREZ, BALTAZAR",
+    "IENCENELLA ALONSO, MATTHIAS", "LOPEZ OTAÑO, PACO",
+    "MAÑONIS, DANTE VALENTIN", "OLMOS, BENJAMÍN",
+    "PACHO AGUIRRE, AUGUSTO", "PEDERNERA, FELIPE",
+    "PEREZ SCHELL, TIMOTEO", "PICCININI, BENJAMÍN", "PISTONE, MANUEL",
+    "RÍOS DIAZ, FIDEL", "RIOS, LUCAS", "RIOS, MATIAS",
+    "RIVA, NICOLAS JUAN", "TRIPAR GIAMPETRUZZI, IGNACIO",
+    "VISCA, ALEJO", "ZANETTIN, FELIX", "RIOS, EMILIO",
+    "GARCIA SERRANO, PEDRO", "CUELLAR, OLIVER",
+    "LASNEVE POZNIAK, VICENTE", "ARIAS, TOMAS",
+    "VIGNOLA, FELIPE ETCHEVERRY", "FIGUEROA, SIMÓN",
+]
+
+HABILIDADES = [
+    ("pase",        "Pase y recepción"),
+    ("tacle",       "Tacle / Contacto"),
+    ("percepcion",  "Percepción (espacios, rivales y compañeros)"),
+    ("frustracion", "Frustración frente al error"),
+    ("foco",        "Capacidad de foco y concentración"),
+]
+
+_ENC_PREGS = [
+    ("p1",  "Técnica",   "Progreso técnico general",                     "No hubo progreso",         "Progreso muy sólido y evidente"),
+    ("p2",  "Técnica",   "Calidad y seguridad del tackle",               "Inseguro / poco técnico",  "Técnico, seguro y consistente"),
+    ("p3",  "Técnica",   "Relación del equipo con el contacto",          "Evitan el contacto",       "Entran seguros, técnicos"),
+    ("p4",  "Técnica",   "Calidad del pase y recepción en movimiento",   "Frecuentes errores",       "Pases limpios, recepción estable"),
+    ("p5",  "Técnica",   "Continuidad post-contacto",                    "Frecuentes errores",       "Continuidad clara"),
+    ("p6",  "Táctica",   "Comprensión de la ubicación en cancha",        "Muy baja",                 "Muy alta y sostenida"),
+    ("p7",  "Táctica",   "Organización del ataque",                      "Caótico",                  "Ordenado, consciente y efectivo"),
+    ("p8",  "Táctica",   "Organización de la defensa",                   "Desordenada",              "Compacta, clara y consistente"),
+    ("p9",  "Táctica",   "Lectura del espacio y toma de decisiones",     "Reacciones tardías",       "Buena lectura, decisiones oportunas"),
+    ("p10", "Táctica",   "Disciplina táctica",                           "Muy baja",                 "Muy alta"),
+    ("p11", "Emocional", "Actitud frente al contacto",                   "Miedo / duda",             "Seguridad / decisión"),
+    ("p12", "Emocional", "Resiliencia frente al error",                  "Se frustran fácilmente",   "Recuperan rápido y siguen jugando"),
+    ("p13", "Emocional", "Conexión entre jugadores",                     "Muy baja",                 "Muy alta y sostenida"),
+    ("p14", "Staff",     "Claridad de roles",                            "Roles confusos",           "Roles claros y bien distribuidos"),
+    ("p15", "Staff",     "Coordinación en entrenamientos",               "Desorden / superposición", "Coordinación fluida y clara"),
+    ("p16", "Staff",     "Coordinación en partidos",                     "Confusa",                  "Clara, ordenada y funcional"),
+    ("p17", "Staff",     "Comunicación interna",                         "Deficiente",               "Clara, abierta y frecuente"),
+]
+
+# ═════════════════════════════════════════════════════════════════════════════
+# SHARED HELPERS
+# ═════════════════════════════════════════════════════════════════════════════
+
+def _sheets_open():
+    import gspread
+    from google.oauth2.service_account import Credentials
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=[
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive",
+        ],
+    )
+    return gspread.authorize(creds).open_by_key(st.secrets["SHEET_ID"])
+
+
+def _get_or_create_ws(sp, name, headers):
+    try:
+        return sp.worksheet(name)
+    except Exception:
+        ws = sp.add_worksheet(title=name, rows=2000, cols=len(headers) + 2)
+        ws.append_row(headers, value_input_option="USER_ENTERED")
+        return ws
+
+
+def _internal_css():
+    st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap');
+html, body, [class*="css"] { font-family: 'Barlow', sans-serif; color: #e8f0f8; }
+.stApp {
+    background: #040810;
+    background-image:
+        radial-gradient(ellipse at 10% 0%, rgba(0,100,200,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, rgba(100,180,255,0.07) 0%, transparent 50%);
+}
+#MainMenu, footer, header { visibility: hidden; }
+.block-container { max-width: 980px !important; padding: 40px 20px 60px !important; margin: 0 auto; }
+.page-header { text-align:center; padding:40px 0 30px; border-bottom:2px solid rgba(100,180,255,0.15); margin-bottom:36px; }
+.page-header h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.5rem,6vw,4rem); letter-spacing:0.06em; color:#fff; margin:0; }
+.page-header h1 span { color:#70c8f0; }
+.page-header p { color:rgba(168,216,240,0.6); font-family:'Barlow Condensed',sans-serif; font-size:1rem; letter-spacing:0.15em; text-transform:uppercase; margin-top:6px; }
+.fsec { font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.35em; text-transform:uppercase; color:#70c8f0; margin:28px 0 10px; padding-bottom:6px; border-bottom:1px solid rgba(100,180,255,0.15); }
+.hab-hdr { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#a8d8f0; background:rgba(26,107,191,0.15); border:1px solid rgba(100,180,255,0.25); border-radius:8px; padding:10px 16px; margin:20px 0 4px; }
+.success-box { background:linear-gradient(135deg,rgba(26,107,191,0.2),rgba(112,200,240,0.1)); border:1px solid rgba(112,200,240,0.4); border-radius:14px; padding:36px; text-align:center; margin-top:24px; }
+.success-box h2 { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:#70c8f0; letter-spacing:0.08em; margin-bottom:8px; }
+.success-box p { color:#a8d8f0; font-size:1rem; line-height:1.7; }
+.ai-answer { background:rgba(26,107,191,0.1); border:1px solid rgba(100,180,255,0.25); border-radius:10px; padding:20px 24px; color:#c8e0f0; font-size:0.95rem; line-height:1.75; margin-top:16px; white-space:pre-wrap; }
+[data-testid="stForm"] { background:transparent !important; border:none !important; padding:0 !important; }
+[data-testid="stFormSubmitButton"] button, .stButton > button {
+    background:linear-gradient(135deg,#1a6bbf 0%,#70c8f0 100%) !important;
+    color:#fff !important; font-family:'Bebas Neue',sans-serif !important;
+    font-size:1.25rem !important; letter-spacing:0.12em !important;
+    border:none !important; border-radius:10px !important; padding:14px !important;
+    width:100% !important; margin-top:8px;
+}
+[data-testid="stFormSubmitButton"] button:hover, .stButton > button:hover { opacity:0.88 !important; }
+div[data-testid="stButton"]:has(button[kind="secondary"]) button {
+    background:transparent !important; border:1px solid rgba(100,180,255,0.3) !important;
+    color:rgba(168,216,240,0.6) !important; font-family:"Barlow Condensed",sans-serif !important;
+    font-size:0.9rem !important; letter-spacing:0.1em !important;
+    width:auto !important; padding:6px 20px !important; margin-top:0;
+}
+[data-testid="stTextInput"] label, [data-testid="stSelectbox"] label, [data-testid="stTextArea"] label {
+    font-family:'Barlow Condensed',sans-serif !important; font-size:0.82rem !important;
+    font-weight:600 !important; letter-spacing:0.1em !important; text-transform:uppercase !important;
+    color:rgba(168,216,240,0.7) !important;
+}
+[data-testid="stTextInput"] input {
+    background:rgba(255,255,255,0.06) !important; border:1px solid rgba(100,180,255,0.4) !important;
+    border-radius:8px !important; color:#ffffff !important; font-family:'Barlow',sans-serif !important;
+}
+[data-testid="stTextArea"] textarea {
+    background:rgba(255,255,255,0.06) !important; border:1px solid rgba(100,180,255,0.4) !important;
+    border-radius:8px !important; color:#ffffff !important; font-family:'Barlow',sans-serif !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+@st.cache_data(ttl=120, show_spinner=False)
+def _load_sheet_data():
+    import pandas as pd
+    try:
+        sp = _sheets_open()
+        def _ws_to_df(name):
+            try:
+                rows = sp.worksheet(name).get_all_records()
+                return pd.DataFrame(rows) if rows else pd.DataFrame()
+            except Exception:
+                return pd.DataFrame()
+        return _ws_to_df("Eval_Individual"), _ws_to_df("Encuesta_Staff")
+    except Exception:
+        return pd.DataFrame(), pd.DataFrame()
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# PÁGINA 1 — Evaluación Técnica Individual
+# ═════════════════════════════════════════════════════════════════════════════
+
+def render_eval_individual():
+    import pandas as pd
+    _internal_css()
+    st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
+
+    st.markdown("""
+    <div class="page-header">
+        <h1>📋 Evaluación <span>Técnica Individual</span></h1>
+        <p>División M10 · Liceo Naval · Staff Técnico</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("← VOLVER", key="ei_back", type="secondary"):
+        st.query_params.clear()
+        st.rerun()
+
+    if st.session_state.get("ei_saved"):
+        st.markdown("""
+        <div class="success-box">
+            <h2>✅ ¡Evaluación guardada!</h2>
+            <p>Los datos fueron registrados en la planilla del equipo.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("📋 Nueva evaluación", key="ei_nueva"):
+            st.session_state.ei_saved = False
+            st.rerun()
+        return
+
+    st.markdown('<div class="fsec">Datos generales</div>', unsafe_allow_html=True)
+    c1, c2 = st.columns([1, 2])
+    with c1:
+        trimestre = st.selectbox("Trimestre", ["T1", "T2", "T3", "T4"], key="ei_trimestre")
+    with c2:
+        evaluador = st.text_input("Evaluador *", placeholder="Tu nombre", key="ei_evaluador")
+
+    st.markdown('<div class="fsec">Grillas por habilidad</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div style="font-size:0.82rem;color:rgba(168,216,240,0.45);margin-bottom:16px;">'
+        'Doble clic en la celda de Evaluación para elegir el nivel. — significa sin evaluar.</div>',
+        unsafe_allow_html=True,
+    )
+
+    edited_data = {}
+    for h_key, h_label in HABILIDADES:
+        st.markdown(f'<div class="hab-hdr">🏉 {h_label}</div>', unsafe_allow_html=True)
+        df_hab = pd.DataFrame({
+            "Jugador": JUGADORES,
+            "Evaluación": ["—"] * len(JUGADORES),
+        })
+        edited = st.data_editor(
+            df_hab,
+            column_config={
+                "Evaluación": st.column_config.SelectboxColumn(
+                    label="RAG",
+                    options=["—", "Rojo", "Amarillo", "Verde"],
+                    required=True,
+                )
+            },
+            disabled=["Jugador"],
+            hide_index=True,
+            use_container_width=True,
+            key="de_" + h_key,
+            height=600,
+        )
+        edited_data[h_key] = edited["Evaluación"].tolist()
+
+    st.markdown('<div style="height:24px;"></div>', unsafe_allow_html=True)
+    if st.button("💾  GUARDAR EVALUACIÓN", key="ei_save", use_container_width=True):
+        if not evaluador.strip():
+            st.warning("⚠️ Completá el campo Evaluador antes de guardar.")
+        else:
+            ok = False
+            with st.spinner("Guardando en Google Sheets..."):
+                try:
+                    sp = _sheets_open()
+                    headers = ["Trimestre", "Fecha", "Evaluador", "Jugador",
+                               "Pase", "Tacle", "Percepción", "Frustración", "Foco"]
+                    ws = _get_or_create_ws(sp, "Eval_Individual", headers)
+                    fecha = _datetime.now().strftime("%d/%m/%Y %H:%M")
+                    filas = []
+                    for p_idx, jugador in enumerate(JUGADORES):
+                        fila = [trimestre, fecha, evaluador.strip(), jugador]
+                        for h_key, _ in HABILIDADES:
+                            raw = edited_data.get(h_key, ["—"] * len(JUGADORES))[p_idx]
+                            fila.append("" if raw == "—" else raw)
+                        filas.append(fila)
+                    ws.append_rows(filas, value_input_option="USER_ENTERED")
+                    ok = True
+                except Exception as e:
+                    import traceback
+                    st.error(f"❌ Error al guardar: {e}")
+                    st.error(traceback.format_exc())
+            if ok:
+                st.session_state.ei_saved = True
+                _load_sheet_data.clear()
+                st.rerun()
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# PÁGINA 2 — Encuesta General Staff
+# ═════════════════════════════════════════════════════════════════════════════
+
+def render_encuesta_staff():
+    _internal_css()
+    st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
+
+    st.markdown("""
+    <div class="page-header">
+        <h1>📊 Encuesta <span>General Staff</span></h1>
+        <p>División M10 · Liceo Naval · Evaluación trimestral</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("← VOLVER", key="es_back", type="secondary"):
+        st.query_params.clear()
+        st.rerun()
+
+    if st.session_state.get("es_saved"):
+        st.markdown("""
+        <div class="success-box">
+            <h2>✅ ¡Encuesta guardada!</h2>
+            <p>Los datos fueron registrados en la planilla del equipo.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("📊 Nueva encuesta", key="es_nueva"):
+            st.session_state.es_saved = False
+            st.rerun()
+        return
+
+    with st.form("encuesta_staff_form"):
+        st.markdown('<div class="fsec">Datos generales</div>', unsafe_allow_html=True)
+        c1, c2 = st.columns([1, 2])
+        with c1:
+            trimestre = st.selectbox("Trimestre", ["T1", "T2", "T3", "T4"], key="es_trimestre")
+        with c2:
+            evaluador = st.text_input("Evaluador *", placeholder="Tu nombre", key="es_evaluador")
+
+        numeric_vals = {}
+        current_cat = None
+        for p_key, cat, label, left_lbl, right_lbl in _ENC_PREGS:
+            if cat != current_cat:
+                current_cat = cat
+                st.markdown('<div class="fsec">' + cat + '</div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div style="font-family:Barlow,sans-serif;font-size:0.93rem;color:#c8e0f0;margin-bottom:2px;">'
+                + label + '</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown(
+                '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.76rem;'
+                'color:rgba(168,216,240,0.45);margin-bottom:4px;">'
+                + left_lbl + " &nbsp;→&nbsp; " + right_lbl + "</div>",
+                unsafe_allow_html=True,
+            )
+            val = st.select_slider(
+                label,
+                options=[1, 2, 3, 4, 5],
+                value=3,
+                key="es_" + p_key,
+                label_visibility="collapsed",
+            )
+            numeric_vals[p_key] = val
+            st.markdown('<div style="height:6px;"></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="fsec">Preguntas abiertas</div>', unsafe_allow_html=True)
+        p18 = st.text_area(
+            "P18 · Principales aprendizajes y avances técnicos/tácticos",
+            key="es_p18", height=100,
+        )
+        p19 = st.text_area(
+            "P19 · Principales oportunidades de mejora del staff",
+            key="es_p19", height=100,
+        )
+        p20 = st.text_area(
+            "P20 · ¡Sumá lo que quieras!",
+            key="es_p20", height=100,
+        )
+
+        submitted = st.form_submit_button("💾  GUARDAR ENCUESTA", use_container_width=True)
+
+    if submitted:
+        if not evaluador.strip():
+            st.warning("⚠️ Completá el campo Evaluador antes de guardar.")
+        else:
+            ok = False
+            with st.spinner("Guardando en Google Sheets..."):
+                try:
+                    sp = _sheets_open()
+                    headers = (
+                        ["Trimestre", "Fecha", "Evaluador"]
+                        + [row[0] for row in _ENC_PREGS]
+                        + ["P18", "P19", "P20"]
+                    )
+                    ws = _get_or_create_ws(sp, "Encuesta_Staff", headers)
+                    fecha = _datetime.now().strftime("%d/%m/%Y %H:%M")
+                    fila = (
+                        [trimestre, fecha, evaluador.strip()]
+                        + [numeric_vals[row[0]] for row in _ENC_PREGS]
+                        + [p18, p19, p20]
+                    )
+                    ws.append_row(fila, value_input_option="USER_ENTERED")
+                    ok = True
+                except Exception as e:
+                    import traceback
+                    st.error(f"❌ Error al guardar: {e}")
+                    st.error(traceback.format_exc())
+            if ok:
+                st.session_state.es_saved = True
+                _load_sheet_data.clear()
+                st.rerun()
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# PÁGINA 3 — Análisis y Consultas
+# ═════════════════════════════════════════════════════════════════════════════
+
+def render_analisis():
+    import pandas as pd
+    _internal_css()
+    st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
+
+    st.markdown("""
+    <div class="page-header">
+        <h1>📈 <span>Análisis</span> &amp; Consultas</h1>
+        <p>División M10 · Liceo Naval · Datos del equipo</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("← VOLVER", key="an_back", type="secondary"):
+        st.query_params.clear()
+        st.rerun()
+
+    col_ref, col_btn = st.columns([4, 1])
+    with col_btn:
+        if st.button("🔄 Actualizar", key="an_refresh", type="secondary"):
+            _load_sheet_data.clear()
+            st.rerun()
+
+    with st.spinner("Cargando datos..."):
+        df_ei, df_es = _load_sheet_data()
+
+    HAB_COLS  = ["Pase", "Tacle", "Percepción", "Frustración", "Foco"]
+    RAG_SCORE = {"Verde": 3, "Amarillo": 2, "Rojo": 1, "": None}
+
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "📋 Eval Individual",
+        "📈 Evolución Trimestral",
+        "📊 Encuesta Staff",
+        "🤖 Consulta IA",
+    ])
+
+    # ── Tab 1: resumen RAG por jugador ─────────────────────────────────────────
+    with tab1:
+        st.markdown('<div class="fsec">Resumen por jugador</div>', unsafe_allow_html=True)
+        if df_ei.empty:
+            st.info("Todavía no hay datos de evaluación individual.")
+        else:
+            trimestres_ei = sorted(df_ei["Trimestre"].unique().tolist())
+            t_sel = st.selectbox("Trimestre", trimestres_ei, key="an_t_ei")
+            df_t = df_ei[df_ei["Trimestre"] == t_sel].copy()
+            available_hab = [c for c in HAB_COLS if c in df_t.columns]
+            for col in available_hab:
+                df_t[col + "_s"] = df_t[col].map(RAG_SCORE)
+            score_cols = [c + "_s" for c in available_hab]
+            if score_cols:
+                summary = (
+                    df_t.groupby("Jugador")[score_cols]
+                    .mean()
+                    .round(2)
+                    .reset_index()
+                )
+                summary.columns = ["Jugador"] + available_hab
+                summary["Promedio"] = summary[available_hab].mean(axis=1).round(2)
+                summary = summary.sort_values("Promedio")
+                st.dataframe(summary, use_container_width=True, hide_index=True)
+
+                st.markdown('<div class="fsec">Jugadores con más rojos</div>', unsafe_allow_html=True)
+                for col in available_hab:
+                    if col in df_t.columns:
+                        rojos = df_t[df_t[col] == "Rojo"]["Jugador"].tolist()
+                        if rojos:
+                            st.markdown(
+                                "**" + col + ":** " + ", ".join(rojos),
+                                unsafe_allow_html=False,
+                            )
+
+    # ── Tab 2: evolución trimestral ────────────────────────────────────────────
+    with tab2:
+        st.markdown('<div class="fsec">Evolución trimestral por habilidad</div>', unsafe_allow_html=True)
+        if df_ei.empty or df_ei["Trimestre"].nunique() < 2:
+            st.info("Se necesitan datos de al menos 2 trimestres para ver la evolución.")
+        else:
+            df_evol = df_ei.copy()
+            available_hab2 = [c for c in HAB_COLS if c in df_evol.columns]
+            for col in available_hab2:
+                df_evol[col + "_s"] = df_evol[col].map(RAG_SCORE)
+            score_cols2 = [c + "_s" for c in available_hab2]
+            evol = (
+                df_evol.groupby("Trimestre")[score_cols2]
+                .mean()
+                .round(2)
+                .reset_index()
+            )
+            evol.columns = ["Trimestre"] + available_hab2
+            evol = evol.set_index("Trimestre")
+            st.bar_chart(evol)
+            st.markdown(
+                '<div style="font-size:0.8rem;color:rgba(168,216,240,0.4);margin-top:8px;">'
+                'Escala: 1 = Rojo · 2 = Amarillo · 3 = Verde</div>',
+                unsafe_allow_html=True,
+            )
+
+    # ── Tab 3: encuesta staff ──────────────────────────────────────────────────
+    with tab3:
+        st.markdown('<div class="fsec">Promedios de encuesta staff por trimestre</div>', unsafe_allow_html=True)
+        if df_es.empty:
+            st.info("Todavía no hay datos de encuesta staff.")
+        else:
+            p_keys = [row[0] for row in _ENC_PREGS]
+            available_p = [c for c in p_keys if c in df_es.columns]
+            if available_p:
+                for c in available_p:
+                    df_es[c] = pd.to_numeric(df_es[c], errors="coerce")
+                trimestres_es = sorted(df_es["Trimestre"].unique().tolist())
+                t_sel_es = st.selectbox("Trimestre", trimestres_es, key="an_t_es")
+                df_ts = df_es[df_es["Trimestre"] == t_sel_es]
+                prom = df_ts[available_p].mean().round(2).reset_index()
+                prom.columns = ["Pregunta", "Promedio"]
+                label_map = {row[0]: row[2] for row in _ENC_PREGS}
+                cat_map   = {row[0]: row[1] for row in _ENC_PREGS}
+                prom["Categoría"]  = prom["Pregunta"].map(cat_map)
+                prom["Descripción"] = prom["Pregunta"].map(label_map)
+                st.dataframe(
+                    prom[["Categoría", "Pregunta", "Descripción", "Promedio"]],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.bar_chart(prom.set_index("Pregunta")["Promedio"])
+
+    # ── Tab 4: consulta libre IA ───────────────────────────────────────────────
+    with tab4:
+        st.markdown('<div class="fsec">Consulta libre con IA</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div style="font-size:0.85rem;color:rgba(168,216,240,0.5);margin-bottom:16px;">'
+            'Ejemplos: "¿quién tuvo más rojos en tacle en T1?" · "¿cómo evolucionó la defensa?" · '
+            '"¿qué destacó el staff en T2?"</div>',
+            unsafe_allow_html=True,
+        )
+        question = st.text_input(
+            "Tu pregunta",
+            placeholder="Escribí tu consulta en lenguaje natural...",
+            key="an_question",
+        )
+        if st.button("🤖  CONSULTAR", key="an_ask", use_container_width=True):
+            if not question.strip():
+                st.warning("Escribí una pregunta primero.")
+            elif "ANTHROPIC_API_KEY" not in st.secrets:
+                st.error("Falta configurar ANTHROPIC_API_KEY en los Streamlit Secrets.")
+            else:
+                with st.spinner("Consultando IA..."):
+                    try:
+                        import anthropic
+                        ctx_parts = []
+                        if not df_ei.empty:
+                            ctx_parts.append("## Eval_Individual\n" + df_ei.to_csv(index=False))
+                        if not df_es.empty:
+                            ctx_parts.append("## Encuesta_Staff\n" + df_es.to_csv(index=False))
+                        context = "\n\n".join(ctx_parts) if ctx_parts else "No hay datos disponibles aún."
+
+                        ai_client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+                        msg = ai_client.messages.create(
+                            model="claude-haiku-4-5-20251001",
+                            max_tokens=1024,
+                            messages=[{
+                                "role": "user",
+                                "content": (
+                                    "Sos un asistente de análisis para el equipo de rugby M10 Pulpos del Liceo Naval de Buenos Aires. "
+                                    "Analizá los datos y respondé la siguiente pregunta en español, de forma clara y concisa.\n\n"
+                                    "PREGUNTA: " + question.strip() + "\n\n"
+                                    "DATOS:\n" + context
+                                ),
+                            }],
+                        )
+                        answer = msg.content[0].text
+                        st.markdown(
+                            '<div class="ai-answer">' + answer + '</div>',
+                            unsafe_allow_html=True,
+                        )
+                    except Exception as e:
+                        import traceback
+                        st.error(f"❌ Error al consultar la IA: {e}")
+                        st.error(traceback.format_exc())
+
+
 # ─── Page routing via query params ───────────────────────────────────────────
-if st.query_params.get("page") == "autorizacion":
+_page = st.query_params.get("page")
+if _page == "autorizacion":
     render_autorizacion()
+    st.stop()
+elif _page == "eval_individual":
+    render_eval_individual()
+    st.stop()
+elif _page == "encuesta_staff":
+    render_encuesta_staff()
+    st.stop()
+elif _page == "analisis":
+    render_analisis()
     st.stop()
 
 # ─── Load logo as base64 ─────────────────────────────────────────────────────
