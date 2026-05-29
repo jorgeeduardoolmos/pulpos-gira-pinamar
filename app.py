@@ -476,6 +476,17 @@ def render_autorizacion():
 # SHARED CONSTANTS
 # ═════════════════════════════════════════════════════════════════════════════
 
+STAFF_CREDS = {
+    "Fran":   "zanahoria",
+    "Ale":    "pera",
+    "Marian": "sombrilla",
+    "Mati":   "naranja",
+    "Ote":    "tomate",
+    "Cris":   "arbol",
+    "Ema":    "reposera",
+    "Tucu":   "soloyo",
+}
+
 JUGADORES = [
     "ANSALDO, VALENTIN NAPOLEON", "BISSONE, RAMON", "BOPP, FLORIAN",
     "BUTTINI, MANUEL", "CALZADA, FACUNDO OSCAR", "CROSTA, BELTRÁN",
@@ -524,6 +535,12 @@ _ENC_PREGS = [
 # ═════════════════════════════════════════════════════════════════════════════
 # SHARED HELPERS
 # ═════════════════════════════════════════════════════════════════════════════
+
+def _require_login():
+    if not st.session_state.get("staff_user"):
+        st.query_params["page"] = "login"
+        st.rerun()
+
 
 def _sheets_open():
     import gspread
@@ -619,14 +636,111 @@ def _load_sheet_data():
 
 
 # ═════════════════════════════════════════════════════════════════════════════
+# LOGIN + HUB STAFF
+# ═════════════════════════════════════════════════════════════════════════════
+
+def render_login():
+    _internal_css()
+    st.markdown("""
+<style>
+.login-wrap { max-width: 420px; margin: 60px auto 0; }
+.hub-card {
+    background: rgba(26,107,191,0.1);
+    border: 1px solid rgba(100,180,255,0.25);
+    border-radius: 14px;
+    padding: 28px 20px 16px;
+    text-align: center;
+    min-height: 190px;
+    transition: border-color 0.2s;
+}
+.hub-card:hover { border-color: rgba(100,180,255,0.55); }
+.hub-icon { font-size: 2.4rem; margin-bottom: 10px; }
+.hub-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: #a8d8f0; margin-bottom: 8px;
+}
+.hub-desc { font-size: 0.83rem; color: rgba(168,216,240,0.5); line-height: 1.55; }
+</style>
+""", unsafe_allow_html=True)
+
+    user = st.session_state.get("staff_user")
+
+    # ── HUB (ya logueado) ────────────────────────────────────────────────────
+    if user:
+        st.markdown(
+            '<div class="page-header">'
+            '<h1>🐙 Panel <span>Staff</span></h1>'
+            '<p>Hola, ' + user + ' · División M10 · Liceo Naval</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+        hub_items = [
+            ("hub_ei",  "eval_individual",  "📋", "Evaluación Individual",
+             "Completá la grilla RAG de los 35 jugadores por habilidad."),
+            ("hub_es",  "encuesta_staff",   "📊", "Encuesta Staff",
+             "Respondé la evaluación trimestral del equipo y el staff."),
+            ("hub_an",  "analisis",         "📈", "Análisis & IA",
+             "Revisá los datos del equipo y consultá a la IA."),
+        ]
+        c1, c2, c3 = st.columns(3)
+        for col, (btn_key, page, icon, title, desc) in zip([c1, c2, c3], hub_items):
+            with col:
+                st.markdown(
+                    '<div class="hub-card">'
+                    '<div class="hub-icon">' + icon + '</div>'
+                    '<div class="hub-title">' + title + '</div>'
+                    '<div class="hub-desc">' + desc + '</div>'
+                    '</div>',
+                    unsafe_allow_html=True,
+                )
+                if st.button("ABRIR →", key=btn_key, use_container_width=True):
+                    st.query_params["page"] = page
+                    st.rerun()
+
+        st.markdown('<div style="height:32px;"></div>', unsafe_allow_html=True)
+        if st.button("← Cerrar sesión", key="hub_logout", type="secondary"):
+            del st.session_state["staff_user"]
+            st.rerun()
+
+    # ── LOGIN ────────────────────────────────────────────────────────────────
+    else:
+        st.markdown("""
+        <div class="page-header">
+            <h1>🐙 <span>Staff</span> Login</h1>
+            <p>División M10 · Liceo Naval</p>
+        </div>
+        <div class="login-wrap">
+        """, unsafe_allow_html=True)
+
+        with st.form("login_form"):
+            usuario  = st.text_input("Usuario", placeholder="Tu nombre")
+            password = st.text_input("Contraseña", type="password", placeholder="••••••••")
+            submit   = st.form_submit_button("ENTRAR →", use_container_width=True)
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        if submit:
+            if STAFF_CREDS.get(usuario) == password and password != "":
+                st.session_state.staff_user = usuario
+                st.rerun()
+            else:
+                st.error("Usuario o contraseña incorrectos.")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
 # PÁGINA 1 — Evaluación Técnica Individual
 # ═════════════════════════════════════════════════════════════════════════════
 
 def render_eval_individual():
+    _require_login()
     import pandas as pd
     _internal_css()
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
 
+    user = st.session_state.get("staff_user", "")
     st.markdown("""
     <div class="page-header">
         <h1>📋 Evaluación <span>Técnica Individual</span></h1>
@@ -634,8 +748,8 @@ def render_eval_individual():
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← VOLVER", key="ei_back", type="secondary"):
-        st.query_params.clear()
+    if st.button("← VOLVER AL PANEL", key="ei_back", type="secondary"):
+        st.query_params["page"] = "login"
         st.rerun()
 
     if st.session_state.get("ei_saved"):
@@ -655,7 +769,8 @@ def render_eval_individual():
     with c1:
         trimestre = st.selectbox("Trimestre", ["T1", "T2", "T3", "T4"], key="ei_trimestre")
     with c2:
-        evaluador = st.text_input("Evaluador *", placeholder="Tu nombre", key="ei_evaluador")
+        st.text_input("Evaluador", value=user, disabled=True, key="ei_evaluador_display")
+    evaluador = user
 
     st.markdown('<div class="fsec">Grillas por habilidad</div>', unsafe_allow_html=True)
     st.markdown(
@@ -725,9 +840,11 @@ def render_eval_individual():
 # ═════════════════════════════════════════════════════════════════════════════
 
 def render_encuesta_staff():
+    _require_login()
     _internal_css()
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
 
+    user = st.session_state.get("staff_user", "")
     st.markdown("""
     <div class="page-header">
         <h1>📊 Encuesta <span>General Staff</span></h1>
@@ -735,8 +852,8 @@ def render_encuesta_staff():
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← VOLVER", key="es_back", type="secondary"):
-        st.query_params.clear()
+    if st.button("← VOLVER AL PANEL", key="es_back", type="secondary"):
+        st.query_params["page"] = "login"
         st.rerun()
 
     if st.session_state.get("es_saved"):
@@ -757,7 +874,8 @@ def render_encuesta_staff():
         with c1:
             trimestre = st.selectbox("Trimestre", ["T1", "T2", "T3", "T4"], key="es_trimestre")
         with c2:
-            evaluador = st.text_input("Evaluador *", placeholder="Tu nombre", key="es_evaluador")
+            st.text_input("Evaluador", value=user, disabled=True, key="es_evaluador_display")
+        evaluador = user
 
         numeric_vals = {}
         current_cat = None
@@ -839,6 +957,7 @@ def render_encuesta_staff():
 # ═════════════════════════════════════════════════════════════════════════════
 
 def render_analisis():
+    _require_login()
     import pandas as pd
     _internal_css()
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
@@ -850,8 +969,8 @@ def render_analisis():
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← VOLVER", key="an_back", type="secondary"):
-        st.query_params.clear()
+    if st.button("← VOLVER AL PANEL", key="an_back", type="secondary"):
+        st.query_params["page"] = "login"
         st.rerun()
 
     col_ref, col_btn = st.columns([4, 1])
@@ -1020,6 +1139,9 @@ def render_analisis():
 _page = st.query_params.get("page")
 if _page == "autorizacion":
     render_autorizacion()
+    st.stop()
+elif _page == "login":
+    render_login()
     st.stop()
 elif _page == "eval_individual":
     render_eval_individual()
