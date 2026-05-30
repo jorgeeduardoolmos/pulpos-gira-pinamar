@@ -484,6 +484,7 @@ STAFF_CREDS = {
     "Cris":   "arbol",
     "Tucu":   "soloyo",
     "Javier": "hamaca",
+    "Ema":    "Postes",
 }
 
 JUGADORES = [
