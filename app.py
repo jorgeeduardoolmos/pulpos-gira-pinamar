@@ -479,12 +479,11 @@ def render_autorizacion():
 STAFF_CREDS = {
     "Fran":   "zanahoria",
     "Ale":    "pera",
-    "Marian": "sombrilla",
     "Mati":   "naranja",
     "Ote":    "tomate",
     "Cris":   "arbol",
-    "Ema":    "reposera",
     "Tucu":   "soloyo",
+    "Javier": "hamaca",
 }
 
 JUGADORES = [
