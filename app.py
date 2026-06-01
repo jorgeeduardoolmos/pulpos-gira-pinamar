@@ -720,7 +720,7 @@ def render_login():
             ("hub_es", "encuesta_staff",  "📊", "Encuesta Staff",
              "Respondé la evaluación trimestral del equipo y el staff.", False),
             ("hub_an", "analisis",        "📈", "Análisis & IA",
-             "Revisá los datos del equipo y consultá a la IA.", True),
+             "Revisá los datos del equipo y consultá a la IA.", user == "Tucu"),
         ]
         c1, c2, c3 = st.columns(3)
         for col, (btn_key, page, icon, title, desc, enabled) in zip([c1, c2, c3], hub_items):
@@ -1093,6 +1093,9 @@ def render_encuesta_staff():
 
 def render_analisis():
     _require_login()
+    if st.session_state.get("staff_user") != "Tucu":
+        st.query_params["page"] = "login"
+        st.rerun()
     import pandas as pd
     _internal_css()
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
