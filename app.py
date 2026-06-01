@@ -720,7 +720,7 @@ def render_login():
             ("hub_es", "encuesta_staff",  "📊", "Encuesta Staff",
              "Respondé la evaluación trimestral del equipo y el staff.", True),
             ("hub_an", "analisis",        "📈", "Análisis & IA",
-             "Revisá los datos del equipo y consultá a la IA.", False),
+             "Revisá los datos del equipo y consultá a la IA.", True),
         ]
         c1, c2, c3 = st.columns(3)
         for col, (btn_key, page, icon, title, desc, enabled) in zip([c1, c2, c3], hub_items):
