@@ -1121,15 +1121,19 @@ def render_analisis():
     RAG_SCORE = {"Verde": 3, "Amarillo": 2, "Rojo": 1, "": None}
 
     tab1, tab2, tab3, tab4 = st.tabs([
-        "📋 Eval Individual",
+        "📋 Evaluación Individual",
         "📈 Evolución Trimestral",
         "📊 Encuesta Staff",
         "🤖 Consulta IA",
     ])
 
-    # ── Tab 1: resumen RAG por jugador ─────────────────────────────────────────
+    _DIVIDER = (
+        '<div style="margin:28px 0;height:1px;background:'
+        'linear-gradient(to right,transparent,rgba(100,180,255,0.22),transparent);"></div>'
+    )
+
+    # ── Tab 1: Evaluación Individual ───────────────────────────────────────────
     with tab1:
-        st.markdown('<div class="fsec">Resumen por jugador</div>', unsafe_allow_html=True)
         if df_ei.empty:
             st.info("Todavía no hay datos de evaluación individual.")
         else:
@@ -1140,27 +1144,99 @@ def render_analisis():
             for col in available_hab:
                 df_t[col + "_s"] = df_t[col].map(RAG_SCORE)
             score_cols = [c + "_s" for c in available_hab]
-            if score_cols:
-                summary = (
-                    df_t.groupby("Jugador")[score_cols]
-                    .mean()
-                    .round(2)
-                    .reset_index()
+
+            if not score_cols:
+                st.warning("No se encontraron columnas de habilidades.")
+            else:
+                # Pivot: un promedio por jugador (consolida múltiples evaluadores)
+                pivot = df_t.groupby("Jugador")[score_cols].mean().round(2).reset_index()
+                pivot.columns = ["Jugador"] + available_hab
+                pivot["_avg"] = pivot[available_hab].mean(axis=1).round(2)
+
+                def _rc(v):
+                    if pd.isna(v): return "#555"
+                    return "#22c55e" if v >= 2.5 else ("#eab308" if v >= 1.5 else "#ef4444")
+                def _rl(v):
+                    if pd.isna(v): return "—"
+                    return "Verde" if v >= 2.5 else ("Amarillo" if v >= 1.5 else "Rojo")
+
+                # ── 1. MÉTRICAS POR HABILIDAD ─────────────────────────────────
+                st.markdown('<div class="fsec">Promedio de la división</div>', unsafe_allow_html=True)
+                m_cols = st.columns(len(available_hab))
+                for mc, hab in zip(m_cols, available_hab):
+                    sc = hab + "_s"
+                    avg = df_t[sc].mean() if sc in df_t.columns else float("nan")
+                    color = _rc(avg)
+                    pct = 0 if pd.isna(avg) else round((avg - 1) / 2 * 100)
+                    val_str = f"{avg:.1f}" if not pd.isna(avg) else "—"
+                    mc.markdown(
+                        '<div style="background:rgba(26,107,191,0.1);border:1px solid rgba(100,180,255,0.2);'
+                        'border-radius:12px;padding:16px 10px 14px;text-align:center;">'
+                        '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.7rem;font-weight:700;'
+                        'letter-spacing:0.15em;text-transform:uppercase;color:rgba(168,216,240,0.5);margin-bottom:8px;">'
+                        + hab + '</div>'
+                        '<div style="font-family:Bebas Neue,sans-serif;font-size:2.4rem;color:' + color + ';line-height:1;">'
+                        + val_str + '</div>'
+                        '<div style="font-size:0.7rem;color:' + color + ';margin:3px 0 10px;">' + _rl(avg) + '</div>'
+                        '<div style="background:rgba(255,255,255,0.08);border-radius:4px;height:5px;overflow:hidden;">'
+                        '<div style="width:' + str(pct) + '%;background:' + color + ';height:100%;border-radius:4px;'
+                        'transition:width 0.4s;"></div></div></div>',
+                        unsafe_allow_html=True,
+                    )
+
+                st.markdown(_DIVIDER, unsafe_allow_html=True)
+
+                # ── 2. MAPA DE CALOR ──────────────────────────────────────────
+                st.markdown('<div class="fsec">Mapa de calor por jugador</div>', unsafe_allow_html=True)
+                import plotly.graph_objects as go
+
+                players_sorted = pivot.sort_values("_avg", ascending=True)["Jugador"].tolist()
+                z_vals = pivot.set_index("Jugador").loc[players_sorted, available_hab].values.tolist()
+
+                def _emoji(v):
+                    if pd.isna(v): return "—"
+                    return "🟢" if v >= 2.5 else ("🟡" if v >= 1.5 else "🔴")
+
+                text_vals = [[_emoji(cell) for cell in row] for row in z_vals]
+
+                fig_hm = go.Figure(data=go.Heatmap(
+                    z=z_vals,
+                    x=available_hab,
+                    y=players_sorted,
+                    text=text_vals,
+                    texttemplate="%{text}",
+                    textfont=dict(size=13),
+                    colorscale=[[0.0,"#ef4444"],[0.5,"#eab308"],[1.0,"#22c55e"]],
+                    zmin=1, zmax=3,
+                    showscale=False,
+                    xgap=3, ygap=3,
+                ))
+                fig_hm.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#a8d8f0", family="Barlow, sans-serif", size=11),
+                    margin=dict(l=230, r=20, t=50, b=10),
+                    height=max(420, len(players_sorted) * 25 + 80),
+                    xaxis=dict(side="top", tickfont=dict(size=12, color="#a8d8f0"), fixedrange=True),
+                    yaxis=dict(tickfont=dict(size=10, color="#c8e0f0"), autorange="reversed", fixedrange=True),
                 )
-                summary.columns = ["Jugador"] + available_hab
-                summary["Promedio"] = summary[available_hab].mean(axis=1).round(2)
-                summary = summary.sort_values("Promedio")
-                st.dataframe(summary, use_container_width=True, hide_index=True)
+                st.plotly_chart(fig_hm, use_container_width=True, config={"displayModeBar": False})
+
+                st.markdown(_DIVIDER, unsafe_allow_html=True)
+
+                # ── 3. TABLA DETALLE + ROJOS ──────────────────────────────────
+                st.markdown('<div class="fsec">Detalle por jugador</div>', unsafe_allow_html=True)
+                tbl = pivot.drop(columns=["_avg"]).copy()
+                tbl["Promedio"] = pivot["_avg"]
+                tbl = tbl.sort_values("Promedio")
+                st.dataframe(tbl, use_container_width=True, hide_index=True)
 
                 st.markdown('<div class="fsec">Jugadores con más rojos</div>', unsafe_allow_html=True)
                 for col in available_hab:
                     if col in df_t.columns:
                         rojos = df_t[df_t[col] == "Rojo"]["Jugador"].tolist()
                         if rojos:
-                            st.markdown(
-                                "**" + col + ":** " + ", ".join(rojos),
-                                unsafe_allow_html=False,
-                            )
+                            st.markdown("**" + col + ":** " + ", ".join(rojos))
 
     # ── Tab 2: evolución trimestral ────────────────────────────────────────────
     with tab2:
