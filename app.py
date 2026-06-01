@@ -1397,15 +1397,11 @@ def render_analisis():
                         st.caption("Sin respuestas para este trimestre.")
                     else:
                         for _, row_r in respuestas.iterrows():
-                            nombre = str(row_r.get("Evaluador", "—"))
-                            texto  = str(row_r[col_name]).strip()
+                            texto = str(row_r[col_name]).strip()
                             st.markdown(
                                 '<div style="border-left:3px solid ' + color + ';'
                                 'background:rgba(26,107,191,0.07);border-radius:0 10px 10px 0;'
                                 'padding:14px 20px;margin-bottom:10px;">'
-                                '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.72rem;'
-                                'font-weight:700;letter-spacing:0.18em;text-transform:uppercase;'
-                                'color:' + color + ';margin-bottom:6px;">' + nombre + '</div>'
                                 '<div style="color:#c8e0f0;font-size:0.92rem;line-height:1.7;">'
                                 + texto + '</div></div>',
                                 unsafe_allow_html=True,
