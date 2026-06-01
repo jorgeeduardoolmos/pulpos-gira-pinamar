@@ -1266,30 +1266,97 @@ def render_analisis():
 
     # ── Tab 3: encuesta staff ──────────────────────────────────────────────────
     with tab3:
-        st.markdown('<div class="fsec">Promedios de encuesta staff por trimestre</div>', unsafe_allow_html=True)
         if df_es.empty:
             st.info("Todavía no hay datos de encuesta staff.")
         else:
-            p_keys = [row[0] for row in _ENC_PREGS]
-            available_p = [c for c in p_keys if c in df_es.columns]
-            if available_p:
+            # Detectar columnas por clave (p1…p17) O por descripción completa
+            # (en caso de que el usuario haya cambiado los headers del sheet)
+            col_map = {}   # col_en_df → (p_key, categoria, descripcion)
+            for row in _ENC_PREGS:
+                p_key, cat, desc = row[0], row[1], row[2]
+                if p_key in df_es.columns:
+                    col_map[p_key] = (p_key, cat, desc)
+                elif desc in df_es.columns:
+                    col_map[desc] = (p_key, cat, desc)
+
+            if not col_map:
+                st.warning("No se encontraron columnas de preguntas en el sheet. "
+                           "Columnas disponibles: " + ", ".join(df_es.columns.tolist()))
+            else:
+                available_p = list(col_map.keys())
                 for c in available_p:
                     df_es[c] = pd.to_numeric(df_es[c], errors="coerce")
+
                 trimestres_es = sorted(df_es["Trimestre"].unique().tolist())
                 t_sel_es = st.selectbox("Trimestre", trimestres_es, key="an_t_es")
-                df_ts = df_es[df_es["Trimestre"] == t_sel_es]
+                df_ts = df_es[df_es["Trimestre"] == t_sel_es].copy()
+
+                # Promedio por pregunta
                 prom = df_ts[available_p].mean().round(2).reset_index()
-                prom.columns = ["Pregunta", "Promedio"]
-                label_map = {row[0]: row[2] for row in _ENC_PREGS}
-                cat_map   = {row[0]: row[1] for row in _ENC_PREGS}
-                prom["Categoría"]  = prom["Pregunta"].map(cat_map)
-                prom["Descripción"] = prom["Pregunta"].map(label_map)
-                st.dataframe(
-                    prom[["Categoría", "Pregunta", "Descripción", "Promedio"]],
-                    use_container_width=True,
-                    hide_index=True,
+                prom.columns = ["col", "Promedio"]
+                prom["Categoría"]   = prom["col"].map(lambda c: col_map[c][1])
+                prom["Descripción"] = prom["col"].map(lambda c: col_map[c][2])
+
+                # ── MÉTRICAS POR CATEGORÍA ────────────────────────────────────
+                categorias = ["Técnica", "Táctica", "Emocional", "Staff"]
+                cat_cols = st.columns(len(categorias))
+                for cc, cat in zip(cat_cols, categorias):
+                    cat_avg = prom[prom["Categoría"] == cat]["Promedio"].mean()
+                    color = _rc(cat_avg) if not pd.isna(cat_avg) else "#555"
+                    val_str = f"{cat_avg:.1f}" if not pd.isna(cat_avg) else "—"
+                    pct = 0 if pd.isna(cat_avg) else round((cat_avg - 1) / 3 * 100)
+                    cc.markdown(
+                        '<div style="background:rgba(26,107,191,0.1);border:1px solid rgba(100,180,255,0.2);'
+                        'border-radius:12px;padding:16px 10px 14px;text-align:center;">'
+                        '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.7rem;font-weight:700;'
+                        'letter-spacing:0.15em;text-transform:uppercase;color:rgba(168,216,240,0.5);margin-bottom:8px;">'
+                        + cat + '</div>'
+                        '<div style="font-family:Bebas Neue,sans-serif;font-size:2.4rem;color:' + color + ';line-height:1;">'
+                        + val_str + '</div>'
+                        '<div style="font-size:0.7rem;color:' + color + ';margin:3px 0 10px;">' + _rl(cat_avg) + '</div>'
+                        '<div style="background:rgba(255,255,255,0.08);border-radius:4px;height:5px;overflow:hidden;">'
+                        '<div style="width:' + str(pct) + '%;background:' + color + ';height:100%;border-radius:4px;"></div>'
+                        '</div></div>',
+                        unsafe_allow_html=True,
+                    )
+
+                st.markdown(_DIVIDER, unsafe_allow_html=True)
+
+                # ── GRÁFICO DE BARRAS POR PREGUNTA ────────────────────────────
+                st.markdown('<div class="fsec">Detalle por pregunta</div>', unsafe_allow_html=True)
+                import plotly.graph_objects as go
+
+                bar_colors = [_rc(v) for v in prom["Promedio"].tolist()]
+                fig_bar = go.Figure(go.Bar(
+                    x=prom["Promedio"].tolist(),
+                    y=prom["Descripción"].tolist(),
+                    orientation="h",
+                    marker_color=bar_colors,
+                    text=[f"{v:.1f}" for v in prom["Promedio"].tolist()],
+                    textposition="outside",
+                    textfont=dict(color="#a8d8f0", size=11),
+                ))
+                fig_bar.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#a8d8f0", family="Barlow, sans-serif", size=11),
+                    margin=dict(l=10, r=60, t=10, b=10),
+                    height=max(380, len(prom) * 30 + 60),
+                    xaxis=dict(range=[0, 4.5], tickvals=[1,2,3,4],
+                               gridcolor="rgba(100,180,255,0.1)", fixedrange=True,
+                               tickfont=dict(color="#a8d8f0")),
+                    yaxis=dict(autorange="reversed", fixedrange=True,
+                               tickfont=dict(size=10, color="#c8e0f0")),
                 )
-                st.bar_chart(prom.set_index("Pregunta")["Promedio"])
+                st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
+
+                st.markdown(_DIVIDER, unsafe_allow_html=True)
+
+                # ── TABLA COMPLETA ────────────────────────────────────────────
+                st.markdown('<div class="fsec">Tabla completa</div>', unsafe_allow_html=True)
+                tbl_es = prom[["Categoría", "Descripción", "Promedio"]].copy()
+                tbl_es = tbl_es.sort_values(["Categoría", "Promedio"])
+                st.dataframe(tbl_es, use_container_width=True, hide_index=True)
 
     # ── Tab 4: consulta libre IA ───────────────────────────────────────────────
     with tab4:
