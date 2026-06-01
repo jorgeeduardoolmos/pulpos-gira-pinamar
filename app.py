@@ -716,9 +716,9 @@ def render_login():
 
         hub_items = [
             ("hub_ei", "eval_individual", "📋", "Evaluación Individual",
-             "Completá la grilla RAG de los 35 jugadores por habilidad.", True),
+             "Completá la grilla RAG de los 35 jugadores por habilidad.", False),
             ("hub_es", "encuesta_staff",  "📊", "Encuesta Staff",
-             "Respondé la evaluación trimestral del equipo y el staff.", True),
+             "Respondé la evaluación trimestral del equipo y el staff.", False),
             ("hub_an", "analisis",        "📈", "Análisis & IA",
              "Revisá los datos del equipo y consultá a la IA.", True),
         ]
@@ -726,7 +726,7 @@ def render_login():
         for col, (btn_key, page, icon, title, desc, enabled) in zip([c1, c2, c3], hub_items):
             with col:
                 card_class = "hub-card" if enabled else "hub-card disabled"
-                extra = "" if enabled else '<div class="hub-soon">Disponible en T1</div>'
+                extra = "" if enabled else '<div class="hub-soon">Disponible en T2</div>'
                 st.markdown(
                     '<div class="' + card_class + '">'
                     '<div class="hub-icon">' + icon + '</div>'
@@ -850,7 +850,7 @@ def render_eval_individual():
     st.markdown('<div class="fsec">Datos generales</div>', unsafe_allow_html=True)
     c1, c2 = st.columns([1, 2])
     with c1:
-        trimestre = st.selectbox("Trimestre", ["T1", "T2", "T3", "T4"], key="ei_trimestre")
+        trimestre = st.selectbox("Trimestre", ["T2", "T3", "T4"], key="ei_trimestre")
     with c2:
         st.text_input("Evaluador", value=user, disabled=True, key="ei_evaluador_display")
     evaluador = user
@@ -1007,7 +1007,7 @@ def render_encuesta_staff():
         st.markdown('<div class="fsec">Datos generales</div>', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 2])
         with c1:
-            trimestre = st.selectbox("Trimestre", ["T1", "T2", "T3", "T4"], key="es_trimestre")
+            trimestre = st.selectbox("Trimestre", ["T2", "T3", "T4"], key="es_trimestre")
         with c2:
             st.text_input("Evaluador", value=user, disabled=True, key="es_evaluador_display")
         evaluador = user
