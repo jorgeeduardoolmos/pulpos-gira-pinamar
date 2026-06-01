@@ -1358,6 +1358,59 @@ def render_analisis():
                 tbl_es = tbl_es.sort_values(["Categoría", "Promedio"])
                 st.dataframe(tbl_es, use_container_width=True, hide_index=True)
 
+                st.markdown(_DIVIDER, unsafe_allow_html=True)
+
+                # ── RESPUESTAS ABIERTAS ───────────────────────────────────────
+                st.markdown('<div class="fsec">Respuestas abiertas</div>', unsafe_allow_html=True)
+
+                # Detectar columnas por clave (P18…) o descripción
+                _OPEN = [
+                    ("P18", "Aprendizajes y avances técnicos/tácticos", "#70c8f0", "📚"),
+                    ("P19", "Oportunidades de mejora del staff",        "#f59e0b", "🔧"),
+                    ("P20", "Suma libre",                               "#a78bfa", "💬"),
+                ]
+                for p_key, p_desc, color, icon in _OPEN:
+                    # Buscar la columna por clave o descripción
+                    col_name = None
+                    if p_key in df_ts.columns:
+                        col_name = p_key
+                    elif p_desc in df_ts.columns:
+                        col_name = p_desc
+
+                    st.markdown(
+                        '<div style="display:flex;align-items:center;gap:10px;margin:20px 0 10px;">'
+                        '<span style="font-size:1.3rem;">' + icon + '</span>'
+                        '<span style="font-family:Barlow Condensed,sans-serif;font-size:0.9rem;font-weight:700;'
+                        'letter-spacing:0.15em;text-transform:uppercase;color:' + color + ';">'
+                        + p_desc + '</span></div>',
+                        unsafe_allow_html=True,
+                    )
+
+                    if col_name is None:
+                        st.caption("Columna no encontrada en el sheet.")
+                        continue
+
+                    respuestas = df_ts[["Evaluador", col_name]].dropna(subset=[col_name])
+                    respuestas = respuestas[respuestas[col_name].astype(str).str.strip() != ""]
+
+                    if respuestas.empty:
+                        st.caption("Sin respuestas para este trimestre.")
+                    else:
+                        for _, row_r in respuestas.iterrows():
+                            nombre = str(row_r.get("Evaluador", "—"))
+                            texto  = str(row_r[col_name]).strip()
+                            st.markdown(
+                                '<div style="border-left:3px solid ' + color + ';'
+                                'background:rgba(26,107,191,0.07);border-radius:0 10px 10px 0;'
+                                'padding:14px 20px;margin-bottom:10px;">'
+                                '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.72rem;'
+                                'font-weight:700;letter-spacing:0.18em;text-transform:uppercase;'
+                                'color:' + color + ';margin-bottom:6px;">' + nombre + '</div>'
+                                '<div style="color:#c8e0f0;font-size:0.92rem;line-height:1.7;">'
+                                + texto + '</div></div>',
+                                unsafe_allow_html=True,
+                            )
+
     # ── Tab 4: consulta libre IA ───────────────────────────────────────────────
     with tab4:
         st.markdown('<div class="fsec">Consulta libre con IA</div>', unsafe_allow_html=True)
