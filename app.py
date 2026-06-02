@@ -1214,6 +1214,38 @@ def _build_panel_html(df_ei, df_es):
     app_jsx = (base / "panel" / "app.jsx").read_text(encoding="utf-8")
     data_js = "window.RUGBY = " + _build_rugby_data(df_ei, df_es) + ";"
 
+    # Override: sidebar sticky (no fixed) + auto-resize postMessage
+    override_css = """
+<style>
+/* Sticky layout para iframe embebido — reemplaza position:fixed del diseño */
+.sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    left: unset !important;
+    bottom: unset !important;
+    z-index: 2 !important;
+}
+.main { margin-left: 0 !important; }
+.topbar { position: sticky !important; top: 0 !important; z-index: 5 !important; }
+html, body, #root { height: auto !important; min-height: 100%; }
+</style>
+"""
+    # Script que envía la altura real al padre para que el iframe se auto-expanda
+    resize_script = """
+<script>
+(function(){
+    function send(){
+        var h = document.documentElement.scrollHeight;
+        window.parent.postMessage({type:'streamlit:setFrameHeight', height:h}, '*');
+    }
+    // disparar varias veces mientras React termina de renderizar
+    [100,400,900,1800,3000].forEach(function(ms){ setTimeout(send, ms); });
+    new MutationObserver(send).observe(document.body,{subtree:true,childList:true,attributes:false});
+})();
+</script>
+"""
     return "\n".join([
         '<!DOCTYPE html><html lang="es"><head>',
         '<meta charset="UTF-8"/>',
@@ -1221,6 +1253,7 @@ def _build_panel_html(df_ei, df_es):
         '<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700'
         '&family=Saira:wght@400;450;500;600;700&display=swap" rel="stylesheet"/>',
         css,
+        override_css,
         '</head><body><div id="root"></div>',
         '<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" '
         'integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>',
@@ -1233,6 +1266,7 @@ def _build_panel_html(df_ei, df_es):
         '<script type="text/babel">' + st_jsx  + '</script>',
         '<script type="text/babel">' + ind_jsx + '</script>',
         '<script type="text/babel">' + app_jsx + '</script>',
+        resize_script,
         '</body></html>',
     ])
 
@@ -1244,22 +1278,31 @@ def render_analisis():
         st.rerun()
     import pandas as pd
     _internal_css()
+    # Full-width override: el panel necesita todo el ancho disponible
+    st.markdown("""
+<style>
+.block-container {
+    max-width: 100% !important;
+    padding: 20px 12px 60px !important;
+}
+section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
+iframe[title="components.v1.html"] {
+    border: none !important;
+    display: block;
+    width: 100% !important;
+}
+</style>
+""", unsafe_allow_html=True)
     st.html("<script>window.parent.document.querySelector('.main').scrollTop = 0;</script>")
 
-    st.markdown("""
-    <div class="page-header">
-        <h1>📈 <span>Análisis</span> &amp; Consultas</h1>
-        <p>División M10 · Liceo Naval · Datos del equipo</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    if st.button("← VOLVER AL PANEL", key="an_back", type="secondary"):
-        st.query_params["page"] = "login"
-        st.rerun()
-
-    col_ref, col_btn = st.columns([4, 1])
-    with col_btn:
-        if st.button("🔄 Actualizar", key="an_refresh", type="secondary"):
+    # Minimal chrome: solo volver + actualizar
+    c_back, _, c_ref = st.columns([2, 6, 2])
+    with c_back:
+        if st.button("← VOLVER AL PANEL", key="an_back", type="secondary"):
+            st.query_params["page"] = "login"
+            st.rerun()
+    with c_ref:
+        if st.button("🔄 Actualizar datos", key="an_refresh", type="secondary"):
             _load_sheet_data.clear()
             st.rerun()
 
@@ -1270,16 +1313,12 @@ def render_analisis():
         st.info("No hay datos cargados todavía.")
         return
 
-    # ── Panel React ───────────────────────────────────────────────────────────
+    # ── Panel React (full-width, auto-height) ─────────────────────────────────
     import streamlit.components.v1 as _cv1
-    st.markdown(
-        '<style>iframe[title="components.v1.html"]'
-        '{border:none!important;border-radius:12px;margin-top:8px;}</style>',
-        unsafe_allow_html=True,
-    )
     with st.spinner("Generando panel..."):
         _panel_html = _build_panel_html(df_ei, df_es)
-    _cv1.html(_panel_html, height=860, scrolling=True)
+    # Arranca en 900px; el script interno manda postMessage para auto-resize
+    _cv1.html(_panel_html, height=900, scrolling=False)
 
     # ── Consulta libre IA ─────────────────────────────────────────────────────
     _DIVIDER = '<div style="margin:28px 0;height:1px;background:linear-gradient(to right,transparent,rgba(100,180,255,0.22),transparent);"></div>'
