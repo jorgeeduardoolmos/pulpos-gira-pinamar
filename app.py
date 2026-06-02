@@ -719,8 +719,8 @@ def render_login():
              "Completá la grilla RAG de los 35 jugadores por habilidad.", False),
             ("hub_es", "encuesta_staff",  "📊", "Encuesta Staff",
              "Respondé la evaluación trimestral del equipo y el staff.", False),
-            ("hub_an", "analisis",        "📈", "Análisis & IA",
-             "Revisá los datos del equipo y consultá a la IA.", user == "Tucu"),
+            ("hub_an", "analisis",        "📈", "Análisis",
+             "Revisá los datos del equipo.", user == "Tucu"),
         ]
         c1, c2, c3 = st.columns(3)
         for col, (btn_key, page, icon, title, desc, enabled) in zip([c1, c2, c3], hub_items):
@@ -1088,7 +1088,7 @@ def render_encuesta_staff():
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# PÁGINA 3 — Análisis y Consultas  (React panel + IA)
+# PÁGINA 3 — Análisis  (React panel)
 # ═════════════════════════════════════════════════════════════════════════════
 
 def _build_rugby_data(df_ei, df_es):
@@ -1320,55 +1320,6 @@ iframe[title="components.v1.html"] {
     # Arranca en 900px; el script interno manda postMessage para auto-resize
     _cv1.html(_panel_html, height=900, scrolling=False)
 
-    # ── Consulta libre IA ─────────────────────────────────────────────────────
-    _DIVIDER = '<div style="margin:28px 0;height:1px;background:linear-gradient(to right,transparent,rgba(100,180,255,0.22),transparent);"></div>'
-    st.markdown(_DIVIDER, unsafe_allow_html=True)
-    st.markdown('<div class="fsec">Consulta libre con IA</div>', unsafe_allow_html=True)
-    st.markdown(
-        '<div style="font-size:0.85rem;color:rgba(168,216,240,0.5);margin-bottom:16px;">'
-        'Ejemplos: "¿quién tuvo más rojos en tacle en T1?" · '
-        '"¿cómo evolucionó la defensa?" · "¿qué destacó el staff en T2?"</div>',
-        unsafe_allow_html=True,
-    )
-    question = st.text_input(
-        "Tu pregunta",
-        placeholder="Escribí tu consulta en lenguaje natural...",
-        key="an_question",
-    )
-    if st.button("🤖  CONSULTAR", key="an_ask", use_container_width=True):
-        if not question.strip():
-            st.warning("Escribí una pregunta primero.")
-        elif "ANTHROPIC_API_KEY" not in st.secrets:
-            st.error("Falta configurar ANTHROPIC_API_KEY en los Streamlit Secrets.")
-        else:
-            with st.spinner("Consultando IA..."):
-                try:
-                    import anthropic
-                    ctx_parts = []
-                    if not df_ei.empty:
-                        ctx_parts.append("## Eval_Individual\n" + df_ei.to_csv(index=False))
-                    if not df_es.empty:
-                        ctx_parts.append("## Encuesta_Staff\n" + df_es.to_csv(index=False))
-                    context = "\n\n".join(ctx_parts) if ctx_parts else "No hay datos."
-                    ai_client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
-                    msg = ai_client.messages.create(
-                        model="claude-haiku-4-5-20251001",
-                        max_tokens=1024,
-                        messages=[{"role": "user", "content": (
-                            "Sos un asistente de análisis para el equipo de rugby M10 Pulpos "
-                            "del Liceo Naval de Buenos Aires. Analizá los datos y respondé la "
-                            "siguiente pregunta en español, de forma clara y concisa.\n\n"
-                            "PREGUNTA: " + question.strip() + "\n\nDATOS:\n" + context
-                        )}],
-                    )
-                    st.markdown(
-                        '<div class="ai-answer">' + msg.content[0].text + '</div>',
-                        unsafe_allow_html=True,
-                    )
-                except Exception as e:
-                    import traceback
-                    st.error(f"❌ Error al consultar la IA: {e}")
-                    st.error(traceback.format_exc())
 
 
 # ─── Page routing via query params ───────────────────────────────────────────
