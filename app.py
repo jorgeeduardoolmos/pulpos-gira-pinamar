@@ -1214,38 +1214,13 @@ def _build_panel_html(df_ei, df_es):
     app_jsx = (base / "panel" / "app.jsx").read_text(encoding="utf-8")
     data_js = "window.RUGBY = " + _build_rugby_data(df_ei, df_es) + ";"
 
-    # Override: sidebar sticky (no fixed) + auto-resize postMessage
+    # Override mínimo: solo asegurar que html/body llenan el iframe
     override_css = """
 <style>
-/* Sticky layout para iframe embebido — reemplaza position:fixed del diseño */
-.sidebar {
-    position: sticky !important;
-    top: 0 !important;
-    height: 100vh !important;
-    overflow-y: auto !important;
-    left: unset !important;
-    bottom: unset !important;
-    z-index: 2 !important;
-}
-.main { margin-left: 0 !important; }
-.topbar { position: sticky !important; top: 0 !important; z-index: 5 !important; }
-html, body, #root { height: auto !important; min-height: 100%; }
+html, body, #root { height: 100%; }
 </style>
 """
-    # Script que envía la altura real al padre para que el iframe se auto-expanda
-    resize_script = """
-<script>
-(function(){
-    function send(){
-        var h = document.documentElement.scrollHeight;
-        window.parent.postMessage({type:'streamlit:setFrameHeight', height:h}, '*');
-    }
-    // disparar varias veces mientras React termina de renderizar
-    [100,400,900,1800,3000].forEach(function(ms){ setTimeout(send, ms); });
-    new MutationObserver(send).observe(document.body,{subtree:true,childList:true,attributes:false});
-})();
-</script>
-"""
+    resize_script = ""  # no necesario con scrolling=True
     return "\n".join([
         '<!DOCTYPE html><html lang="es"><head>',
         '<meta charset="UTF-8"/>',
@@ -1317,8 +1292,7 @@ iframe[title="components.v1.html"] {
     import streamlit.components.v1 as _cv1
     with st.spinner("Generando panel..."):
         _panel_html = _build_panel_html(df_ei, df_es)
-    # Arranca en 900px; el script interno manda postMessage para auto-resize
-    _cv1.html(_panel_html, height=900, scrolling=False)
+    _cv1.html(_panel_html, height=740, scrolling=True)
 
 
 
