@@ -720,7 +720,7 @@ def render_login():
             ("hub_es", "encuesta_staff",  "📊", "Encuesta Staff",
              "Respondé la evaluación trimestral del equipo y el staff.", False),
             ("hub_an", "analisis",        "📈", "Análisis",
-             "Revisá los datos del equipo.", user == "Tucu"),
+             "Revisá los datos del equipo.", True),
         ]
         c1, c2, c3 = st.columns(3)
         for col, (btn_key, page, icon, title, desc, enabled) in zip([c1, c2, c3], hub_items):
@@ -1248,9 +1248,6 @@ html, body, #root { height: 100%; }
 
 def render_analisis():
     _require_login()
-    if st.session_state.get("staff_user") != "Tucu":
-        st.query_params["page"] = "login"
-        st.rerun()
     import pandas as pd
     _internal_css()
     # Full-width override: el panel necesita todo el ancho disponible
