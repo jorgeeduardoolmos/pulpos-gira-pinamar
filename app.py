@@ -1088,8 +1088,154 @@ def render_encuesta_staff():
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# PÁGINA 3 — Análisis y Consultas
+# PÁGINA 3 — Análisis y Consultas  (React panel + IA)
 # ═════════════════════════════════════════════════════════════════════════════
+
+def _build_rugby_data(df_ei, df_es):
+    """Transforma los DataFrames al objeto window.RUGBY que espera el panel React."""
+    import json, random, pandas as pd
+
+    METRICAS  = ["Pase", "Tacle", "Percepción", "Frustración", "Foco"]
+    RAG_VALID = {"Rojo", "Amarillo", "Verde"}
+
+    tri_ei  = sorted(df_ei["Trimestre"].dropna().unique().tolist()) if not df_ei.empty else []
+    tri_es  = sorted(df_es["Trimestre"].dropna().unique().tolist()) if not df_es.empty else []
+    all_tri = sorted(set(tri_ei + tri_es))
+
+    # ── Individual ──────────────────────────────────────────────
+    ev_ind = sorted(df_ei["Evaluador"].dropna().unique().tolist()) if not df_ei.empty else []
+    random.Random(42).shuffle(ev_ind)
+    ev_ind_map = {e: f"Evaluador {i+1}" for i, e in enumerate(ev_ind)}
+
+    jugadores = sorted(df_ei["Jugador"].dropna().unique().tolist()) if not df_ei.empty else []
+
+    filas_ind = []
+    if not df_ei.empty:
+        for _, row in df_ei.iterrows():
+            v = {m: row.get(m, "") for m in METRICAS
+                 if str(row.get(m, "")).strip() in RAG_VALID}
+            filas_ind.append({
+                "t":   str(row.get("Trimestre", "")),
+                "ev":  ev_ind_map.get(str(row.get("Evaluador", "")), "?"),
+                "jug": str(row.get("Jugador", "")),
+                "v":   v,
+            })
+
+    individual = {
+        "metricas":    METRICAS,
+        "jugadores":   jugadores,
+        "evaluadores": [ev_ind_map[e] for e in ev_ind],
+        "map":         {"Rojo": 1, "Amarillo": 2, "Verde": 3},
+        "filas":       filas_ind,
+    }
+
+    # ── Staff ────────────────────────────────────────────────────
+    PREGUNTAS  = [r[2] for r in _ENC_PREGS]
+    QCAT       = {r[2]: r[1] for r in _ENC_PREGS}
+    CATEGORIAS = {}
+    for r in _ENC_PREGS:
+        CATEGORIAS.setdefault(r[1], []).append(r[2])
+
+    ev_staff = sorted(df_es["Evaluador"].dropna().unique().tolist()) if not df_es.empty else []
+    random.Random(42).shuffle(ev_staff)
+    ev_staff_map = {e: f"Evaluador {i+1}" for i, e in enumerate(ev_staff)}
+
+    # detectar columnas por clave (p1…) o descripción completa
+    col_to_q = {}
+    if not df_es.empty:
+        for r in _ENC_PREGS:
+            for c in [r[0], r[2]]:
+                if c in df_es.columns:
+                    col_to_q[c] = r[2]
+                    break
+
+    # preguntas abiertas
+    open_cols = {}
+    for key, short, long in [
+        ("aprendizajes", "P18", "Aprendizajes y avances técnicos/tácticos"),
+        ("mejoras",      "P19", "Oportunidades de mejora del staff"),
+        ("suma",         "P20", "Suma libre"),
+    ]:
+        if not df_es.empty:
+            for c in [short, long]:
+                if c in df_es.columns:
+                    open_cols[key] = c
+                    break
+
+    filas_staff = []
+    if not df_es.empty:
+        for _, row in df_es.iterrows():
+            ratings = {}
+            for col, q in col_to_q.items():
+                try:
+                    v = float(row.get(col))
+                    ratings[q] = None if pd.isna(v) else v
+                except Exception:
+                    ratings[q] = None
+            fila = {
+                "t":       str(row.get("Trimestre", "")),
+                "ev":      ev_staff_map.get(str(row.get("Evaluador", "")), "?"),
+                "ratings": ratings,
+            }
+            for key, col in open_cols.items():
+                txt = str(row.get(col, "")).strip()
+                fila[key] = txt or None
+            filas_staff.append(fila)
+
+    staff = {
+        "preguntas":   PREGUNTAS,
+        "categorias":  CATEGORIAS,
+        "qcat":        QCAT,
+        "evaluadores": [ev_staff_map[e] for e in ev_staff],
+        "filas":       filas_staff,
+    }
+
+    return json.dumps(
+        {"meta": {"trimestres": all_tri}, "individual": individual, "staff": staff},
+        ensure_ascii=False,
+    )
+
+
+def _build_panel_html(df_ei, df_es):
+    """Ensambla el HTML completo con React, CSS del handoff y datos reales."""
+    from pathlib import Path
+
+    base = Path(__file__).parent / "zip" / "design_handoff_panel_evaluaciones"
+    raw  = (base / "Panel M10 - Liceo Naval.html").read_text(encoding="utf-8")
+
+    # extraer bloque <style>…</style>
+    s0 = raw.index("<style>")
+    s1 = raw.index("</style>") + len("</style>")
+    css = raw[s0:s1]
+
+    ui_jsx  = (base / "panel" / "ui.jsx").read_text(encoding="utf-8")
+    st_jsx  = (base / "panel" / "staff.jsx").read_text(encoding="utf-8")
+    ind_jsx = (base / "panel" / "individual.jsx").read_text(encoding="utf-8")
+    app_jsx = (base / "panel" / "app.jsx").read_text(encoding="utf-8")
+    data_js = "window.RUGBY = " + _build_rugby_data(df_ei, df_es) + ";"
+
+    return "\n".join([
+        '<!DOCTYPE html><html lang="es"><head>',
+        '<meta charset="UTF-8"/>',
+        '<meta name="viewport" content="width=device-width,initial-scale=1"/>',
+        '<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700'
+        '&family=Saira:wght@400;450;500;600;700&display=swap" rel="stylesheet"/>',
+        css,
+        '</head><body><div id="root"></div>',
+        '<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" '
+        'integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>',
+        '<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" '
+        'integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>',
+        '<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" '
+        'integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>',
+        '<script>' + data_js + '</script>',
+        '<script type="text/babel">' + ui_jsx  + '</script>',
+        '<script type="text/babel">' + st_jsx  + '</script>',
+        '<script type="text/babel">' + ind_jsx + '</script>',
+        '<script type="text/babel">' + app_jsx + '</script>',
+        '</body></html>',
+    ])
+
 
 def render_analisis():
     _require_login()
@@ -1120,349 +1266,69 @@ def render_analisis():
     with st.spinner("Cargando datos..."):
         df_ei, df_es = _load_sheet_data()
 
-    HAB_COLS  = ["Pase", "Tacle", "Percepción", "Frustración", "Foco"]
-    RAG_SCORE = {"Verde": 3, "Amarillo": 2, "Rojo": 1, "": None}
+    if df_ei.empty and df_es.empty:
+        st.info("No hay datos cargados todavía.")
+        return
 
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "📋 Evaluación Individual",
-        "📈 Evolución Trimestral",
-        "📊 Encuesta Staff",
-        "🤖 Consulta IA",
-    ])
-
-    _DIVIDER = (
-        '<div style="margin:28px 0;height:1px;background:'
-        'linear-gradient(to right,transparent,rgba(100,180,255,0.22),transparent);"></div>'
+    # ── Panel React ───────────────────────────────────────────────────────────
+    import streamlit.components.v1 as _cv1
+    st.markdown(
+        '<style>iframe[title="components.v1.html"]'
+        '{border:none!important;border-radius:12px;margin-top:8px;}</style>',
+        unsafe_allow_html=True,
     )
+    with st.spinner("Generando panel..."):
+        _panel_html = _build_panel_html(df_ei, df_es)
+    _cv1.html(_panel_html, height=860, scrolling=True)
 
-    # ── Tab 1: Evaluación Individual ───────────────────────────────────────────
-    with tab1:
-        if df_ei.empty:
-            st.info("Todavía no hay datos de evaluación individual.")
+    # ── Consulta libre IA ─────────────────────────────────────────────────────
+    st.markdown(_DIVIDER, unsafe_allow_html=True)
+    st.markdown('<div class="fsec">Consulta libre con IA</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div style="font-size:0.85rem;color:rgba(168,216,240,0.5);margin-bottom:16px;">'
+        'Ejemplos: "¿quién tuvo más rojos en tacle en T1?" · '
+        '"¿cómo evolucionó la defensa?" · "¿qué destacó el staff en T2?"</div>',
+        unsafe_allow_html=True,
+    )
+    question = st.text_input(
+        "Tu pregunta",
+        placeholder="Escribí tu consulta en lenguaje natural...",
+        key="an_question",
+    )
+    if st.button("🤖  CONSULTAR", key="an_ask", use_container_width=True):
+        if not question.strip():
+            st.warning("Escribí una pregunta primero.")
+        elif "ANTHROPIC_API_KEY" not in st.secrets:
+            st.error("Falta configurar ANTHROPIC_API_KEY en los Streamlit Secrets.")
         else:
-            trimestres_ei = sorted(df_ei["Trimestre"].unique().tolist())
-            t_sel = st.selectbox("Trimestre", trimestres_ei, key="an_t_ei")
-            df_t = df_ei[df_ei["Trimestre"] == t_sel].copy()
-            available_hab = [c for c in HAB_COLS if c in df_t.columns]
-            for col in available_hab:
-                df_t[col + "_s"] = df_t[col].map(RAG_SCORE)
-            score_cols = [c + "_s" for c in available_hab]
-
-            if not score_cols:
-                st.warning("No se encontraron columnas de habilidades.")
-            else:
-                # Pivot: un promedio por jugador (consolida múltiples evaluadores)
-                pivot = df_t.groupby("Jugador")[score_cols].mean().round(2).reset_index()
-                pivot.columns = ["Jugador"] + available_hab
-                pivot["_avg"] = pivot[available_hab].mean(axis=1).round(2)
-
-                def _rc(v):
-                    if pd.isna(v): return "#555"
-                    return "#22c55e" if v >= 2.5 else ("#eab308" if v >= 1.5 else "#ef4444")
-                def _rl(v):
-                    if pd.isna(v): return "—"
-                    return "Verde" if v >= 2.5 else ("Amarillo" if v >= 1.5 else "Rojo")
-
-                # ── 1. MÉTRICAS POR HABILIDAD ─────────────────────────────────
-                st.markdown('<div class="fsec">Promedio de la división</div>', unsafe_allow_html=True)
-                m_cols = st.columns(len(available_hab))
-                for mc, hab in zip(m_cols, available_hab):
-                    sc = hab + "_s"
-                    avg = df_t[sc].mean() if sc in df_t.columns else float("nan")
-                    color = _rc(avg)
-                    pct = 0 if pd.isna(avg) else round((avg - 1) / 2 * 100)
-                    val_str = f"{avg:.1f}" if not pd.isna(avg) else "—"
-                    mc.markdown(
-                        '<div style="background:rgba(26,107,191,0.1);border:1px solid rgba(100,180,255,0.2);'
-                        'border-radius:12px;padding:16px 10px 14px;text-align:center;">'
-                        '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.7rem;font-weight:700;'
-                        'letter-spacing:0.15em;text-transform:uppercase;color:rgba(168,216,240,0.5);margin-bottom:8px;">'
-                        + hab + '</div>'
-                        '<div style="font-family:Bebas Neue,sans-serif;font-size:2.4rem;color:' + color + ';line-height:1;">'
-                        + val_str + '</div>'
-                        '<div style="font-size:0.7rem;color:' + color + ';margin:3px 0 10px;">' + _rl(avg) + '</div>'
-                        '<div style="background:rgba(255,255,255,0.08);border-radius:4px;height:5px;overflow:hidden;">'
-                        '<div style="width:' + str(pct) + '%;background:' + color + ';height:100%;border-radius:4px;'
-                        'transition:width 0.4s;"></div></div></div>',
-                        unsafe_allow_html=True,
+            with st.spinner("Consultando IA..."):
+                try:
+                    import anthropic
+                    ctx_parts = []
+                    if not df_ei.empty:
+                        ctx_parts.append("## Eval_Individual\n" + df_ei.to_csv(index=False))
+                    if not df_es.empty:
+                        ctx_parts.append("## Encuesta_Staff\n" + df_es.to_csv(index=False))
+                    context = "\n\n".join(ctx_parts) if ctx_parts else "No hay datos."
+                    ai_client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+                    msg = ai_client.messages.create(
+                        model="claude-haiku-4-5-20251001",
+                        max_tokens=1024,
+                        messages=[{"role": "user", "content": (
+                            "Sos un asistente de análisis para el equipo de rugby M10 Pulpos "
+                            "del Liceo Naval de Buenos Aires. Analizá los datos y respondé la "
+                            "siguiente pregunta en español, de forma clara y concisa.\n\n"
+                            "PREGUNTA: " + question.strip() + "\n\nDATOS:\n" + context
+                        )}],
                     )
-
-                st.markdown(_DIVIDER, unsafe_allow_html=True)
-
-                # ── 2. MAPA DE CALOR ──────────────────────────────────────────
-                st.markdown('<div class="fsec">Mapa de calor por jugador</div>', unsafe_allow_html=True)
-                import plotly.graph_objects as go
-
-                players_sorted = pivot.sort_values("_avg", ascending=True)["Jugador"].tolist()
-                z_vals = pivot.set_index("Jugador").loc[players_sorted, available_hab].values.tolist()
-
-                def _emoji(v):
-                    if pd.isna(v): return "—"
-                    return "🟢" if v >= 2.5 else ("🟡" if v >= 1.5 else "🔴")
-
-                text_vals = [[_emoji(cell) for cell in row] for row in z_vals]
-
-                fig_hm = go.Figure(data=go.Heatmap(
-                    z=z_vals,
-                    x=available_hab,
-                    y=players_sorted,
-                    text=text_vals,
-                    texttemplate="%{text}",
-                    textfont=dict(size=13),
-                    colorscale=[[0.0,"#ef4444"],[0.5,"#eab308"],[1.0,"#22c55e"]],
-                    zmin=1, zmax=3,
-                    showscale=False,
-                    xgap=3, ygap=3,
-                ))
-                fig_hm.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#a8d8f0", family="Barlow, sans-serif", size=11),
-                    margin=dict(l=230, r=20, t=50, b=10),
-                    height=max(420, len(players_sorted) * 25 + 80),
-                    xaxis=dict(side="top", tickfont=dict(size=12, color="#a8d8f0"), fixedrange=True),
-                    yaxis=dict(tickfont=dict(size=10, color="#c8e0f0"), autorange="reversed", fixedrange=True),
-                )
-                st.plotly_chart(fig_hm, use_container_width=True, config={"displayModeBar": False})
-
-                st.markdown(_DIVIDER, unsafe_allow_html=True)
-
-                # ── 3. TABLA DETALLE + ROJOS ──────────────────────────────────
-                st.markdown('<div class="fsec">Detalle por jugador</div>', unsafe_allow_html=True)
-                tbl = pivot.drop(columns=["_avg"]).copy()
-                tbl["Promedio"] = pivot["_avg"]
-                tbl = tbl.sort_values("Promedio")
-                st.dataframe(tbl, use_container_width=True, hide_index=True)
-
-                st.markdown('<div class="fsec">Jugadores con más rojos</div>', unsafe_allow_html=True)
-                for col in available_hab:
-                    if col in df_t.columns:
-                        rojos = df_t[df_t[col] == "Rojo"]["Jugador"].tolist()
-                        if rojos:
-                            st.markdown("**" + col + ":** " + ", ".join(rojos))
-
-    # ── Tab 2: evolución trimestral ────────────────────────────────────────────
-    with tab2:
-        st.markdown('<div class="fsec">Evolución trimestral por habilidad</div>', unsafe_allow_html=True)
-        if df_ei.empty or df_ei["Trimestre"].nunique() < 2:
-            st.info("Se necesitan datos de al menos 2 trimestres para ver la evolución.")
-        else:
-            df_evol = df_ei.copy()
-            available_hab2 = [c for c in HAB_COLS if c in df_evol.columns]
-            for col in available_hab2:
-                df_evol[col + "_s"] = df_evol[col].map(RAG_SCORE)
-            score_cols2 = [c + "_s" for c in available_hab2]
-            evol = (
-                df_evol.groupby("Trimestre")[score_cols2]
-                .mean()
-                .round(2)
-                .reset_index()
-            )
-            evol.columns = ["Trimestre"] + available_hab2
-            evol = evol.set_index("Trimestre")
-            st.bar_chart(evol)
-            st.markdown(
-                '<div style="font-size:0.8rem;color:rgba(168,216,240,0.4);margin-top:8px;">'
-                'Escala: 1 = Rojo · 2 = Amarillo · 3 = Verde</div>',
-                unsafe_allow_html=True,
-            )
-
-    # ── Tab 3: encuesta staff ──────────────────────────────────────────────────
-    with tab3:
-        if df_es.empty:
-            st.info("Todavía no hay datos de encuesta staff.")
-        else:
-            # Detectar columnas por clave (p1…p17) O por descripción completa
-            # (en caso de que el usuario haya cambiado los headers del sheet)
-            col_map = {}   # col_en_df → (p_key, categoria, descripcion)
-            for row in _ENC_PREGS:
-                p_key, cat, desc = row[0], row[1], row[2]
-                if p_key in df_es.columns:
-                    col_map[p_key] = (p_key, cat, desc)
-                elif desc in df_es.columns:
-                    col_map[desc] = (p_key, cat, desc)
-
-            if not col_map:
-                st.warning("No se encontraron columnas de preguntas en el sheet. "
-                           "Columnas disponibles: " + ", ".join(df_es.columns.tolist()))
-            else:
-                available_p = list(col_map.keys())
-                for c in available_p:
-                    df_es[c] = pd.to_numeric(df_es[c], errors="coerce")
-
-                trimestres_es = sorted(df_es["Trimestre"].unique().tolist())
-                t_sel_es = st.selectbox("Trimestre", trimestres_es, key="an_t_es")
-                df_ts = df_es[df_es["Trimestre"] == t_sel_es].copy()
-
-                # Promedio por pregunta
-                prom = df_ts[available_p].mean().round(2).reset_index()
-                prom.columns = ["col", "Promedio"]
-                prom["Categoría"]   = prom["col"].map(lambda c: col_map[c][1])
-                prom["Descripción"] = prom["col"].map(lambda c: col_map[c][2])
-
-                # ── MÉTRICAS POR CATEGORÍA ────────────────────────────────────
-                categorias = ["Técnica", "Táctica", "Emocional", "Staff"]
-                cat_cols = st.columns(len(categorias))
-                for cc, cat in zip(cat_cols, categorias):
-                    cat_avg = prom[prom["Categoría"] == cat]["Promedio"].mean()
-                    color = _rc(cat_avg) if not pd.isna(cat_avg) else "#555"
-                    val_str = f"{cat_avg:.1f}" if not pd.isna(cat_avg) else "—"
-                    pct = 0 if pd.isna(cat_avg) else round((cat_avg - 1) / 3 * 100)
-                    cc.markdown(
-                        '<div style="background:rgba(26,107,191,0.1);border:1px solid rgba(100,180,255,0.2);'
-                        'border-radius:12px;padding:16px 10px 14px;text-align:center;">'
-                        '<div style="font-family:Barlow Condensed,sans-serif;font-size:0.7rem;font-weight:700;'
-                        'letter-spacing:0.15em;text-transform:uppercase;color:rgba(168,216,240,0.5);margin-bottom:8px;">'
-                        + cat + '</div>'
-                        '<div style="font-family:Bebas Neue,sans-serif;font-size:2.4rem;color:' + color + ';line-height:1;">'
-                        + val_str + '</div>'
-                        '<div style="font-size:0.7rem;color:' + color + ';margin:3px 0 10px;">' + _rl(cat_avg) + '</div>'
-                        '<div style="background:rgba(255,255,255,0.08);border-radius:4px;height:5px;overflow:hidden;">'
-                        '<div style="width:' + str(pct) + '%;background:' + color + ';height:100%;border-radius:4px;"></div>'
-                        '</div></div>',
-                        unsafe_allow_html=True,
-                    )
-
-                st.markdown(_DIVIDER, unsafe_allow_html=True)
-
-                # ── GRÁFICO DE BARRAS POR PREGUNTA ────────────────────────────
-                st.markdown('<div class="fsec">Detalle por pregunta</div>', unsafe_allow_html=True)
-                import plotly.graph_objects as go
-
-                bar_colors = [_rc(v) for v in prom["Promedio"].tolist()]
-                fig_bar = go.Figure(go.Bar(
-                    x=prom["Promedio"].tolist(),
-                    y=prom["Descripción"].tolist(),
-                    orientation="h",
-                    marker_color=bar_colors,
-                    text=[f"{v:.1f}" for v in prom["Promedio"].tolist()],
-                    textposition="outside",
-                    textfont=dict(color="#a8d8f0", size=11),
-                ))
-                fig_bar.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#a8d8f0", family="Barlow, sans-serif", size=11),
-                    margin=dict(l=10, r=60, t=10, b=10),
-                    height=max(380, len(prom) * 30 + 60),
-                    xaxis=dict(range=[0, 4.5], tickvals=[1,2,3,4],
-                               gridcolor="rgba(100,180,255,0.1)", fixedrange=True,
-                               tickfont=dict(color="#a8d8f0")),
-                    yaxis=dict(autorange="reversed", fixedrange=True,
-                               tickfont=dict(size=10, color="#c8e0f0")),
-                )
-                st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
-
-                st.markdown(_DIVIDER, unsafe_allow_html=True)
-
-                # ── TABLA COMPLETA ────────────────────────────────────────────
-                st.markdown('<div class="fsec">Tabla completa</div>', unsafe_allow_html=True)
-                tbl_es = prom[["Categoría", "Descripción", "Promedio"]].copy()
-                tbl_es = tbl_es.sort_values(["Categoría", "Promedio"])
-                st.dataframe(tbl_es, use_container_width=True, hide_index=True)
-
-                st.markdown(_DIVIDER, unsafe_allow_html=True)
-
-                # ── RESPUESTAS ABIERTAS ───────────────────────────────────────
-                st.markdown('<div class="fsec">Respuestas abiertas</div>', unsafe_allow_html=True)
-
-                # Detectar columnas por clave (P18…) o descripción
-                _OPEN = [
-                    ("P18", "Aprendizajes y avances técnicos/tácticos", "#70c8f0", "📚"),
-                    ("P19", "Oportunidades de mejora del staff",        "#f59e0b", "🔧"),
-                    ("P20", "Suma libre",                               "#a78bfa", "💬"),
-                ]
-                for p_key, p_desc, color, icon in _OPEN:
-                    # Buscar la columna por clave o descripción
-                    col_name = None
-                    if p_key in df_ts.columns:
-                        col_name = p_key
-                    elif p_desc in df_ts.columns:
-                        col_name = p_desc
-
                     st.markdown(
-                        '<div style="display:flex;align-items:center;gap:10px;margin:20px 0 10px;">'
-                        '<span style="font-size:1.3rem;">' + icon + '</span>'
-                        '<span style="font-family:Barlow Condensed,sans-serif;font-size:0.9rem;font-weight:700;'
-                        'letter-spacing:0.15em;text-transform:uppercase;color:' + color + ';">'
-                        + p_desc + '</span></div>',
+                        '<div class="ai-answer">' + msg.content[0].text + '</div>',
                         unsafe_allow_html=True,
                     )
-
-                    if col_name is None:
-                        st.caption("Columna no encontrada en el sheet.")
-                        continue
-
-                    respuestas = df_ts[["Evaluador", col_name]].dropna(subset=[col_name])
-                    respuestas = respuestas[respuestas[col_name].astype(str).str.strip() != ""]
-
-                    if respuestas.empty:
-                        st.caption("Sin respuestas para este trimestre.")
-                    else:
-                        for _, row_r in respuestas.iterrows():
-                            texto = str(row_r[col_name]).strip()
-                            st.markdown(
-                                '<div style="border-left:3px solid ' + color + ';'
-                                'background:rgba(26,107,191,0.07);border-radius:0 10px 10px 0;'
-                                'padding:14px 20px;margin-bottom:10px;">'
-                                '<div style="color:#c8e0f0;font-size:0.92rem;line-height:1.7;">'
-                                + texto + '</div></div>',
-                                unsafe_allow_html=True,
-                            )
-
-    # ── Tab 4: consulta libre IA ───────────────────────────────────────────────
-    with tab4:
-        st.markdown('<div class="fsec">Consulta libre con IA</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div style="font-size:0.85rem;color:rgba(168,216,240,0.5);margin-bottom:16px;">'
-            'Ejemplos: "¿quién tuvo más rojos en tacle en T1?" · "¿cómo evolucionó la defensa?" · '
-            '"¿qué destacó el staff en T2?"</div>',
-            unsafe_allow_html=True,
-        )
-        question = st.text_input(
-            "Tu pregunta",
-            placeholder="Escribí tu consulta en lenguaje natural...",
-            key="an_question",
-        )
-        if st.button("🤖  CONSULTAR", key="an_ask", use_container_width=True):
-            if not question.strip():
-                st.warning("Escribí una pregunta primero.")
-            elif "ANTHROPIC_API_KEY" not in st.secrets:
-                st.error("Falta configurar ANTHROPIC_API_KEY en los Streamlit Secrets.")
-            else:
-                with st.spinner("Consultando IA..."):
-                    try:
-                        import anthropic
-                        ctx_parts = []
-                        if not df_ei.empty:
-                            ctx_parts.append("## Eval_Individual\n" + df_ei.to_csv(index=False))
-                        if not df_es.empty:
-                            ctx_parts.append("## Encuesta_Staff\n" + df_es.to_csv(index=False))
-                        context = "\n\n".join(ctx_parts) if ctx_parts else "No hay datos disponibles aún."
-
-                        ai_client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
-                        msg = ai_client.messages.create(
-                            model="claude-haiku-4-5-20251001",
-                            max_tokens=1024,
-                            messages=[{
-                                "role": "user",
-                                "content": (
-                                    "Sos un asistente de análisis para el equipo de rugby M10 Pulpos del Liceo Naval de Buenos Aires. "
-                                    "Analizá los datos y respondé la siguiente pregunta en español, de forma clara y concisa.\n\n"
-                                    "PREGUNTA: " + question.strip() + "\n\n"
-                                    "DATOS:\n" + context
-                                ),
-                            }],
-                        )
-                        answer = msg.content[0].text
-                        st.markdown(
-                            '<div class="ai-answer">' + answer + '</div>',
-                            unsafe_allow_html=True,
-                        )
-                    except Exception as e:
-                        import traceback
-                        st.error(f"❌ Error al consultar la IA: {e}")
-                        st.error(traceback.format_exc())
+                except Exception as e:
+                    import traceback
+                    st.error(f"❌ Error al consultar la IA: {e}")
+                    st.error(traceback.format_exc())
 
 
 # ─── Page routing via query params ───────────────────────────────────────────
