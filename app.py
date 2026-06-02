@@ -1282,6 +1282,7 @@ def render_analisis():
     _cv1.html(_panel_html, height=860, scrolling=True)
 
     # ── Consulta libre IA ─────────────────────────────────────────────────────
+    _DIVIDER = '<div style="margin:28px 0;height:1px;background:linear-gradient(to right,transparent,rgba(100,180,255,0.22),transparent);"></div>'
     st.markdown(_DIVIDER, unsafe_allow_html=True)
     st.markdown('<div class="fsec">Consulta libre con IA</div>', unsafe_allow_html=True)
     st.markdown(
