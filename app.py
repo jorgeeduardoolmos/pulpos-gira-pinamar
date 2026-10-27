@@ -2216,23 +2216,34 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown('<div class="sec-wrap"><div class="section-title">¿Qué <span>Llevar</span>?</div></div>', unsafe_allow_html=True)
 
-llevar = ["Peluche","Pijama","Artículos de aseo personal","Gorra","Traje de baño",
-          "Campera","Ojotas / Crocs","Ropa interior x2","Bolsa para ropa mojada",
-          "2 mudas de ropa adicional","Short + camiseta","Botines + medias del Liceo","🦷 Protector bucal"]
+mochila = ["Galletas","Agua","Revistas / Libros","Gorra","Artículos de aseo personal","Buzo"]
+bolso   = ["Peluche","Pijama","Traje de baño","Campera Impermeable","Ojotas / Crocs",
+           "Ropa interior x2","Bolsa para ropa mojada","2 mudas de ropa adicional",
+           "Short + camiseta","Botines + medias del Liceo","Toalla para la playa","🦷 Protector bucal"]
 no_llevar = ["Toallón (incluido en la cabaña)","Dinero","Caramelos, chicles, chupetines",
              "Tecnología (cel, tablet, etc.)","Protector solar (compra comunitaria)",
              "Off repelente (compra comunitaria)","Papas fritas, chizitos, doritos, etc."]
 
-si_rows = "".join(f'<div class="llevar-item">✅&nbsp; {i}</div>' for i in llevar)
-no_rows = "".join(f'<div class="llevar-item">❌&nbsp; {i}</div>' for i in no_llevar)
+mochila_rows = "".join(f'<div class="llevar-item">✅&nbsp; {i}</div>' for i in mochila)
+bolso_rows   = "".join(f'<div class="llevar-item">✅&nbsp; {i}</div>' for i in bolso)
+no_rows      = "".join(f'<div class="llevar-item">❌&nbsp; {i}</div>' for i in no_llevar)
 
 _, inner8, _ = st.columns([1, 10, 1])
 with inner8:
-    c1, c2 = st.columns(2)
+    c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">✅ Llevar en Bolso</div>{si_rows}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🎒 Mochila de Viaje</div>{mochila_rows}</div>', unsafe_allow_html=True)
     with c2:
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🧳 Bolso de Viaje</div>{bolso_rows}</div>', unsafe_allow_html=True)
+    with c3:
         st.markdown(f'<div class="llevar-box no-llevar"><div class="llevar-title no">❌ NO Llevar</div>{no_rows}</div>', unsafe_allow_html=True)
+    with c4:
+        st.markdown(f'''<div class="llevar-box" style="border-color:#f0c060;background:rgba(240,192,96,0.07);">
+<div class="llevar-title" style="color:#f0c060;">💡 Tips de Empaque</div>
+<div class="llevar-item" style="border-color:rgba(240,192,96,0.15);">🏷️ Cada prenda con el <strong>apellido en la etiqueta</strong></div>
+<div class="llevar-item" style="border-color:rgba(240,192,96,0.15);">📋 Hacer un <strong>listado de toda la ropa</strong> que lleva el jugador</div>
+<div class="llevar-item" style="border-color:rgba(240,192,96,0.15);">📸 Poner toda la ropa en el piso, sacarle una foto y guardarla — así el jugador sabe exactamente qué trajo y podés comparar al volver</div>
+</div>''', unsafe_allow_html=True)
 
 st.markdown("""
 <div style="padding:0 5vw;max-width:1200px;margin:0 auto;">
