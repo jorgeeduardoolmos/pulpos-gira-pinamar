@@ -1922,53 +1922,11 @@ st.markdown(f"""
     <h1 class="hero-title">PULPOS</h1>
     <div class="hero-subtitle">Gira Pinamar 2026</div>
     <div class="hero-dates">
-        <div class="date-pill">📅 13 · 14 · 15 Noviembre</div>
+        <div class="date-pill">📅 13 de Noviembre · 07.00 hs · Sede Central</div>
         <div class="date-pill">📍 Pinamar · Buenos Aires</div>
         <div class="date-pill">🏉 vs Camarones</div>
     </div>
     <div class="scroll-arrow">↓</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ── Discrete CTA button below hero ───────────────────────────────────────────
-st.markdown("""
-<style>
-.hero-cta button {
-    background: transparent !important;
-    border: 1px solid rgba(112,200,240,0.35) !important;
-    color: rgba(168,216,240,0.75) !important;
-    font-family: 'Barlow Condensed', sans-serif !important;
-    font-size: 1rem !important;
-    letter-spacing: 0.15em !important;
-    border-radius: 100px !important;
-    padding: 10px 32px !important;
-    transition: all 0.2s !important;
-}
-.hero-cta button:hover {
-    border-color: #70c8f0 !important;
-    color: #70c8f0 !important;
-    background: rgba(112,200,240,0.06) !important;
-}
-</style>
-""", unsafe_allow_html=True)
-_, _hcol, _ = st.columns([2, 3, 2])
-with _hcol:
-    st.markdown('<div class="hero-cta">', unsafe_allow_html=True)
-    if st.button("✍️  FIRMAR AUTORIZACIÓN  →", key="hero_cta", use_container_width=True):
-        st.query_params["page"] = "autorizacion"
-        st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STAT STRIP
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
-<div class="stat-strip">
-    <div class="stat-item"><div class="stat-num">34</div><div class="stat-label">Jugadores</div></div>
-    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Staff</div></div>
-    <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Días</div></div>
-    <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Cuotas</div></div>
-    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Equipos</div></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -2001,11 +1959,11 @@ def make_timeline(day_name, events):
     return f'<div class="timeline"><div class="day-header">{day_name}</div>{rows}</div>'
 
 viernes = [("07:00 am","🏫 Encuentro en el Liceo"),("08:00 hs","🚌 Salida hacia Pinamar"),
-           ("15:00 hs","🏨 Arribo al hotel · Almuerzo"),("Tarde","🌊 Día de playa"),("Noche","🍽️ Cena en el hotel")]
+           ("15:00 hs","🏨 Arribo al hotel · Almuerzo"),("Tarde","🌊 Día de playa"),("Noche","🍽️ Cena · Pastas")]
 sabado  = [("Mañana","☕ Desayuno en hotel"),("10:00 hs","🏉 Partido vs Camarones"),
-           ("Post-partido","🍻 Tercer tiempo"),("Tarde","🏄 Playa + Sandboard + Inflables"),("Noche","🍽️ Cena en Hotel")]
+           ("Post-partido","🍻 Tercer tiempo"),("Tarde","🏄 Playa + Sandboard + Inflables"),("Noche","🍽️ Cena · Milanesas con Puré")]
 domingo = [("Mañana","☕ Desayuno en Hotel"),("Mañana","🌿 Kalo Eco Parque · Cariló &nbsp;<a href='https://share.google/RXsnm8bbZVZyqlAeI' target='_blank' style='color:#00c8ff;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;border:1px solid rgba(0,200,255,0.3);border-radius:6px;padding:2px 8px;text-decoration:none;'>🗺️ Maps</a>"),
-           ("Almuerzo","🍽️ Almuerzo en Hotel"),("15:00 hs","🚌 Salida hacia el Liceo"),
+           ("Almuerzo","🍽️ Almuerzo · Pizzas"),("15:00 hs","🚌 Salida hacia el Liceo"),
            ("Camino","🥐 Merienda en el Bondi"),("~20:00 hs","🏁 Llegada al Liceo")]
 
 _, inner5, _ = st.columns([1, 10, 1])
@@ -2081,49 +2039,6 @@ st.markdown("""
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# COMIDAS  —  <table> real, no CSS grid
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-title"><span>Comidas</span></div></div>', unsafe_allow_html=True)
-st.markdown("""
-<div style="padding:0 5vw 50px;max-width:1200px;margin:0 auto;">
-<table class="comidas-table">
-  <thead>
-    <tr>
-      <th>Comida</th><th>Viernes</th><th>Sábado</th><th>Domingo</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="row-label">🌅 Desayuno</td>
-      <td class="na">— No incluido</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="ok">✅ Hotel</td>
-    </tr>
-    <tr>
-      <td class="row-label">☀️ Almuerzo</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="ok">✅ Camarones</td>
-      <td class="ok">✅ Hotel</td>
-    </tr>
-    <tr>
-      <td class="row-label">🌤️ Merienda</td>
-      <td class="ok">✅ Playa</td>
-      <td class="ok">✅ Playa</td>
-      <td class="ok">✅ Bondi</td>
-    </tr>
-    <tr>
-      <td class="row-label">🌙 Cena</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="na">—</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-""", unsafe_allow_html=True)
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
 # REGLAS & DETALLES
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown('<div class="sec-wrap"><div class="section-title">Reglas &amp; <span>Detalles</span></div></div>', unsafe_allow_html=True)
@@ -2144,53 +2059,6 @@ with inner9:
                 <div class="card-title">{title}</div>
                 <div class="card-body">{body}</div>
             </div>""", unsafe_allow_html=True)
-
-
-# CTA AUTORIZACION
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-
-# Box content
-st.markdown('''
-<div style="padding:60px 5vw 24px;max-width:860px;margin:0 auto;text-align:center;">
-    <div style="background:linear-gradient(135deg,rgba(26,107,191,0.15),rgba(112,200,240,0.08));
-                border:1px solid rgba(112,200,240,0.3);border-radius:20px;padding:50px 40px 36px;">
-        <div style="font-size:3.5rem;margin-bottom:16px;">&#x1F4CB;</div>
-        <div style="font-family:Bebas Neue,sans-serif;font-size:clamp(2rem,5vw,3.2rem);
-                    letter-spacing:0.06em;color:#fff;margin-bottom:12px;">
-            Firm&#225; la Autorizaci&#243;n <span style="color:#70c8f0;">Online</span>
-        </div>
-        <div style="font-size:1rem;color:rgba(168,216,240,0.7);max-width:520px;
-                    margin:0 auto 32px;line-height:1.75;">
-            Complet&#225; los datos del jugador y de los padres, revis&#225; el documento
-            y firm&#225; digitalmente en segundos. Sin papeles, sin vueltas.
-        </div>
-''', unsafe_allow_html=True)
-
-# Button — st.button + st.switch_page is the only reliable navigation in Streamlit Cloud
-_, btn_col, _ = st.columns([2, 3, 2])
-with btn_col:
-    st.markdown('''<style>
-    div[data-testid="stButton"] button {
-        background: linear-gradient(135deg, #1a6bbf, #70c8f0) !important;
-        color: #fff !important;
-        font-family: "Bebas Neue", sans-serif !important;
-        font-size: 1.4rem !important;
-        letter-spacing: 0.12em !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 18px 48px !important;
-        box-shadow: 0 6px 28px rgba(26,107,191,0.45) !important;
-        width: 100% !important;
-    }
-    div[data-testid="stButton"] button:hover { opacity: 0.88 !important; }
-    </style>''', unsafe_allow_html=True)
-    if st.button("\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True, key="cta_auth"):
-        st.query_params["page"] = "autorizacion"
-        st.rerun()
-
-# Close the box div
-st.markdown('''    </div>
-</div>''', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CLUB & ALOJAMIENTO
@@ -2262,7 +2130,7 @@ with inner:
             <div class="card-icon">🐙</div>
             <div class="card-title">Jugadores</div>
             <div class="card-body">
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#4fc84f;">34</span><br>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#4fc84f;">31</span><br>
                 Jugadores del Liceo Naval M10
             </div>
         </div>""", unsafe_allow_html=True)
@@ -2339,6 +2207,66 @@ with inner7:
             st.markdown(f'<div class="{cls}"><div class="cuota-mes">{mes}</div><div class="cuota-monto">{monto}</div></div>', unsafe_allow_html=True)
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STAT STRIP
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown("""
+<div class="stat-strip">
+    <div class="stat-item"><div class="stat-num">34</div><div class="stat-label">Jugadores</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Staff</div></div>
+    <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Días</div></div>
+    <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Cuotas</div></div>
+    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Equipos</div></div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# CTA AUTORIZACION
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+# Box content
+st.markdown('''
+<div style="padding:60px 5vw 24px;max-width:860px;margin:0 auto;text-align:center;">
+    <div style="background:linear-gradient(135deg,rgba(26,107,191,0.15),rgba(112,200,240,0.08));
+                border:1px solid rgba(112,200,240,0.3);border-radius:20px;padding:50px 40px 36px;">
+        <div style="font-size:3.5rem;margin-bottom:16px;">&#x1F4CB;</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:clamp(2rem,5vw,3.2rem);
+                    letter-spacing:0.06em;color:#fff;margin-bottom:12px;">
+            Firm&#225; la Autorizaci&#243;n <span style="color:#70c8f0;">Online</span>
+        </div>
+        <div style="font-size:1rem;color:rgba(168,216,240,0.7);max-width:520px;
+                    margin:0 auto 32px;line-height:1.75;">
+            Complet&#225; los datos del jugador y de los padres, revis&#225; el documento
+            y firm&#225; digitalmente en segundos. Sin papeles, sin vueltas.
+        </div>
+''', unsafe_allow_html=True)
+
+# Button — st.button + st.switch_page is the only reliable navigation in Streamlit Cloud
+_, btn_col, _ = st.columns([2, 3, 2])
+with btn_col:
+    st.markdown('''<style>
+    div[data-testid="stButton"] button {
+        background: linear-gradient(135deg, #1a6bbf, #70c8f0) !important;
+        color: #fff !important;
+        font-family: "Bebas Neue", sans-serif !important;
+        font-size: 1.4rem !important;
+        letter-spacing: 0.12em !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 18px 48px !important;
+        box-shadow: 0 6px 28px rgba(26,107,191,0.45) !important;
+        width: 100% !important;
+    }
+    div[data-testid="stButton"] button:hover { opacity: 0.88 !important; }
+    </style>''', unsafe_allow_html=True)
+    if st.button("\u270d\ufe0f  FIRMAR AUTORIZACI\u00d3N  \u2192", use_container_width=True, key="cta_auth"):
+        st.query_params["page"] = "autorizacion"
+        st.rerun()
+
+# Close the box div
+st.markdown('''    </div>
+</div>''', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
