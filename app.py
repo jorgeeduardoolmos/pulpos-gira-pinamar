@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import base64
 from pathlib import Path
 
@@ -1987,111 +1987,6 @@ st.markdown("""
 <div class="divider"></div>
 """, unsafe_allow_html=True)
 
-# ══════════════════════════════════════════════════════════════════════════════
-# INTEGRANTES  —  st.columns para las 2 cards grandes
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-title"><span>Integrantes</span></div></div>', unsafe_allow_html=True)
-
-_, inner, _ = st.columns([1, 10, 1])
-with inner:
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown("""<div class="card">
-            <div class="card-icon">🐙</div>
-            <div class="card-title">Jugadores</div>
-            <div class="card-body">
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#4fc84f;">34</span><br>
-                Jugadores del Liceo Naval M10
-            </div>
-        </div>""", unsafe_allow_html=True)
-    with c2:
-        st.markdown("""<div class="card">
-            <div class="card-icon">🎽</div>
-            <div class="card-title">Staff Técnico</div>
-            <div class="card-body">
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#00c8ff;">8</span><br>
-                Entrenadores y Managers
-            </div>
-        </div>""", unsafe_allow_html=True)
-
-st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
-staff = [
-    ("👑", "Ote",    "ote.png",    "41% 28%", "-30%", "41% 30%", 1.95),
-    ("🎖️", "Ale",   "ale.png",    "50% 15%", "0%",   "50% 15%", 1.2),
-    ("🧠", "Mati",  "mati.png",   "50% 18%", "-5%",  "50% 26%", 1.52),
-    ("🏉", "Tucu",  "tucu.png",   "12% 25%", "-10%", "12% 30%", 2.2),
-    ("🏉", "Fran",  "fran.png",   "50% 26%", "-4%",  "50% 32%", 1.12),
-    ("🆕", "Cris",  "cris.png",   "50% 41%", "-8%",  "50% 41%", 2.08),
-    ("📋", "Marian","marian.png", "50% 24%", "-4%",  "50% 30%", 1.52),
-    ("📋", "Ema",   "ema.png",    "50% 22%", "-4%",  "50% 30%", 1.52),
-]
-_, inner2, _ = st.columns([1, 10, 1])
-with inner2:
-    cells = "".join(
-        staff_card_html(icon, name, photo, pos, ty, origin, scale)
-        for icon, name, photo, pos, ty, origin, scale in staff
-    )
-    st.markdown(f'<div class="staff-grid">{cells}</div>', unsafe_allow_html=True)
-
-st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# CLUB & ALOJAMIENTO
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-title">Club &amp; <span>Alojamiento</span></div></div>', unsafe_allow_html=True)
-
-_, inner3, _ = st.columns([1, 10, 1])
-with inner3:
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown("""<div class="card">
-            <div class="card-icon">🏉</div>
-            <div class="card-title">Club Visitante</div>
-            <div class="card-body">
-                <strong>Camarones · Pinamar</strong><br><br>
-                El rival que nos espera con el campo listo y el tercer tiempo preparado.<br><br>
-                <a class="link-btn" href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank">🗺️ Ver Club en Maps</a>
-            </div>
-        </div>""", unsafe_allow_html=True)
-    with c2:
-        st.markdown("""<div class="card">
-            <div class="card-icon">🏨</div>
-            <div class="card-title">Espacio Arena Hotel</div>
-            <div class="card-body">
-                <span class="chip">A/A</span><span class="chip">WiFi</span><span class="chip">TV Satelital</span>
-                <span class="chip">Frigobar</span><span class="chip">Ropa de cama</span><span class="chip">Toallas</span>
-                <span class="chip">Pileta</span><span class="chip">Quinchos</span><span class="chip">Asadores</span>
-                <span class="chip">Cancha Fútbol</span><span class="chip">Cancha Tenis</span>
-                <span class="chip">Estacionamiento techado</span><br><br>
-                <a class="link-btn" href="https://share.google/sHaJsoc6ak4D2hrFk" target="_blank">🗺️ Ver en Maps</a>
-            </div>
-        </div>""", unsafe_allow_html=True)
-
-st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# FECHAS & LOGÍSTICA
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-title">Fechas &amp; <span>Logística</span></div></div>', unsafe_allow_html=True)
-
-_, inner4, _ = st.columns([1, 10, 1])
-with inner4:
-    c1, c2, c3, c4 = st.columns(4)
-    cards_data = [
-        (c1, "🟢", "Partida", "<strong>Viernes 13 de Noviembre</strong><br>Encuentro en el Liceo: <strong>7:00 am</strong><br>Salida: <strong>8:00 hs</strong>"),
-        (c2, "🏠", "Regreso", "<strong>Domingo 15 de Noviembre</strong><br>Salida Pinamar: <strong>15:00 hs</strong><br>Llegada aprox.: <strong>20:00 hs</strong>"),
-        (c3, "🚌", "Transporte", "<strong>Serrano Turismo</strong><br><br>Control alcoholemia obligatorio.<br>Estacionamiento en Liceo el viernes y domingo."),
-        (c4, "🏥", "Seguro Médico", "<strong>Assist Travel</strong><br><br>Asistencia médica completa durante toda la gira."),
-    ]
-    for col, icon, title, body in cards_data:
-        with col:
-            st.markdown(f"""<div class="card">
-                <div class="card-icon">{icon}</div>
-                <div class="card-title">{title}</div>
-                <div class="card-body">{body}</div>
-            </div>""", unsafe_allow_html=True)
-
-st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CRONOGRAMA  —  3 columnas con timeline HTML interno
@@ -2122,92 +2017,6 @@ with inner5:
         st.markdown(make_timeline("Sábado 14", sabado), unsafe_allow_html=True)
     with c3:
         st.markdown(make_timeline("Domingo 15", domingo), unsafe_allow_html=True)
-
-st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# COMIDAS  —  <table> real, no CSS grid
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-title"><span>Comidas</span></div></div>', unsafe_allow_html=True)
-st.markdown("""
-<div style="padding:0 5vw 50px;max-width:1200px;margin:0 auto;">
-<table class="comidas-table">
-  <thead>
-    <tr>
-      <th>Comida</th><th>Viernes</th><th>Sábado</th><th>Domingo</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="row-label">🌅 Desayuno</td>
-      <td class="na">— No incluido</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="ok">✅ Hotel</td>
-    </tr>
-    <tr>
-      <td class="row-label">☀️ Almuerzo</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="ok">✅ Camarones</td>
-      <td class="ok">✅ Hotel</td>
-    </tr>
-    <tr>
-      <td class="row-label">🌤️ Merienda</td>
-      <td class="ok">✅ Playa</td>
-      <td class="ok">✅ Playa</td>
-      <td class="ok">✅ Bondi</td>
-    </tr>
-    <tr>
-      <td class="row-label">🌙 Cena</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="ok">✅ Hotel</td>
-      <td class="na">—</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-""", unsafe_allow_html=True)
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# COSTO & CUOTAS
-# ══════════════════════════════════════════════════════════════════════════════
-st.markdown('<div class="sec-wrap"><div class="section-title">Costo &amp; <span>Cuotas</span></div></div>', unsafe_allow_html=True)
-
-_, inner6, _ = st.columns([1, 10, 1])
-with inner6:
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown("""<div class="card">
-            <div class="card-icon">💰</div>
-            <div class="card-title">Costo total por jugador</div>
-            <div class="card-body">
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#a8f07a;">$650.000</span><br>
-                <em style="font-size:0.85rem;color:#7a9a7a;">Si viajan menos de 30 jugadores, la diferencia se distribuye entre todos los pasajeros.</em>
-            </div>
-        </div>""", unsafe_allow_html=True)
-    with c2:
-        st.markdown("""<div class="card">
-            <div class="card-icon">🗓️</div>
-            <div class="card-title">Modalidad de Pago</div>
-            <div class="card-body">
-                <strong>7 cuotas</strong><br>
-                6 cuotas de $100.000 + 1 cuota final de $50.000
-            </div>
-        </div>""", unsafe_allow_html=True)
-
-st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
-
-cuotas = [("Mayo","$100K",False),("Junio","$100K",False),("Julio","$100K",False),
-          ("Agosto","$100K",False),("Septiembre","$100K",False),("Octubre","$100K",False),
-          ("Noviembre","$50K",True)]
-
-_, inner7, _ = st.columns([1, 10, 1])
-with inner7:
-    cols = st.columns(7)
-    for col, (mes, monto, last) in zip(cols, cuotas):
-        cls = "cuota-wrap last" if last else "cuota-wrap"
-        with col:
-            st.markdown(f'<div class="{cls}"><div class="cuota-mes">{mes}</div><div class="cuota-monto">{monto}</div></div>', unsafe_allow_html=True)
 
 st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
@@ -2267,6 +2076,49 @@ st.markdown("""
     <div class="doc-row"><span class="doc-icon">🏥</span> Ficha médica firmada para concurrir a la gira</div>
     <div class="doc-row"><span class="doc-icon">💳</span> Carnet de obra social (físico o impresión digital)</div>
     <div class="doc-row"><span class="doc-icon">✅</span> Cuota social al día (no hace falta presentar comprobante)</div>
+</div>
+""", unsafe_allow_html=True)
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# COMIDAS  —  <table> real, no CSS grid
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown('<div class="sec-wrap"><div class="section-title"><span>Comidas</span></div></div>', unsafe_allow_html=True)
+st.markdown("""
+<div style="padding:0 5vw 50px;max-width:1200px;margin:0 auto;">
+<table class="comidas-table">
+  <thead>
+    <tr>
+      <th>Comida</th><th>Viernes</th><th>Sábado</th><th>Domingo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="row-label">🌅 Desayuno</td>
+      <td class="na">— No incluido</td>
+      <td class="ok">✅ Hotel</td>
+      <td class="ok">✅ Hotel</td>
+    </tr>
+    <tr>
+      <td class="row-label">☀️ Almuerzo</td>
+      <td class="ok">✅ Hotel</td>
+      <td class="ok">✅ Camarones</td>
+      <td class="ok">✅ Hotel</td>
+    </tr>
+    <tr>
+      <td class="row-label">🌤️ Merienda</td>
+      <td class="ok">✅ Playa</td>
+      <td class="ok">✅ Playa</td>
+      <td class="ok">✅ Bondi</td>
+    </tr>
+    <tr>
+      <td class="row-label">🌙 Cena</td>
+      <td class="ok">✅ Hotel</td>
+      <td class="ok">✅ Hotel</td>
+      <td class="na">—</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 """, unsafe_allow_html=True)
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
@@ -2339,6 +2191,154 @@ with btn_col:
 # Close the box div
 st.markdown('''    </div>
 </div>''', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CLUB & ALOJAMIENTO
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown('<div class="sec-wrap"><div class="section-title">Club &amp; <span>Alojamiento</span></div></div>', unsafe_allow_html=True)
+
+_, inner3, _ = st.columns([1, 10, 1])
+with inner3:
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("""<div class="card">
+            <div class="card-icon">🏉</div>
+            <div class="card-title">Club Visitante</div>
+            <div class="card-body">
+                <strong>Camarones · Pinamar</strong><br><br>
+                El rival que nos espera con el campo listo y el tercer tiempo preparado.<br><br>
+                <a class="link-btn" href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank">🗺️ Ver Club en Maps</a>
+            </div>
+        </div>""", unsafe_allow_html=True)
+    with c2:
+        st.markdown("""<div class="card">
+            <div class="card-icon">🏨</div>
+            <div class="card-title">Espacio Arena Hotel</div>
+            <div class="card-body">
+                <span class="chip">A/A</span><span class="chip">WiFi</span><span class="chip">TV Satelital</span>
+                <span class="chip">Frigobar</span><span class="chip">Ropa de cama</span><span class="chip">Toallas</span>
+                <span class="chip">Pileta</span><span class="chip">Quinchos</span><span class="chip">Asadores</span>
+                <span class="chip">Cancha Fútbol</span><span class="chip">Cancha Tenis</span>
+                <span class="chip">Estacionamiento techado</span><br><br>
+                <a class="link-btn" href="https://share.google/sHaJsoc6ak4D2hrFk" target="_blank">🗺️ Ver en Maps</a>
+            </div>
+        </div>""", unsafe_allow_html=True)
+
+st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# FECHAS & LOGÍSTICA
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown('<div class="sec-wrap"><div class="section-title">Fechas &amp; <span>Logística</span></div></div>', unsafe_allow_html=True)
+
+_, inner4, _ = st.columns([1, 10, 1])
+with inner4:
+    c1, c2, c3, c4 = st.columns(4)
+    cards_data = [
+        (c1, "🟢", "Partida", "<strong>Viernes 13 de Noviembre</strong><br>Encuentro en el Liceo: <strong>7:00 am</strong><br>Salida: <strong>8:00 hs</strong>"),
+        (c2, "🏠", "Regreso", "<strong>Domingo 15 de Noviembre</strong><br>Salida Pinamar: <strong>15:00 hs</strong><br>Llegada aprox.: <strong>20:00 hs</strong>"),
+        (c3, "🚌", "Transporte", "<strong>Serrano Turismo</strong><br><br>Control alcoholemia obligatorio.<br>Estacionamiento en Liceo el viernes y domingo."),
+        (c4, "🏥", "Seguro Médico", "<strong>Assist Travel</strong><br><br>Asistencia médica completa durante toda la gira."),
+    ]
+    for col, icon, title, body in cards_data:
+        with col:
+            st.markdown(f"""<div class="card">
+                <div class="card-icon">{icon}</div>
+                <div class="card-title">{title}</div>
+                <div class="card-body">{body}</div>
+            </div>""", unsafe_allow_html=True)
+
+st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# INTEGRANTES  —  st.columns para las 2 cards grandes
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown('<div class="sec-wrap"><div class="section-title"><span>Integrantes</span></div></div>', unsafe_allow_html=True)
+
+_, inner, _ = st.columns([1, 10, 1])
+with inner:
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("""<div class="card">
+            <div class="card-icon">🐙</div>
+            <div class="card-title">Jugadores</div>
+            <div class="card-body">
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#4fc84f;">34</span><br>
+                Jugadores del Liceo Naval M10
+            </div>
+        </div>""", unsafe_allow_html=True)
+    with c2:
+        st.markdown("""<div class="card">
+            <div class="card-icon">🎽</div>
+            <div class="card-title">Staff Técnico</div>
+            <div class="card-body">
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#00c8ff;">8</span><br>
+                Entrenadores y Managers
+            </div>
+        </div>""", unsafe_allow_html=True)
+
+st.markdown('<div style="padding:16px 5vw 0;"><div class="section-label">Staff</div></div>', unsafe_allow_html=True)
+staff = [
+    ("👑", "Ote",    "ote.png",    "41% 28%", "-30%", "41% 30%", 1.95),
+    ("🎖️", "Ale",   "ale.png",    "50% 15%", "0%",   "50% 15%", 1.2),
+    ("🧠", "Mati",  "mati.png",   "50% 18%", "-5%",  "50% 26%", 1.52),
+    ("🏉", "Tucu",  "tucu.png",   "12% 25%", "-10%", "12% 30%", 2.2),
+    ("🏉", "Fran",  "fran.png",   "50% 26%", "-4%",  "50% 32%", 1.12),
+    ("🆕", "Cris",  "cris.png",   "50% 41%", "-8%",  "50% 41%", 2.08),
+    ("📋", "Marian","marian.png", "50% 24%", "-4%",  "50% 30%", 1.52),
+    ("📋", "Ema",   "ema.png",    "50% 22%", "-4%",  "50% 30%", 1.52),
+]
+_, inner2, _ = st.columns([1, 10, 1])
+with inner2:
+    cells = "".join(
+        staff_card_html(icon, name, photo, pos, ty, origin, scale)
+        for icon, name, photo, pos, ty, origin, scale in staff
+    )
+    st.markdown(f'<div class="staff-grid">{cells}</div>', unsafe_allow_html=True)
+
+st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# COSTO & CUOTAS
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown('<div class="sec-wrap"><div class="section-title">Costo &amp; <span>Cuotas</span></div></div>', unsafe_allow_html=True)
+
+_, inner6, _ = st.columns([1, 10, 1])
+with inner6:
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("""<div class="card">
+            <div class="card-icon">💰</div>
+            <div class="card-title">Costo total por jugador</div>
+            <div class="card-body">
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#a8f07a;">$650.000</span><br>
+                <em style="font-size:0.85rem;color:#7a9a7a;">Si viajan menos de 30 jugadores, la diferencia se distribuye entre todos los pasajeros.</em>
+            </div>
+        </div>""", unsafe_allow_html=True)
+    with c2:
+        st.markdown("""<div class="card">
+            <div class="card-icon">🗓️</div>
+            <div class="card-title">Modalidad de Pago</div>
+            <div class="card-body">
+                <strong>7 cuotas</strong><br>
+                6 cuotas de $100.000 + 1 cuota final de $50.000
+            </div>
+        </div>""", unsafe_allow_html=True)
+
+st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
+
+cuotas = [("Mayo","$100K",False),("Junio","$100K",False),("Julio","$100K",False),
+          ("Agosto","$100K",False),("Septiembre","$100K",False),("Octubre","$100K",False),
+          ("Noviembre","$50K",True)]
+
+_, inner7, _ = st.columns([1, 10, 1])
+with inner7:
+    cols = st.columns(7)
+    for col, (mes, monto, last) in zip(cols, cuotas):
+        cls = "cuota-wrap last" if last else "cuota-wrap"
+        with col:
+            st.markdown(f'<div class="{cls}"><div class="cuota-mes">{mes}</div><div class="cuota-monto">{monto}</div></div>', unsafe_allow_html=True)
+
+st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
