@@ -1918,13 +1918,12 @@ html, body, [class*="css"] {
 st.markdown(f"""
 <div class="hero">
     {logo_html()}
-    <div class="hero-eyebrow">División M10 · Liceo Naval</div>
-    <h1 class="hero-title">PULPOS</h1>
-    <div class="hero-subtitle">Gira Pinamar 2026</div>
+    <h1 class="hero-title">PULPOS M10 · Liceo Naval</h1>
+    <div class="hero-subtitle">GIRA PINAMAR 2026</div>
     <div class="hero-dates">
-        <div class="date-pill">📅 13 de Noviembre · 07.00 hs · Sede Central</div>
-        <div class="date-pill">📍 Pinamar · Buenos Aires</div>
-        <div class="date-pill">🏉 vs Camarones</div>
+        <div class="date-pill">📅 13/Nov · 07.00 hs · Sede Central</div>
+        <div class="date-pill">🏉 <a href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank" style="color:inherit;text-decoration:none;">vs Camarones Rugby</a></div>
+        <div class="date-pill">🏨 <a href="https://share.google/sHaJsoc6ak4D2hrFk" target="_blank" style="color:inherit;text-decoration:none;">Espacio Arena Hotel</a></div>
     </div>
     <div class="scroll-arrow">↓</div>
 </div>
