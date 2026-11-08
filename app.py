@@ -1920,7 +1920,15 @@ st.markdown(f"""
     {logo_html()}
     <h1 class="hero-title">PULPOS M10 · Liceo Naval</h1>
     <div class="hero-subtitle">GIRA PINAMAR 2026</div>
-    <div class="hero-dates">
+    <div style="margin:28px auto 0;padding:18px 36px;background:linear-gradient(135deg,rgba(26,107,191,0.35),rgba(112,200,240,0.2));border:2px solid rgba(112,200,240,0.6);border-radius:16px;display:inline-block;text-align:center;max-width:600px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.08em;color:#fff;line-height:1.1;">
+            Viernes 13 · 07:00 hs
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);letter-spacing:0.1em;color:#70c8f0;line-height:1.1;">
+            PUERTA 1
+        </div>
+    </div>
+    <div class="hero-dates" style="margin-top:28px;">
         <div class="date-pill">📅 13/Nov · 07.00 hs · Sede Central</div>
         <div class="date-pill">🏉 <a href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank" style="color:inherit;text-decoration:none;">vs Camarones Rugby</a></div>
         <div class="date-pill">🏨 <a href="https://share.google/sHaJsoc6ak4D2hrFk" target="_blank" style="color:inherit;text-decoration:none;">Espacio Arena Hotel</a></div>
