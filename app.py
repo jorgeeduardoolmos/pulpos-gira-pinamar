@@ -192,9 +192,16 @@ def render_autorizacion():
             )
             client = gspread.authorize(creds)
             sheet = client.open_by_key(st.secrets["SHEET_ID"])
-            ws = sheet.worksheet("Autorizaciones")
+            try:
+                ws = sheet.worksheet("Autorizaciones")
+            except gspread.exceptions.WorksheetNotFound:
+                headers = ["Fecha","Jugador Nombre","Jugador Apellido","Jugador DNI",
+                           "Domicilio","Localidad","Teléfono","Padre Nombre","Padre Apellido",
+                           "Padre DNI","Madre Nombre","Madre Apellido","Madre DNI"]
+                ws = sheet.add_worksheet(title="Autorizaciones", rows=200, cols=len(headers))
+                ws.append_row(headers)
 
-            # Append data row directly — headers should already be in row 1
+            # Append data row
             fila = [
                 _datetime.now().strftime("%d/%m/%Y %H:%M"),
                 datos["jugador_nombre"],
