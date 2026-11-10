@@ -2041,10 +2041,10 @@ with inner8:
 
 st.markdown("""
 <div style="padding:0 5vw;max-width:1200px;margin:0 auto;">
-<div class="warn-box">
-    <span class="warn-icon">🧴</span>
-    <div><strong style="color:#f0c060;">OFF y Protector Solar</strong><br>
-    De parte del staff y de todos los Pulpos, muchas gracias a la familia de Benja Lion y Balta por las donaciones de protectores y off. 🙏</div>
+<div style="display:flex;align-items:flex-start;gap:14px;background:linear-gradient(135deg,rgba(0,32,96,0.6),rgba(0,20,60,0.8));border:2px solid #C8A951;border-radius:12px;padding:18px 22px;margin-top:16px;">
+    <span style="font-size:1.5rem;flex-shrink:0;">🧴</span>
+    <div><strong style="color:#C8A951;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.05em;">OFF y Protector Solar</strong><br>
+    <span style="color:#e8d8a0;">De parte del staff y de todos los Pulpos, muchas gracias a la familia de Benja Lion y Balta por las donaciones de protectores y off. 🙏</span></div>
 </div>
 </div>
 """, unsafe_allow_html=True)
