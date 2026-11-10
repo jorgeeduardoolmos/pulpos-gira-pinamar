@@ -68,20 +68,29 @@ def render_autorizacion():
     }
     [data-testid="stTextInput"] input,
     [data-testid="stNumberInput"] input {
-        background: rgba(255,255,255,0.06) !important;
+        background: #0d1f38 !important;
         border: 1px solid rgba(100,180,255,0.4) !important;
         border-radius: 8px !important;
         color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
         font-family: 'Barlow', sans-serif !important;
         caret-color: #70c8f0 !important;
         font-size: 1rem !important;
     }
     [data-testid="stTextInput"] input::placeholder,
-    [data-testid="stNumberInput"] input::placeholder { color: rgba(168,216,240,0.3) !important; }
-    div[data-baseweb="input"] { background: rgba(255,255,255,0.06) !important; }
-    div[data-baseweb="base-input"] { background: transparent !important; }
+    [data-testid="stNumberInput"] input::placeholder {
+        color: rgba(168,216,240,0.35) !important;
+        -webkit-text-fill-color: rgba(168,216,240,0.35) !important;
+    }
+    div[data-baseweb="input"] { background: #0d1f38 !important; border-radius: 8px !important; }
+    div[data-baseweb="base-input"] { background: #0d1f38 !important; }
     div[data-baseweb="input"] input,
-    div[data-baseweb="base-input"] input { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 1rem !important; }
+    div[data-baseweb="base-input"] input {
+        background: #0d1f38 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        font-size: 1rem !important;
+    }
     [data-testid="stTextInput"] input:focus,
     [data-testid="stNumberInput"] input:focus {
         border-color: rgba(112,200,240,0.6) !important;
