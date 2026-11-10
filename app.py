@@ -1988,17 +1988,17 @@ def make_timeline(day_name, events):
     )
     return f'<div class="timeline"><div class="day-header">{day_name}</div>{rows}</div>'
 
-viernes = [("07:00 am","🏫 Encuentro en el Liceo"),("08:00 hs","🚌 Salida hacia Pinamar"),
-           ("15:00 hs","🏨 Arribo al hotel"),
+viernes = [("07:00 am","🏫 Encuentro en el Liceo Sede Central Puerta 1"),("08:00 hs","🚌 Salida hacia Pinamar"),
+           ("15:00 hs","🏨 Arribo al hotel Espacio Arena"),
            ("Almuerzo","🍔 Hamburguesas con lechuga y tomate · Postre: helado"),
            ("Tarde","🌊 Día de playa"),
            ("Cena","🍝 Pastas · Postre: gelatina")]
-sabado  = [("Mañana","☕ Desayuno en hotel"),("10:00 hs","🏉 Partido vs Camarones"),
+sabado  = [("Mañana","☕ Desayuno en hotel"),("09:00 hs","🏉 Partido vs Camarones"),
            ("Post-partido","🍻 Tercer tiempo"),("Tarde","🏄 Playa + Sandboard + Inflables"),
            ("Cena","🥩 Milanesa con puré · Postre: flan")]
-domingo = [("Mañana","☕ Desayuno en Hotel"),("Mañana","🌿 Kalo Eco Parque · Cariló &nbsp;<a href='https://share.google/RXsnm8bbZVZyqlAeI' target='_blank' style='color:#00c8ff;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;border:1px solid rgba(0,200,255,0.3);border-radius:6px;padding:2px 8px;text-decoration:none;'>🗺️ Maps</a>"),
+domingo = [("Mañana","☕ Desayuno en Hotel"),("10:00 hs","🌿 Kalo Eco Parque · Cariló &nbsp;<a href='https://share.google/RXsnm8bbZVZyqlAeI' target='_blank' style='color:#00c8ff;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;border:1px solid rgba(0,200,255,0.3);border-radius:6px;padding:2px 8px;text-decoration:none;'>🗺️ Maps</a>"),
            ("Almuerzo","🍕 Pizzas · Postre: helado"),("15:00 hs","🚌 Salida hacia el Liceo"),
-           ("Camino","🥐 Merienda en el Bondi"),("~20:00 hs","🏁 Llegada al Liceo")]
+           ("Camino","🥐 Merienda en el Bondi"),("~20:00 hs","🏁 Llegada al Liceo Sede Central Puerta 1")]
 
 _, inner5, _ = st.columns([1, 10, 1])
 with inner5:
