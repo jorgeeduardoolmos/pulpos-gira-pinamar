@@ -2020,6 +2020,7 @@ st.markdown('<div class="sec-wrap"><div class="section-title">¿Qué <span>Lleva
 ropa_viaje = ["Camiseta de la Gira","Short o Bermudas","Ojotas o Crocs"]
 mochila = ["Galletas","Agua","Revistas / Libros","Gorra","Artículos de aseo personal","Buzo"]
 bolso   = ["Short Liceo + Camiseta Titular Liceo","Botines + medias del Liceo",
+           "1 Par de botines de Fútbol",
            "Peluche","1 Pijama","1 Traje de baño","1 Campera Impermeable",
            "1 par de Ojotas o Crocs","2 x Ropa interior","1 Bolsa para ropa mojada",
            "2 mudas de ropa adicional","1 Toalla para la playa","🦷 Protector bucal"]
