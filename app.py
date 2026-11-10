@@ -81,7 +81,7 @@ def render_autorizacion():
     div[data-baseweb="input"] { background: rgba(255,255,255,0.06) !important; }
     div[data-baseweb="base-input"] { background: transparent !important; }
     div[data-baseweb="input"] input,
-    div[data-baseweb="base-input"] input { color: #ffffff !important; font-size: 1rem !important; }
+    div[data-baseweb="base-input"] input { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 1rem !important; }
     [data-testid="stTextInput"] input:focus,
     [data-testid="stNumberInput"] input:focus {
         border-color: rgba(112,200,240,0.6) !important;
