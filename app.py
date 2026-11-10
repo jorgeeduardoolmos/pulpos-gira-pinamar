@@ -1945,7 +1945,6 @@ st.markdown(f"""
         </div>
     </div>
     <div class="hero-dates" style="margin-top:28px;">
-        <div class="date-pill">📅 13/Nov · 07.00 hs · Sede Central</div>
         <div class="date-pill">🏉 <a href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank" style="color:inherit;text-decoration:none;">Camarones Rugby Club</a></div>
         <div class="date-pill">🏨 <a href="https://share.google/sHaJsoc6ak4D2hrFk" target="_blank" style="color:inherit;text-decoration:none;">Espacio Arena Hotel</a></div>
     </div>
