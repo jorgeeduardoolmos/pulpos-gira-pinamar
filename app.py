@@ -2043,8 +2043,8 @@ st.markdown("""
 <div style="padding:0 5vw;max-width:1200px;margin:0 auto;">
 <div class="warn-box">
     <span class="warn-icon">🧴</span>
-    <div><strong style="color:#f0c060;">OFF y Protector Solar — Compra Comunitaria</strong><br>
-    Se hace una compra en conjunto para todos. Responsable: <strong>¡Guada, una genia!</strong> 🌟</div>
+    <div><strong style="color:#f0c060;">OFF y Protector Solar</strong><br>
+    De parte del staff y de todos los Pulpos, muchas gracias a la familia de Benja Lion y Balta por las donaciones de protectores y off. 🙏</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
