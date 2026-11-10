@@ -2018,6 +2018,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown('<div class="sec-wrap"><div class="section-title">¿Qué <span>Llevar</span>?</div></div>', unsafe_allow_html=True)
 
+ropa_viaje = ["Camiseta de la Gira","Short o Bermudas","Ojotas o Crocs"]
 mochila = ["Galletas","Agua","Revistas / Libros","Gorra","Artículos de aseo personal","Buzo"]
 bolso   = ["Short Liceo + Camiseta Titular Liceo","Botines + medias del Liceo",
            "Peluche","1 Pijama","1 Traje de baño","1 Campera Impermeable",
@@ -2027,17 +2028,20 @@ no_llevar = ["Toallón (incluido en la cabaña)","Dinero","Caramelos, chicles, c
              "Tecnología (cel, tablet, etc.)","Protector solar (compra comunitaria)",
              "Off repelente (compra comunitaria)","Papas fritas, chizitos, doritos, etc."]
 
+ropa_rows    = "".join(f'<div class="llevar-item">✅&nbsp; {i}</div>' for i in ropa_viaje)
 mochila_rows = "".join(f'<div class="llevar-item">✅&nbsp; {i}</div>' for i in mochila)
 bolso_rows   = "".join(f'<div class="llevar-item">✅&nbsp; {i}</div>' for i in bolso)
 no_rows      = "".join(f'<div class="llevar-item">❌&nbsp; {i}</div>' for i in no_llevar)
 
 _, inner8, _ = st.columns([1, 10, 1])
 with inner8:
-    c1, c2, c3, c4 = st.columns(4)
+    c0, c1, c2, c3, c4 = st.columns(5)
+    with c0:
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">👕 Ropa para el Viaje</div>{ropa_rows}</div>', unsafe_allow_html=True)
     with c1:
-        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🎒 Mochila de Viaje</div>{mochila_rows}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🎒 Mochila de la Gira</div>{mochila_rows}</div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🧳 Bolso de Viaje</div>{bolso_rows}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🧳 Bolso de Bodega</div>{bolso_rows}</div>', unsafe_allow_html=True)
     with c3:
         st.markdown(f'<div class="llevar-box no-llevar"><div class="llevar-title no">❌ NO Llevar</div>{no_rows}</div>', unsafe_allow_html=True)
     with c4:
