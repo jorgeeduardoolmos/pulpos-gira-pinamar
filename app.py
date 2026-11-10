@@ -2021,7 +2021,7 @@ st.markdown('<div class="sec-wrap"><div class="section-title">¿Qué <span>Lleva
 mochila = ["Galletas","Agua","Revistas / Libros","Gorra","Artículos de aseo personal","Buzo"]
 bolso   = ["Peluche","Pijama","Traje de baño","Campera Impermeable","Ojotas / Crocs",
            "Ropa interior x2","Bolsa para ropa mojada","2 mudas de ropa adicional",
-           "Short + camiseta","Botines + medias del Liceo","Toalla para la playa","🦷 Protector bucal"]
+           "Short Liceo + Camiseta Titular Liceo","Botines + medias del Liceo","Toalla para la playa","🦷 Protector bucal"]
 no_llevar = ["Toallón (incluido en la cabaña)","Dinero","Caramelos, chicles, chupetines",
              "Tecnología (cel, tablet, etc.)","Protector solar (compra comunitaria)",
              "Off repelente (compra comunitaria)","Papas fritas, chizitos, doritos, etc."]
