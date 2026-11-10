@@ -2039,9 +2039,9 @@ with inner8:
     with c0:
         st.markdown(f'<div class="llevar-box"><div class="llevar-title si">👕 Ropa para el Viaje</div>{ropa_rows}</div>', unsafe_allow_html=True)
     with c1:
-        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🎒 Mochila de la Gira</div>{mochila_rows}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🎒 Bolso de la Gira</div><div style="font-size:0.78rem;color:rgba(168,216,240,0.6);margin:-4px 0 10px;font-style:italic;">(Va arriba del bondi)</div>{mochila_rows}</div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🧳 Bolso de Bodega</div>{bolso_rows}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="llevar-box"><div class="llevar-title si">🧳 Bolso Grande</div><div style="font-size:0.78rem;color:rgba(168,216,240,0.6);margin:-4px 0 10px;font-style:italic;">(Va en la bodega del bondi)</div>{bolso_rows}</div>', unsafe_allow_html=True)
     with c3:
         st.markdown(f'<div class="llevar-box no-llevar"><div class="llevar-title no">❌ NO Llevar</div>{no_rows}</div>', unsafe_allow_html=True)
     with c4:
