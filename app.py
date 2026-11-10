@@ -1946,8 +1946,16 @@ st.markdown(f"""
     </div>
     <div class="hero-dates" style="margin-top:28px;">
         <div class="date-pill">📅 13/Nov · 07.00 hs · Sede Central</div>
-        <div class="date-pill">🏉 <a href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank" style="color:inherit;text-decoration:none;">vs Camarones Rugby</a></div>
+        <div class="date-pill">🏉 <a href="https://maps.app.goo.gl/WRyYgsnV3P92DqL26" target="_blank" style="color:inherit;text-decoration:none;">Camarones Rugby Club</a></div>
         <div class="date-pill">🏨 <a href="https://share.google/sHaJsoc6ak4D2hrFk" target="_blank" style="color:inherit;text-decoration:none;">Espacio Arena Hotel</a></div>
+    </div>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:9px;justify-content:center;align-items:center;">
+        <span style="color:rgba(168,216,240,0.55);font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;width:100%;text-align:center;margin-bottom:2px;">Encuentro del sábado con:</span>
+        <div style="background:rgba(220,100,110,0.18);border:1px solid rgba(220,100,110,0.55);border-radius:20px;padding:6px 15px;font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:#f4aaae;display:flex;align-items:center;gap:6px;">🦐 Camarones</div>
+        <div style="background:rgba(26,47,110,0.45);border:1px solid rgba(200,169,81,0.55);border-radius:20px;padding:6px 15px;font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:#d4b87a;display:flex;align-items:center;gap:6px;">☘️ Hurling</div>
+        <div style="background:rgba(30,120,30,0.18);border:1px solid rgba(60,180,60,0.55);border-radius:20px;padding:6px 15px;font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:#7dd47d;display:flex;align-items:center;gap:6px;">🌲 Los Pinos</div>
+        <div style="background:rgba(30,100,90,0.2);border:1px solid rgba(100,200,80,0.5);border-radius:20px;padding:6px 15px;font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:#a8d8a0;display:flex;align-items:center;gap:6px;">🏉 Villa Gesell</div>
+        <div style="background:rgba(0,32,96,0.45);border:1px solid rgba(200,169,81,0.55);border-radius:20px;padding:6px 15px;font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:#C8A951;display:flex;align-items:center;gap:6px;">⚓ Liceo Naval</div>
     </div>
     <div class="scroll-arrow">↓</div>
 </div>
@@ -2056,7 +2064,7 @@ st.markdown('<div style="height:50px;"></div><div class="divider"></div>', unsaf
 st.markdown('<div class="sec-wrap"><div class="section-title"><span>Documentación</span></div></div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="padding:0 5vw 50px;max-width:1200px;margin:0 auto;">
-    <div class="doc-row"><span class="doc-icon">📝</span> Autorización firmada por Padre / Madre (físico o impresión digital)</div>
+    <div class="doc-row"><span class="doc-icon">📝</span> Autorización firmada por Padre / Madre (físico o impresión digital) ✅</div>
     <div class="doc-row"><span class="doc-icon">🪪</span> DNI original vigente (verificar que no esté vencido)</div>
     <div class="doc-row"><span class="doc-icon">🏥</span> Ficha médica firmada para concurrir a la gira</div>
     <div class="doc-row"><span class="doc-icon">💳</span> Carnet de obra social (físico o impresión digital)</div>
