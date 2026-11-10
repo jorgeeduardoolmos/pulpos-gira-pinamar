@@ -192,7 +192,6 @@ def render_autorizacion():
             )
             client = gspread.authorize(creds)
             sheet = client.open_by_key(st.secrets["SHEET_ID"])
-            st.info(f"🔍 DEBUG — Sheet: **{sheet.title}** | ID: `{sheet.id}`")
             try:
                 ws = sheet.worksheet("Autorizaciones")
             except gspread.exceptions.WorksheetNotFound:
